@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Meu Cristal GNS 🔮</title>
+<meta name="theme-color" content="#2b2140" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Cinzel:wght@400..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #12101c;
+    --amethyst: #4a3768;
+    --amethyst-deep: #2b2140;
+    --lilac: #9b7fc7;
+    --cream: #f6f3fb;
+    --gold: #c9a24b;
+    --ink: #1e1a2b;
+    --white: #ffffff;
+    --mist: #e4defa;
+    --red-alert: #c0453e;
+    --green-ok: #4c7a54;
+    --shadow: 0 8px 24px rgba(20, 15, 40, 0.10);
+    --radius: 16px;
+  }
+  [data-theme="dark"] {
+    --cream: #16131f;
+    --ink: #eee9fb;
+    --white: #1e1930;
+    --mist: #322850;
+    --shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  * { box-sizing: border-box; margin:0; padding:0; -webkit-tap-highlight-color: transparent; }
+  body { font-family:'DM Sans', sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; display:flex; flex-direction:column; transition: background .2s, color .2s; }
+
+  .app-layout { display:flex; flex:1; width:100%; max-width:1400px; margin:0 auto; }
+  .sidebar { width:270px; background:var(--amethyst-deep); color:#fff; padding:2rem 1.4rem; display:flex; flex-direction:column; gap:2rem; flex-shrink:0; }
+  .brand { display:flex; align-items:center; gap:0.7rem; }
+  .brand h1 { font-family:'Cinzel', serif; font-size:1.35rem; font-weight:700; letter-spacing:0.02em; }
+  .nav-btn { display:flex; align-items:center; gap:0.8rem; padding:0.8rem 1rem; border:none; background:transparent; color:rgba(255,255,255,0.75); font-size:0.92rem; font-weight:500; border-radius:12px; cursor:pointer; text-align:left; width:100%; transition:.15s; }
+  .nav-btn:hover, .nav-btn.active { background:rgba(255,255,255,0.12); color:#fff; }
+  .theme-toggle { margin-top:auto; background:rgba(255,255,255,0.08); border:none; color:#fff; padding:0.7rem; border-radius:10px; cursor:pointer; font-size:0.85rem; }
+
+  .main-content { flex:1; padding:2rem; padding-bottom:6rem; max-width:1120px; }
+  .header-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.8rem; flex-wrap:wrap; gap:1rem; }
+  .header-title h2 { font-family:'Cinzel', serif; font-size:1.7rem; color:var(--amethyst); }
+  [data-theme="dark"] .header-title h2 { color: var(--lilac); }
+  .header-title p { font-size:0.85rem; color:var(--gold); }
+
+  .btn-primary { background:var(--gold); color:#2a2210; border:none; padding:0.75rem 1.4rem; border-radius:50px; font-weight:700; font-size:0.88rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(201,162,75,0.35); }
+  .btn-secondary { background:var(--amethyst); color:#fff; border:none; padding:0.55rem 0.9rem; border-radius:8px; font-weight:600; font-size:0.8rem; cursor:pointer; }
+  .btn-ghost { background:transparent; border:1.5px solid var(--mist); color:var(--ink); padding:0.55rem 0.9rem; border-radius:8px; font-weight:600; font-size:0.8rem; cursor:pointer; }
+
+  .crystal-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:1.3rem; }
+  .crystal-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); cursor:pointer; transition:transform .2s; border:1px solid rgba(0,0,0,0.04); }
+  .crystal-card:hover { transform:translateY(-4px); }
+  .crystal-img { width:100%; height:150px; object-fit:cover; background:var(--mist); display:flex; align-items:center; justify-content:center; color:#999; font-size:2rem; }
+  .crystal-card-body { padding:1rem; }
+  .tag { display:inline-block; background:var(--mist); color:var(--amethyst); padding:0.2rem 0.55rem; border-radius:6px; font-size:0.68rem; font-weight:700; margin-right:0.3rem; margin-bottom:0.3rem; }
+  [data-theme="dark"] .tag { color: var(--lilac); }
+
+  .section-block { background:var(--white); padding:1.2rem; border-radius:var(--radius); margin-bottom:1.4rem; box-shadow:var(--shadow); }
+  .section-block h4 { color:var(--amethyst); font-family:'Cinzel', serif; margin-bottom:0.7rem; font-size:1rem; }
+  [data-theme="dark"] .section-block h4 { color: var(--lilac); }
+  .section-block .content-text { white-space:pre-line; font-size:0.85rem; line-height:1.65; background:var(--cream); padding:0.9rem; border-radius:10px; }
+  .ai-note { font-size:0.7rem; color:var(--gold); margin-top:0.5rem; font-style:italic; }
+
+  .safety-row { display:flex; align-items:center; gap:0.6rem; padding:0.4rem 0; font-size:0.85rem; }
+  .safety-pill { font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:6px; }
+  .safe { background:#e3efe4; color:var(--green-ok); }
+  .caution { background:#fbf1de; color:#8a6a1f; }
+  .danger { background:#fbe4e2; color:var(--red-alert); }
+  [data-theme="dark"] .safe { background:#1e3322; }
+  [data-theme="dark"] .caution { background:#3a2f14; }
+  [data-theme="dark"] .danger { background:#3a1e1c; }
+
+  .modal-overlay { position:fixed; inset:0; background:rgba(15,10,30,0.5); backdrop-filter:blur(4px); z-index:200; display:flex; justify-content:flex-end; opacity:0; pointer-events:none; transition:opacity .3s; }
+  .modal-overlay.active { opacity:1; pointer-events:auto; }
+  .drawer { background:var(--white); width:100%; max-width:640px; height:100%; padding:2rem; overflow-y:auto; transform:translateX(100%); transition:transform .3s; display:flex; flex-direction:column; gap:1.3rem; }
+  .modal-overlay.active .drawer { transform:translateX(0); }
+  .drawer-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--mist); padding-bottom:1rem; }
+  .drawer-header h3 { font-family:'Cinzel', serif; color:var(--amethyst); }
+  [data-theme="dark"] .drawer-header h3 { color: var(--lilac); }
+  .btn-close { background:transparent; border:none; font-size:1.5rem; cursor:pointer; color:var(--ink); }
+
+  .form-group { display:flex; flex-direction:column; gap:0.35rem; margin-bottom:0.9rem; }
+  .form-group label { font-size:0.75rem; font-weight:700; color:var(--amethyst); text-transform:uppercase; letter-spacing:0.02em; }
+  [data-theme="dark"] .form-group label { color: var(--lilac); }
+  .form-control { padding:0.75rem 0.9rem; border:1.5px solid var(--mist); border-radius:10px; font-family:inherit; font-size:0.88rem; outline:none; background:var(--white); color:var(--ink); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
+  .checkbox-list { display:flex; flex-direction:column; gap:0.4rem; max-height:160px; overflow-y:auto; border:1.5px solid var(--mist); border-radius:10px; padding:0.6rem 0.8rem; }
+  .checkbox-list label { font-size:0.82rem; display:flex; align-items:center; gap:0.5rem; }
+
+  .gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:0.6rem; }
+  .gallery-grid img { width:100%; height:100px; object-fit:cover; border-radius:8px; border:1px solid var(--mist); }
+
+  .stat-card { background:var(--white); border-radius:var(--radius); padding:1.2rem; box-shadow:var(--shadow); text-align:center; }
+  .stat-card .num { font-family:'Cinzel', serif; font-size:2rem; color:var(--gold); }
+  .stat-card .label { font-size:0.78rem; color:var(--ink); opacity:0.7; }
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:1rem; margin-bottom:1.6rem; }
+
+  .journal-entry { background:var(--white); border-radius:12px; padding:1rem; box-shadow:var(--shadow); margin-bottom:0.9rem; }
+  .journal-entry .date { font-size:0.72rem; color:var(--gold); font-weight:700; }
+
+  .ai-answer-box { white-space:pre-line; font-size:0.88rem; line-height:1.7; background:var(--cream); padding:1.1rem; border-radius:12px; margin-top:1rem; }
+
+  .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--white); border-top:1px solid var(--mist); padding:0.5rem; z-index:100; justify-content:space-around; }
+  .bottom-nav .nav-btn { color: var(--ink); opacity:.6; }
+  .bottom-nav .nav-btn.active { opacity:1; color: var(--amethyst); background:transparent;}
+
+  @media (max-width:768px) {
+    .sidebar { display:none; }
+    .bottom-nav { display:flex; }
+    .main-content { padding:1rem; padding-bottom:5.5rem; }
+    .drawer { max-width:100%; height:95vh; border-radius:20px 20px 0 0; transform:translateY(100%); }
+    .modal-overlay { align-items:flex-end; }
+    .modal-overlay.active .drawer { transform:translateY(0); }
+    .form-row { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="brand"><span style="font-size:1.7rem;">🔮</span><h1>Meu Cristal</h1></div>
+    <nav>
+      <button class="nav-btn active" onclick="switchTab('collection')">💎 Coleção</button>
+      <button class="nav-btn" onclick="switchTab('journal')">📖 Diário</button>
+      <button class="nav-btn" onclick="switchTab('combine')">🔀 Combinar Cristais</button>
+      <button class="nav-btn" onclick="switchTab('guidance')">🧭 O que eu preciso agora?</button>
+      <button class="nav-btn" onclick="switchTab('guide')">📚 Guia Esotérico</button>
+      <button class="nav-btn" onclick="switchTab('ask')">🧠 Perguntar à IA</button>
+      <button class="nav-btn" onclick="switchTab('dashboard')">📊 Dashboard</button>
+    </nav>
+    <button class="theme-toggle" onclick="toggleTheme()">🌗 Alternar tema</button>
+  </aside>
+
+  <main class="main-content">
+
+    <!-- COLEÇÃO -->
+    <section id="sec-collection">
+      <div class="header-bar">
+        <div class="header-title"><h2>Minha Coleção</h2><p>Cada exemplar, sua ficha simbólica completa</p></div>
+        <button class="btn-primary" onclick="openAddCrystalModal()"><span>+</span> Novo Cristal</button>
+      </div>
+      <div class="crystal-grid" id="crystalGrid"><p style="color:#888;">Carregando coleção...</p></div>
+    </section>
+
+    <!-- DIÁRIO -->
+    <section id="sec-journal" style="display:none;">
+      <div class="header-bar">
+        <div class="header-title"><h2>Diário de Práticas</h2><p>Registre suas práticas, intenções e percepções</p></div>
+        <button class="btn-primary" onclick="openAddJournalModal()"><span>+</span> Nova Entrada</button>
+      </div>
+      <div id="journalList"><p style="color:#888;">Carregando diário...</p></div>
+    </section>
+
+    <!-- COMBINAR CRISTAIS -->
+    <section id="sec-combine" style="display:none;">
+      <div class="header-bar">
+        <div class="header-title"><h2>Combinar Cristais</h2><p>Escolha 2 ou mais exemplares da sua coleção para a IA analisar a relação simbólica entre eles</p></div>
+      </div>
+      <div class="section-block">
+        <div class="form-group">
+          <label>Selecione os cristais</label>
+          <div class="checkbox-list" id="combineChecklist"></div>
+        </div>
+        <div class="form-group">
+          <label>Objetivo da combinação (opcional)</label>
+          <input type="text" id="combineGoal" class="form-control" placeholder="Ex: quero decidir algo importante mantendo o foco" />
+        </div>
+        <button class="btn-primary" style="width:100%; justify-content:center;" onclick="analyzeCombination()">🔀 Analisar Combinação</button>
+        <div id="combineResult" style="display:none;"></div>
+      </div>
+    </section>
+
+    <!-- O QUE EU PRECISO AGORA -->
+    <section id="sec-guidance" style="display:none;">
+      <div class="header-bar">
+        <div class="header-title"><h2>O que eu preciso agora? 🧭</h2><p>Descreva como você está — a IA sugere uma prática usando cristais da sua coleção</p></div>
+      </div>
+      <div class="section-block">
+        <div class="form-group">
+          <label>Como você está / o que precisa trabalhar</label>
+          <textarea id="guidanceInput" class="form-control" rows="4" placeholder="Ex: Estou disperso e preciso recuperar meu foco."></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%; justify-content:center;" onclick="askGuidance()">🧭 Consultar</button>
+      </div>
+      <div id="guidanceResult"></div>
+    </section>
+
+    <!-- GUIA ESOTÉRICO -->
+    <section id="sec-guide" style="display:none;">
+      <div class="header-bar">
+        <div class="header-title"><h2>Guia Esotérico</h2><p>Fases da Lua, períodos solares e correspondências com incensos, plantas e velas</p></div>
+      </div>
+
+      <div class="form-row" style="margin-bottom:1rem;">
+        <button class="btn-ghost" id="guideBtnMoon" onclick="switchGuidePanel('moon')">🌙 Fases da Lua</button>
+        <button class="btn-ghost" id="guideBtnSun" onclick="switchGuidePanel('sun')">☀️ Períodos Solares</button>
+      </div>
+      <button class="btn-ghost" id="guideBtnCorr" style="width:100%; margin-bottom:1rem;" onclick="switchGuidePanel('corr')">🌿 Correspondências (Incensos, Plantas, Velas)</button>
+
+      <div id="guidePanelMoon"></div>
+      <div id="guidePanelSun" style="display:none;"></div>
+      <div id="guidePanelCorr" style="display:none;">
+        <div class="section-block">
+          <div class="form-row">
+            <div class="form-group"><label>Tipo</label>
+              <select id="corrType" class="form-control">
+                <option>Incenso</option><option>Planta</option><option>Vela / Aroma</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Nome</label><input type="text" id="corrItemName" class="form-control" placeholder="Ex: sândalo, alecrim, lavanda..." /></div>
+          </div>
+          <button class="btn-primary" style="width:100%; justify-content:center;" onclick="findCorrespondence()">🔎 Buscar cristais da coleção que combinam</button>
+          <div id="corrResult" style="display:none;"></div>
+        </div>
+
+        <div class="section-block">
+          <div class="form-group"><label>Ou selecione um cristal da coleção</label>
+            <select id="corrCrystalSelect" class="form-control"></select>
+          </div>
+          <button class="btn-primary" style="width:100%; justify-content:center;" onclick="findCorrespondenceForCrystal()">🔎 Sugerir incensos, plantas e velas para este cristal</button>
+          <div id="corrCrystalResult" style="display:none;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERGUNTAR À IA -->
+    <section id="sec-ask" style="display:none;">
+      <div class="header-bar">
+        <div class="header-title"><h2>Perguntar à IA 🧠</h2><p>Correspondências, combinações e sugestões a partir da sua coleção</p></div>
+      </div>
+      <div class="section-block">
+        <div class="form-group">
+          <label>Sua pergunta ou intenção</label>
+          <textarea id="aiQuestionInput" class="form-control" rows="4" placeholder="Ex: Estou disperso e preciso recuperar o foco. Quais pedras da minha coleção combinam com isso?"></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%; justify-content:center;" onclick="askAI()">🔮 Consultar</button>
+        <div id="askResult" style="display:none;"></div>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="sec-dashboard" style="display:none;">
+      <div class="header-bar">
+        <div class="header-title"><h2>Dashboard da Coleção</h2><p>Um mapa simbólico da sua jornada</p></div>
+      </div>
+      <div id="dashboardContent"></div>
+    </section>
+
+  </main>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="switchTab('collection')">💎</button>
+  <button class="nav-btn" onclick="switchTab('journal')">📖</button>
+  <button class="nav-btn" onclick="switchTab('combine')">🔀</button>
+  <button class="nav-btn" onclick="switchTab('guidance')">🧭</button>
+  <button class="nav-btn" onclick="switchTab('guide')">📚</button>
+  <button class="nav-btn" onclick="switchTab('ask')">🧠</button>
+  <button class="nav-btn" onclick="switchTab('dashboard')">📊</button>
+</nav>
+
+<!-- DRAWER: ADICIONAR/EDITAR CRISTAL -->
+<div class="modal-overlay" id="drawerCrystalForm">
+  <div class="drawer">
+    <div class="drawer-header">
+      <h3 id="crystalFormTitle">Novo Cristal</h3>
+      <button class="btn-close" onclick="closeActiveDrawer()">&times;</button>
+    </div>
+    <form id="formCrystal" onsubmit="saveCrystal(event)">
+
+      <div class="form-group">
+        <label>Nome Popular</label>
+        <input type="text" id="cName" class="form-control" placeholder="Ex: Olho de Tigre" required />
+        <div class="form-row" style="margin-top:0.4rem;">
+          <button type="button" class="btn-secondary" onclick="autoFillWithAI(event)">✨ Preencher Ficha Esotérica com IA</button>
+          <label class="btn-ghost" style="text-align:center; cursor:pointer;">📷 Identificar por Foto<input type="file" accept="image/*" style="display:none;" onchange="identifyByPhoto(event)" /></label>
+        </div>
+        <p class="ai-note">A IA gera uma síntese simbólica/tradicional. Revise e edite antes de salvar. A identificação por foto é uma sugestão, nunca uma certeza.</p>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group"><label>Identificação Mineral</label><input type="text" id="cVariety" class="form-control" placeholder="Variedade de Quartzo" /></div>
+        <div class="form-group"><label>Apelido / Nº do Exemplar</label><input type="text" id="cNickname" class="form-control" placeholder="Ex: Olho de Tigre nº 01" /></div>
+      </div>
+
+      <div class="form-group"><label>Descrição pessoal</label><textarea id="cDescription" class="form-control" rows="2"></textarea></div>
+
+      <div class="form-row">
+        <div class="form-group"><label>Origem</label><input type="text" id="cOrigin" class="form-control" /></div>
+        <div class="form-group"><label>Local de Aquisição</label><input type="text" id="cAcquiredPlace" class="form-control" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Data de Aquisição</label><input type="date" id="cAcquiredDate" class="form-control" /></div>
+        <div class="form-group"><label>Formato</label>
+          <select id="cFormat" class="form-control">
+            <option value="">Selecione</option>
+            <option>Bruto</option><option>Rolado</option><option>Polido</option><option>Esfera</option>
+            <option>Ponta</option><option>Torre</option><option>Lâmina</option><option>Cabochão</option>
+            <option>Drusa</option><option>Cluster</option><option>Jóia</option><option>Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Tamanho</label><input type="text" id="cSize" class="form-control" placeholder="Ex: 4cm" /></div>
+        <div class="form-group"><label>Peso</label><input type="text" id="cWeight" class="form-control" placeholder="Ex: 32g" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Cor</label><input type="text" id="cColor" class="form-control" /></div>
+        <div class="form-group"><label>Transparência/Acabamento</label><input type="text" id="cTransparency" class="form-control" /></div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group"><label>Elemento</label>
+          <select id="cElement" class="form-control">
+            <option value="">Selecione</option><option>Terra</option><option>Água</option><option>Ar</option><option>Fogo</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Chakra</label>
+          <select id="cChakra" class="form-control">
+            <option value="">Selecione</option>
+            <option>Raiz</option><option>Sacral</option><option>Plexo Solar</option><option>Cardíaco</option>
+            <option>Laríngeo</option><option>Terceiro Olho</option><option>Coronário</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Planeta</label><input type="text" id="cPlanet" class="form-control" /></div>
+        <div class="form-group"><label>Signos</label><input type="text" id="cSigns" class="form-control" /></div>
+      </div>
+
+      <div class="form-group"><label>Mineralogia (fórmula, sistema cristalino, dureza...)</label><textarea id="cMineralogyText" class="form-control" rows="3"></textarea></div>
+      <div class="form-group"><label>Simbolismo & Arquétipo Psicológico</label><textarea id="cSymbolismText" class="form-control" rows="4"></textarea></div>
+      <div class="form-group"><label>Energia Tradicional (detalhada)</label><textarea id="cTraditionText" class="form-control" rows="3"></textarea></div>
+      <div class="form-group"><label>Ocultismo (Cabala, Tarot, Alquimia, Hermetismo...)</label><textarea id="cOccultismText" class="form-control" rows="4"></textarea></div>
+      <div class="form-group"><label>Práticas (Purificação & Energização)</label><textarea id="cPracticesText" class="form-control" rows="3"></textarea></div>
+
+      <h4 style="color:var(--amethyst); font-family:'Cinzel',serif;">🛡️ Segurança do Mineral</h4>
+      <div class="form-row">
+        <div class="form-group"><label>Água</label>
+          <select id="cWaterSafe" class="form-control"><option>Não confirmado</option><option>Seguro</option><option>Cuidado</option><option>Não recomendado</option></select>
+        </div>
+        <div class="form-group"><label>Sol</label>
+          <select id="cSunSafe" class="form-control"><option>Não confirmado</option><option>Seguro</option><option>Cuidado</option><option>Não recomendado</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Terra (enterramento)</label>
+        <select id="cEarthSafe" class="form-control"><option>Não confirmado</option><option>Seguro</option><option>Cuidado</option><option>Não recomendado</option></select>
+      </div>
+      <div class="form-group"><label>Observações de Segurança</label><textarea id="cSafetyNotes" class="form-control" rows="2"></textarea></div>
+
+      <div class="form-group"><label>Intenções pessoais (separadas por vírgula)</label><input type="text" id="cIntentions" class="form-control" placeholder="discernimento, foco, coragem" /></div>
+
+      <div class="form-group"><label>Fonte / Tradição predominante</label><input type="text" id="cSourcesNote" class="form-control" placeholder="Ex: síntese esotérica contemporânea (IA)" /></div>
+      <div class="form-group"><label>Classificação da Fonte</label>
+        <select id="cSourceType" class="form-control">
+          <option value="">Selecione</option>
+          <option>Correspondência tradicional</option>
+          <option>Escola ou autor específico</option>
+          <option>Associação moderna/esotérica contemporânea</option>
+          <option>Interpretação simbólica da IA</option>
+        </select>
+      </div>
+
+      <div class="form-group"><label>Mestres Ascensionados / Teosofia (quando pertinente)</label><textarea id="cAscendedMastersText" class="form-control" rows="2" placeholder="Deixe vazio se não houver correspondência relevante nesta tradição."></textarea></div>
+
+      <div class="form-group"><label>Frequência (Hz) — correspondência vibracional</label>
+        <textarea id="cFrequencyNote" class="form-control" rows="2" placeholder="Ex: correspondência vibracional moderna/esotérica, não propriedade física comprovada"></textarea>
+        <p class="ai-note">⚠️ Nunca tratada como propriedade física medida — apenas correspondência simbólica de tradições modernas, quando existir.</p>
+      </div>
+
+      <h4 style="color:var(--amethyst); font-family:'Cinzel',serif;">📸 Fotografia</h4>
+      <div class="form-row">
+        <div class="form-group"><label>Tirar Foto (câmera)</label><input type="file" id="cPhotoCamera" accept="image/*" capture="environment" class="form-control" /></div>
+        <div class="form-group"><label>Escolher da Galeria</label><input type="file" id="cPhotoGallery" accept="image/*" class="form-control" /></div>
+      </div>
+      <div class="form-group">
+        <label>Imagem de Referência (da internet)</label>
+        <button type="button" class="btn-ghost" onclick="searchReferenceImage()">🔎 Buscar imagem de referência no Google</button>
+        <input type="text" id="cReferenceImageUrl" class="form-control" style="margin-top:0.4rem;" placeholder="Cole aqui a URL da imagem escolhida" />
+        <p class="ai-note">Imagem de referência ≠ fotografia do seu exemplar.</p>
+      </div>
+
+      <button type="submit" id="btnSaveCrystal" class="btn-primary" style="width:100%; justify-content:center;">Salvar Cristal</button>
+    </form>
+  </div>
+</div>
+
+<!-- DRAWER: DETALHE DO CRISTAL -->
+<div class="modal-overlay" id="drawerCrystalDetail">
+  <div class="drawer">
+    <div class="drawer-header">
+      <h3 id="detailName">Ficha do Cristal</h3>
+      <button class="btn-close" onclick="closeActiveDrawer()">&times;</button>
+    </div>
+
+    <img id="detailPhoto" class="crystal-img" style="height:220px; border-radius:12px;" />
+    <div id="detailReferenceNote" style="font-size:0.72rem; color:#888; display:none;">🖼️ Imagem de referência (não é o exemplar pessoal) — <a id="detailReferenceLink" href="#" target="_blank">ver original</a></div>
+
+    <div id="detailTags"></div>
+
+    <div class="section-block"><h4>🧪 Mineralogia</h4><div class="content-text" id="detailMineralogy"></div></div>
+    <div class="section-block"><h4>✨ Simbolismo & Arquétipo</h4><div class="content-text" id="detailSymbolism"></div></div>
+    <div class="section-block"><h4>🔢 Numerologia do Nome</h4><div class="content-text" id="detailNumerology"></div></div>
+    <div class="section-block"><h4>🌍 Energia Tradicional</h4><div class="content-text" id="detailTradition"></div></div>
+    <div class="section-block"><h4>🕯️ Ocultismo</h4><div class="content-text" id="detailOccultism"></div></div>
+    <div class="section-block" id="detailAscendedMastersBlock" style="display:none;"><h4>🌟 Mestres Ascensionados / Teosofia</h4><div class="content-text" id="detailAscendedMasters"></div></div>
+    <div class="section-block" id="detailFrequencyBlock" style="display:none;"><h4>〰️ Frequência (correspondência vibracional)</h4><div class="content-text" id="detailFrequency"></div><p class="ai-note">Correspondência simbólica/esotérica moderna — não uma propriedade física medida.</p></div>
+    <div class="section-block"><h4>🙏 Práticas</h4><div class="content-text" id="detailPractices"></div></div>
+
+    <div class="section-block">
+      <h4>🛡️ Segurança</h4>
+      <div id="detailSafety"></div>
+      <div class="content-text" id="detailSafetyNotes" style="margin-top:0.6rem;"></div>
+    </div>
+
+    <div class="section-block">
+      <h4>🎯 Últimas Práticas com este Cristal</h4>
+      <div class="form-row">
+        <button class="btn-secondary" onclick="recordCare('lastCleaning')">🧼 Registrar Limpeza Hoje</button>
+        <button class="btn-secondary" onclick="recordCare('lastEnergization')">☀️ Registrar Energização Hoje</button>
+      </div>
+      <div id="detailCareStats" style="margin-top:0.8rem; font-size:0.85rem;"></div>
+    </div>
+
+    <div class="section-block">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+        <h4 style="margin:0;">📸 Histórico Fotográfico</h4>
+        <label class="btn-secondary" style="cursor:pointer;">+ Foto<input type="file" accept="image/*" style="display:none;" onchange="addGalleryPhoto(event)" /></label>
+      </div>
+      <div class="gallery-grid" id="detailGallery"></div>
+    </div>
+
+    <button class="btn-ghost" style="color:var(--red-alert); border-color:var(--red-alert);" onclick="deleteCrystal()">🗑️ Excluir Cristal</button>
+  </div>
+</div>
+
+<!-- DRAWER: NOVA ENTRADA DE DIÁRIO -->
+<div class="modal-overlay" id="drawerJournalForm">
+  <div class="drawer">
+    <div class="drawer-header"><h3>Nova Entrada de Diário</h3><button class="btn-close" onclick="closeActiveDrawer()">&times;</button></div>
+    <form id="formJournal" onsubmit="saveJournalEntry(event)">
+      <div class="form-group"><label>Cristais utilizados</label><div class="checkbox-list" id="journalCrystalChecklist"></div></div>
+      <div class="form-group"><label>Intenção</label><input type="text" id="jIntention" class="form-control" required /></div>
+      <div class="form-group"><label>Prática realizada</label><textarea id="jPractice" class="form-control" rows="2"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Incenso / Aroma</label><input type="text" id="jIncense" class="form-control" /></div>
+        <div class="form-group"><label>Fase Lunar (automática)</label><input type="text" id="jMoonPhase" class="form-control" readonly /></div>
+      </div>
+      <div class="form-group"><label>Observação antes</label><textarea id="jBefore" class="form-control" rows="2"></textarea></div>
+      <div class="form-group"><label>Observação depois</label><textarea id="jAfter" class="form-control" rows="2"></textarea></div>
+      <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Salvar Entrada</button>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+// =====================================================================
+// ⚠️ SUBSTITUA pelo config do SEU NOVO projeto Firebase (separado do
+// Minhas Plantas). Console Firebase > Configurações do projeto > Seus
+// apps > SDK setup and configuration > Config.
+// =====================================================================
+const firebaseConfig = {
+  apiKey: "SEU_API_KEY",
+  authDomain: "SEU_PROJETO.firebaseapp.com",
+  projectId: "SEU_PROJETO_ID",
+  storageBucket: "SEU_PROJETO.appspot.com",
+  messagingSenderId: "SEU_SENDER_ID",
+  appId: "SEU_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const crystalsCol = collection(db, "crystals");
+const journalCol = collection(db, "journal_entries");
+
+// Worker do Cloudflare reaproveitado do Minhas Plantas (proxy genérico p/ Gemini)
+const WORKER_URL = "https://shiny-sky-21dd.genesisgns.workers.dev/";
+
+let allCrystals = [];
+let allJournal = [];
+let currentDetailId = null;
+let currentEditId = null;
+let activeDrawerId = null;
+
+// ==================== TEMA ====================
+window.toggleTheme = function() {
+  const root = document.documentElement;
+  const isDark = root.getAttribute('data-theme') === 'dark';
+  root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('cristal-theme', isDark ? 'light' : 'dark');
+};
+(function initTheme() {
+  const saved = localStorage.getItem('cristal-theme');
+  if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+})();
+
+// ==================== NAVEGAÇÃO ====================
+window.switchTab = function(tab) {
+  ['collection', 'journal', 'combine', 'guidance', 'guide', 'ask', 'dashboard'].forEach(t => {
+    document.getElementById('sec-' + t).style.display = (t === tab) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll(`.nav-btn[onclick="switchTab('${tab}')"]`).forEach(b => b.classList.add('active'));
+  if (tab === 'dashboard') renderDashboard();
+  if (tab === 'journal') renderJournalList();
+  if (tab === 'combine') renderCombineChecklist();
+  if (tab === 'guide') renderGuide();
+};
+
+window.openDrawer = function(id) { activeDrawerId = id; document.getElementById(id).classList.add('active'); };
+window.closeActiveDrawer = function() {
+  if (activeDrawerId) { document.getElementById(activeDrawerId).classList.remove('active'); activeDrawerId = null; }
+};
+
+// ==================== FASE LUNAR (cálculo local) ====================
+function getMoonPhase(date = new Date()) {
+  const synodicMonth = 29.53058867;
+  const knownNewMoon = new Date(Date.UTC(2000, 0, 6, 18, 14, 0));
+  const diffDays = (date - knownNewMoon) / 86400000;
+  let phase = (diffDays % synodicMonth) / synodicMonth;
+  if (phase < 0) phase += 1;
+
+  if (phase < 0.03 || phase > 0.97) return 'Lua Nova';
+  if (phase < 0.22) return 'Lua Crescente';
+  if (phase < 0.28) return 'Quarto Crescente';
+  if (phase < 0.47) return 'Gibosa Crescente';
+  if (phase < 0.53) return 'Lua Cheia';
+  if (phase < 0.72) return 'Gibosa Minguante';
+  if (phase < 0.78) return 'Quarto Minguante';
+  return 'Lua Minguante';
+}
+
+// ==================== IA (Worker Cloudflare - contrato: {prompt, imageBase64?, mimeType?} -> {resposta}) ====================
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function callGeminiWorker(prompt, imageFile) {
+  const body = { prompt };
+  if (imageFile) {
+    const dataUrl = await fileToBase64(imageFile);
+    const match = dataUrl.match(/^data:(.+);base64,(.*)$/);
+    if (match) { body.mimeType = match[1]; body.imageBase64 = match[2]; }
+  }
+  const response = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || `Erro do servidor (${response.status})`);
+  return data.resposta;
+}
+
+// ==================== FIRESTORE LISTENERS ====================
+onSnapshot(crystalsCol, (snapshot) => {
+  allCrystals = snapshot.docs.map(d => ({ firestoreId: d.id, ...d.data() }));
+  renderCrystalGrid();
+  if (currentDetailId) renderCrystalDetail(currentDetailId);
+}, (err) => {
+  console.error('Erro ao ler cristais do Firestore:', err);
+  document.getElementById('crystalGrid').innerHTML = `<p style="color:var(--red-alert);">Não foi possível conectar ao Firebase. Verifique o firebaseConfig no código. (${err.message})</p>`;
+});
+
+onSnapshot(journalCol, (snapshot) => {
+  allJournal = snapshot.docs.map(d => ({ firestoreId: d.id, ...d.data() }));
+  renderJournalList();
+}, (err) => console.error('Erro ao ler diário:', err));
+
+// ==================== RENDER: COLEÇÃO ====================
+function renderCrystalGrid() {
+  const container = document.getElementById('crystalGrid');
+  if (allCrystals.length === 0) {
+    container.innerHTML = '<p style="color:#888;">Nenhum cristal cadastrado ainda.</p>';
+    return;
+  }
+  container.innerHTML = '';
+  allCrystals.slice().sort((a,b) => (b.createdAt||'').localeCompare(a.createdAt||'')).forEach(c => {
+    const img = c.photo || c.referenceImageUrl;
+    const card = document.createElement('div');
+    card.className = 'crystal-card';
+    card.onclick = () => openCrystalDetail(c.firestoreId);
+    card.innerHTML = `
+      ${img ? `<img src="${img}" class="crystal-img" />` : `<div class="crystal-img">🔮</div>`}
+      <div class="crystal-card-body">
+        <h3 style="font-family:'Cinzel',serif; font-size:1rem; color:var(--ink);">${c.nickname || c.name}</h3>
+        <p style="font-size:0.75rem; font-style:italic; color:var(--gold); margin-bottom:0.4rem;">${c.variety || ''}</p>
+        <div>
+          ${c.element ? `<span class="tag">${c.element}</span>` : ''}
+          ${c.chakra ? `<span class="tag">${c.chakra}</span>` : ''}
+        </div>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+// ==================== FORM: ADD/EDIT CRISTAL ====================
+window.openAddCrystalModal = function() {
+  currentEditId = null;
+  document.getElementById('formCrystal').reset();
+  document.getElementById('crystalFormTitle').innerText = 'Novo Cristal';
+  openDrawer('drawerCrystalForm');
+};
+
+function fillCrystalForm(c) {
+  const map = {
+    cName:'name', cVariety:'variety', cNickname:'nickname', cDescription:'description',
+    cOrigin:'origin', cAcquiredPlace:'acquiredPlace', cAcquiredDate:'acquiredDate', cFormat:'format',
+    cSize:'size', cWeight:'weight', cColor:'color', cTransparency:'transparency',
+    cElement:'element', cChakra:'chakra', cPlanet:'planet', cSigns:'signs',
+    cMineralogyText:'mineralogyText', cSymbolismText:'symbolismText', cTraditionText:'traditionText',
+    cOccultismText:'occultismText', cPracticesText:'practicesText',
+    cWaterSafe:'waterSafe', cSunSafe:'sunSafe', cEarthSafe:'earthSafe', cSafetyNotes:'safetyNotes',
+    cSourcesNote:'sourcesNote', cReferenceImageUrl:'referenceImageUrl',
+    cSourceType:'sourceType', cAscendedMastersText:'ascendedMastersText', cFrequencyNote:'frequencyNote'
+  };
+  Object.entries(map).forEach(([elId, field]) => {
+    const el = document.getElementById(elId);
+    if (el) el.value = c[field] || (elId.includes('Safe') ? 'Não confirmado' : '');
+  });
+  document.getElementById('cIntentions').value = (c.intentions || []).join(', ');
+}
+
+window.autoFillWithAI = async function(event) {
+  const name = document.getElementById('cName').value.trim();
+  if (!name) { alert('Digite o nome do cristal primeiro.'); return; }
+  const btn = event.target;
+  const original = btn.innerText;
+  btn.disabled = true; btn.innerText = '✨ Consultando IA...';
+
+  const prompt = `
+Você é um pesquisador de mineralogia simbólica e ocultismo ocidental (Hermetismo, Cabala, Tarot Rider-Waite/Golden Dawn, Alquimia, Teosofia, psicologia junguiana). Monte uma ficha esotérica para o cristal/mineral "${name}".
+Regras: distinga correspondência tradicional de interpretação moderna da IA; não afirme propriedades físicas ou curativas como fato científico; seja objetivo mas simbólico.
+Responda EXCLUSIVAMENTE em JSON válido, sem markdown, no formato:
+{
+  "mineralogy_text": "fórmula química, sistema cristalino, dureza, composição, cores, brilho, clivagem, origem geológica",
+  "symbolism_text": "significado geral, arquétipo, atributos, sombra, virtude, eixo psicológico (instinto->consciência->vontade->ação), relação com individuação junguiana",
+  "element": "Terra, Água, Ar ou Fogo",
+  "chakra": "um entre Raiz, Sacral, Plexo Solar, Cardíaco, Laríngeo, Terceiro Olho, Coronário",
+  "planet": "planeta tradicionalmente associado",
+  "signs": "signos associados, se houver",
+  "tradition_text": "detalhamento da energia tradicional: polaridade, chakra, signos, com a fonte/tradição citada",
+  "occultism_text": "Cabala (Sephirah e significado do nome, não só o nome), caminhos da Árvore da Vida, Tarot (cartas Rider-Waite/Golden Dawn e por quê), Alquimia, Hermetismo, Teosofia quando pertinente - sempre explicando o porquê da correspondência",
+  "practices_text": "práticas de purificação e energização adequadas a este mineral, considerando riscos físicos",
+  "water_safety": "Seguro, Cuidado ou Não recomendado",
+  "sun_safety": "Seguro, Cuidado ou Não recomendado",
+  "earth_safety": "Seguro, Cuidado ou Não recomendado",
+  "safety_notes": "riscos físicos: descoloração, dissolução, oxidação, fragilidade etc, separado do simbolismo",
+  "suggested_intentions": ["intenção1", "intenção2", "intenção3"],
+  "sources_note": "tradição/fonte predominante usada nesta síntese",
+  "source_type": "um entre: Correspondência tradicional, Escola ou autor específico, Associação moderna/esotérica contemporânea, Interpretação simbólica da IA",
+  "ascended_masters_text": "correspondência com Mestres Ascensionados/Teosofia se houver fundamento relevante nesta tradição específica, ou string vazia se não houver",
+  "frequency_note": "se existir uma correspondência vibracional (Hz) em alguma tradição moderna, cite-a e a fonte, deixando claro que é uma correspondência simbólica/esotérica e não uma medição física comprovada; caso não exista correspondência conhecida, retorne string vazia"
+}`;
+
+  try {
+    const resposta = await callGeminiWorker(prompt);
+    const d = JSON.parse(resposta);
+    document.getElementById('cMineralogyText').value = d.mineralogy_text || '';
+    document.getElementById('cSymbolismText').value = d.symbolism_text || '';
+    document.getElementById('cElement').value = d.element || '';
+    document.getElementById('cChakra').value = d.chakra || '';
+    document.getElementById('cPlanet').value = d.planet || '';
+    document.getElementById('cSigns').value = d.signs || '';
+    document.getElementById('cTraditionText').value = d.tradition_text || '';
+    document.getElementById('cOccultismText').value = d.occultism_text || '';
+    document.getElementById('cPracticesText').value = d.practices_text || '';
+    document.getElementById('cWaterSafe').value = d.water_safety || 'Não confirmado';
+    document.getElementById('cSunSafe').value = d.sun_safety || 'Não confirmado';
+    document.getElementById('cEarthSafe').value = d.earth_safety || 'Não confirmado';
+    document.getElementById('cSafetyNotes').value = d.safety_notes || '';
+    document.getElementById('cSourcesNote').value = d.sources_note || '';
+    document.getElementById('cSourceType').value = d.source_type || '';
+    document.getElementById('cAscendedMastersText').value = d.ascended_masters_text || '';
+    document.getElementById('cFrequencyNote').value = d.frequency_note || '';
+    if (d.suggested_intentions && d.suggested_intentions.length) {
+      document.getElementById('cIntentions').value = d.suggested_intentions.join(', ');
+    }
+  } catch (err) {
+    alert('Erro ao consultar a IA: ' + err.message);
+  } finally {
+    btn.disabled = false; btn.innerText = original;
+  }
+};
+
+window.identifyByPhoto = async function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const prompt = `
+Você é uma especialista em identificação visual de minerais e cristais. Observe a imagem e sugira possíveis identificações.
+Responda EXCLUSIVAMENTE em JSON válido:
+{
+  "possivel_mineral": "nome mais provável, ou 'Não é possível determinar com segurança apenas pela fotografia' se a confiança for baixa",
+  "alternativas": ["possibilidade 2", "possibilidade 3"],
+  "caracteristicas_observadas": "cor, brilho, transparência, formato observados na imagem",
+  "nivel_confianca": "Baixo, Médio ou Alto",
+  "observacao": "aviso sobre as limitações da identificação apenas por foto"
+}`;
+
+  try {
+    const resposta = await callGeminiWorker(prompt, file);
+    const d = JSON.parse(resposta);
+    const msg = `Sugestão da IA: ${d.possivel_mineral} (confiança: ${d.nivel_confianca}).\n` +
+      (d.alternativas && d.alternativas.length ? `Alternativas: ${d.alternativas.join(', ')}.\n` : '') +
+      `${d.observacao || 'Identificação visual não é uma certeza — confirme com outras fontes se possível.'}`;
+    alert(msg);
+    if (d.nivel_confianca !== 'Baixo' && d.possivel_mineral && !document.getElementById('cName').value.trim()) {
+      document.getElementById('cName').value = d.possivel_mineral;
+    }
+  } catch (err) {
+    alert('Erro ao identificar: ' + err.message);
+  } finally {
+    e.target.value = '';
+  }
+};
+
+window.searchReferenceImage = function() {
+  const name = document.getElementById('cName').value.trim();
+  if (!name) { alert('Digite o nome do cristal primeiro.'); return; }
+  window.open(`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(name + ' cristal mineral')}`, '_blank');
+};
+
+window.saveCrystal = async function(event) {
+  event.preventDefault();
+  const btn = document.getElementById('btnSaveCrystal');
+  btn.disabled = true; btn.innerText = 'Salvando...';
+
+  try {
+    const camFile = document.getElementById('cPhotoCamera').files[0];
+    const galFile = document.getElementById('cPhotoGallery').files[0];
+    const photoFile = camFile || galFile;
+
+    const data = {
+      name: document.getElementById('cName').value.trim(),
+      variety: document.getElementById('cVariety').value.trim(),
+      nickname: document.getElementById('cNickname').value.trim(),
+      description: document.getElementById('cDescription').value.trim(),
+      origin: document.getElementById('cOrigin').value.trim(),
+      acquiredPlace: document.getElementById('cAcquiredPlace').value.trim(),
+      acquiredDate: document.getElementById('cAcquiredDate').value,
+      format: document.getElementById('cFormat').value,
+      size: document.getElementById('cSize').value.trim(),
+      weight: document.getElementById('cWeight').value.trim(),
+      color: document.getElementById('cColor').value.trim(),
+      transparency: document.getElementById('cTransparency').value.trim(),
+      element: document.getElementById('cElement').value,
+      chakra: document.getElementById('cChakra').value,
+      planet: document.getElementById('cPlanet').value.trim(),
+      signs: document.getElementById('cSigns').value.trim(),
+      mineralogyText: document.getElementById('cMineralogyText').value.trim(),
+      symbolismText: document.getElementById('cSymbolismText').value.trim(),
+      traditionText: document.getElementById('cTraditionText').value.trim(),
+      occultismText: document.getElementById('cOccultismText').value.trim(),
+      practicesText: document.getElementById('cPracticesText').value.trim(),
+      waterSafe: document.getElementById('cWaterSafe').value,
+      sunSafe: document.getElementById('cSunSafe').value,
+      earthSafe: document.getElementById('cEarthSafe').value,
+      safetyNotes: document.getElementById('cSafetyNotes').value.trim(),
+      sourcesNote: document.getElementById('cSourcesNote').value.trim(),
+      sourceType: document.getElementById('cSourceType').value,
+      ascendedMastersText: document.getElementById('cAscendedMastersText').value.trim(),
+      frequencyNote: document.getElementById('cFrequencyNote').value.trim(),
+      referenceImageUrl: document.getElementById('cReferenceImageUrl').value.trim(),
+      intentions: document.getElementById('cIntentions').value.split(',').map(s => s.trim()).filter(Boolean)
+    };
+
+    if (photoFile) {
+      data.photo = await fileToBase64(photoFile);
+    }
+
+    if (currentEditId) {
+      const updatePayload = { ...data };
+      if (photoFile) {
+        updatePayload.photoHistory = arrayUnion({ photo: data.photo, date: new Date().toISOString() });
+      } else {
+        delete updatePayload.photo;
+      }
+      await updateDoc(doc(db, "crystals", currentEditId), updatePayload);
+    } else {
+      const newDoc = { ...data, history: [], createdAt: new Date().toISOString() };
+      if (photoFile) newDoc.photoHistory = [{ photo: data.photo, date: new Date().toISOString() }];
+      else { newDoc.photo = ''; newDoc.photoHistory = []; }
+      await addDoc(crystalsCol, newDoc);
+    }
+
+    document.getElementById('formCrystal').reset();
+    closeActiveDrawer();
+  } catch (err) {
+    alert('Erro ao salvar cristal: ' + err.message);
+  } finally {
+    btn.disabled = false; btn.innerText = 'Salvar Cristal';
+  }
+};
+
+// ==================== DETALHE DO CRISTAL ====================
+window.openCrystalDetail = function(id) {
+  currentDetailId = id;
+  renderCrystalDetail(id);
+  openDrawer('drawerCrystalDetail');
+};
+
+const SAFETY_CLASS = { 'Seguro': 'safe', 'Cuidado': 'caution', 'Não recomendado': 'danger', 'Não confirmado': 'caution' };
+
+function renderCrystalDetail(id) {
+  const c = allCrystals.find(x => x.firestoreId === id);
+  if (!c) return;
+
+  document.getElementById('detailName').innerText = c.nickname || c.name;
+
+  const photoEl = document.getElementById('detailPhoto');
+  const refNote = document.getElementById('detailReferenceNote');
+  if (c.photo) {
+    photoEl.src = c.photo; photoEl.style.display = 'block'; refNote.style.display = 'none';
+  } else if (c.referenceImageUrl) {
+    photoEl.src = c.referenceImageUrl; photoEl.style.display = 'block';
+    refNote.style.display = 'block';
+    document.getElementById('detailReferenceLink').href = c.referenceImageUrl;
+  } else {
+    photoEl.style.display = 'none'; refNote.style.display = 'none';
+  }
+
+  document.getElementById('detailTags').innerHTML = [c.element, c.chakra, c.planet, c.sourceType, ...(c.intentions||[])]
+    .filter(Boolean).map(t => `<span class="tag">${t}</span>`).join('');
+
+  const numNumber = calculateNumerology(c.name);
+  const numEl = document.getElementById('detailNumerology');
+  if (numEl) {
+    numEl.innerText = numNumber
+      ? `Número ${numNumber} (sistema pitagórico, calculado a partir de "${c.name}"). Correspondência simbólica moderna — não uma tradição numerológica única ou histórica.`
+      : 'Não foi possível calcular.';
+  }
+
+  document.getElementById('detailMineralogy').innerText = c.mineralogyText || 'Não preenchido.';
+  document.getElementById('detailSymbolism').innerText = c.symbolismText || 'Não preenchido.';
+  document.getElementById('detailTradition').innerText = c.traditionText || 'Não preenchido.';
+  document.getElementById('detailOccultism').innerText = c.occultismText || 'Não preenchido.';
+
+  const amBlock = document.getElementById('detailAscendedMastersBlock');
+  if (c.ascendedMastersText) { amBlock.style.display = 'block'; document.getElementById('detailAscendedMasters').innerText = c.ascendedMastersText; }
+  else { amBlock.style.display = 'none'; }
+
+  const freqBlock = document.getElementById('detailFrequencyBlock');
+  if (c.frequencyNote) { freqBlock.style.display = 'block'; document.getElementById('detailFrequency').innerText = c.frequencyNote; }
+  else { freqBlock.style.display = 'none'; }
+
+  document.getElementById('detailPractices').innerText = c.practicesText || 'Não preenchido.';
+  document.getElementById('detailSafetyNotes').innerText = c.safetyNotes || '';
+
+  const safetyEl = document.getElementById('detailSafety');
+  const rows = [['💧 Água', c.waterSafe], ['☀️ Sol', c.sunSafe], ['🌍 Terra', c.earthSafe]];
+  safetyEl.innerHTML = rows.map(([label, val]) => `
+    <div class="safety-row">${label}: <span class="safety-pill ${SAFETY_CLASS[val] || 'caution'}">${val || 'Não confirmado'}</span></div>`).join('');
+
+  const history = c.history || [];
+  const careTypes = [{key:'lastCleaning', label:'🧼 Limpeza'}, {key:'lastEnergization', label:'☀️ Energização'}];
+  document.getElementById('detailCareStats').innerHTML = careTypes.map(ct => {
+    const last = c[ct.key] ? new Date(c[ct.key]).toLocaleDateString('pt-BR') : 'Nunca registrado';
+    return `<div>${ct.label}: última em ${last}</div>`;
+  }).join('');
+
+  const gallery = c.photoHistory || [];
+  const galleryEl = document.getElementById('detailGallery');
+  if (gallery.length === 0) {
+    galleryEl.innerHTML = '<p style="color:#888; grid-column:1/-1; font-size:0.8rem;">Nenhuma foto no histórico ainda.</p>';
+  } else {
+    galleryEl.innerHTML = [...gallery].sort((a,b) => new Date(b.date)-new Date(a.date)).map(g => `
+      <div style="text-align:center;">
+        <img src="${g.photo}" />
+        <div style="font-size:0.62rem; color:#888; margin-top:0.2rem;">${new Date(g.date).toLocaleDateString('pt-BR')}</div>
+      </div>`).join('');
+  }
+}
+
+window.recordCare = async function(careType) {
+  if (!currentDetailId) return;
+  const now = new Date().toISOString();
+  try {
+    await updateDoc(doc(db, "crystals", currentDetailId), {
+      [careType]: now,
+      history: arrayUnion({ type: careType, date: now })
+    });
+  } catch (err) { alert('Erro ao registrar: ' + err.message); }
+};
+
+window.addGalleryPhoto = function(e) {
+  const file = e.target.files[0];
+  if (!file || !currentDetailId) return;
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try {
+      await updateDoc(doc(db, "crystals", currentDetailId), {
+        photo: reader.result,
+        photoHistory: arrayUnion({ photo: reader.result, date: new Date().toISOString() })
+      });
+    } catch (err) { alert('Erro ao adicionar foto: ' + err.message); }
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+};
+
+window.deleteCrystal = async function() {
+  if (!currentDetailId) return;
+  if (!confirm('Excluir este cristal e todo o seu histórico? Esta ação não pode ser desfeita.')) return;
+  try {
+    await deleteDoc(doc(db, "crystals", currentDetailId));
+    closeActiveDrawer();
+  } catch (err) { alert('Erro ao excluir: ' + err.message); }
+};
+
+// ==================== DIÁRIO ====================
+window.openAddJournalModal = function() {
+  document.getElementById('formJournal').reset();
+  const list = document.getElementById('journalCrystalChecklist');
+  list.innerHTML = allCrystals.map(c => `
+    <label><input type="checkbox" value="${c.firestoreId}" data-name="${c.nickname || c.name}"> ${c.nickname || c.name}</label>`).join('') || '<p style="font-size:0.8rem; color:#888;">Cadastre um cristal primeiro.</p>';
+  document.getElementById('jMoonPhase').value = getMoonPhase();
+  openDrawer('drawerJournalForm');
+};
+
+window.saveJournalEntry = async function(event) {
+  event.preventDefault();
+  const checked = Array.from(document.querySelectorAll('#journalCrystalChecklist input:checked'));
+  try {
+    await addDoc(journalCol, {
+      crystalIds: checked.map(c => c.value),
+      crystalNames: checked.map(c => c.dataset.name),
+      intention: document.getElementById('jIntention').value.trim(),
+      practice: document.getElementById('jPractice').value.trim(),
+      incense: document.getElementById('jIncense').value.trim(),
+      moonPhase: document.getElementById('jMoonPhase').value,
+      before: document.getElementById('jBefore').value.trim(),
+      after: document.getElementById('jAfter').value.trim(),
+      date: new Date().toISOString()
+    });
+    document.getElementById('formJournal').reset();
+    closeActiveDrawer();
+  } catch (err) { alert('Erro ao salvar entrada: ' + err.message); }
+};
+
+function renderJournalList() {
+  const el = document.getElementById('journalList');
+  if (!el || document.getElementById('sec-journal').style.display === 'none') return;
+  if (allJournal.length === 0) {
+    el.innerHTML = '<p style="color:#888;">Nenhuma entrada registrada ainda.</p>';
+    return;
+  }
+  const sorted = [...allJournal].sort((a,b) => new Date(b.date) - new Date(a.date));
+  el.innerHTML = sorted.map(j => `
+    <div class="journal-entry">
+      <div class="date">${new Date(j.date).toLocaleDateString('pt-BR')} — ${j.moonPhase || ''}</div>
+      <div style="font-weight:700; margin:0.3rem 0;">${j.intention}</div>
+      ${(j.crystalNames||[]).map(n => `<span class="tag">${n}</span>`).join('')}
+      ${j.practice ? `<p style="font-size:0.82rem; margin-top:0.4rem;">${j.practice}</p>` : ''}
+      ${j.incense ? `<p style="font-size:0.75rem; color:#888;">Incenso: ${j.incense}</p>` : ''}
+    </div>`).join('');
+}
+
+// ==================== PERGUNTAR À IA ====================
+window.askAI = async function() {
+  const question = document.getElementById('aiQuestionInput').value.trim();
+  if (!question) return;
+  const resultEl = document.getElementById('askResult');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = '<div class="ai-answer-box">🔮 Consultando a coleção...</div>';
+
+  const context = allCrystals.map(c => ({
+    nome: c.nickname || c.name,
+    elemento: c.element, chakra: c.chakra, planeta: c.planet,
+    intencoes: c.intentions
+  }));
+
+  const prompt = `
+Você é uma pesquisadora e intérprete simbólica de mineralogia esotérica, não um oráculo determinista. Nunca prometa resultados garantidos; trate tudo como estrutura simbólica de trabalho pessoal.
+Coleção pessoal do usuário (JSON): ${JSON.stringify(context)}
+Pergunta/intenção do usuário: "${question}"
+Responda em português, considerando apenas os cristais da coleção acima (cite pelo nome), explicando o porquê simbólico de cada sugestão (elemento, chakra, planeta, arquétipo). Se nenhum cristal da coleção for adequado, diga isso claramente.`;
+
+  try {
+    const resposta = await callGeminiWorker(prompt);
+    resultEl.innerHTML = `<div class="ai-answer-box">${resposta}</div>`;
+  } catch (err) {
+    resultEl.innerHTML = `<div class="ai-answer-box" style="color:var(--red-alert);">Erro: ${err.message}</div>`;
+  }
+};
+
+// ==================== COMBINAR CRISTAIS ====================
+function renderCombineChecklist() {
+  const el = document.getElementById('combineChecklist');
+  el.innerHTML = allCrystals.map(c => `
+    <label><input type="checkbox" value="${c.firestoreId}" data-name="${c.nickname||c.name}"> ${c.nickname||c.name} ${c.element?`(${c.element})`:''}</label>`).join('')
+    || '<p style="font-size:0.8rem; color:#888;">Cadastre pelo menos 2 cristais para combinar.</p>';
+}
+
+window.analyzeCombination = async function() {
+  const checked = Array.from(document.querySelectorAll('#combineChecklist input:checked'));
+  if (checked.length < 2) { alert('Selecione pelo menos 2 cristais para combinar.'); return; }
+  const goal = document.getElementById('combineGoal').value.trim();
+  const resultEl = document.getElementById('combineResult');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = '<div class="ai-answer-box">🔀 Analisando a combinação...</div>';
+
+  const selected = checked.map(chk => {
+    const c = allCrystals.find(x => x.firestoreId === chk.value);
+    return { nome: c.nickname||c.name, elemento: c.element, chakra: c.chakra, planeta: c.planet, simbolismo: (c.symbolismText||'').slice(0,300) };
+  });
+
+  const prompt = `
+Você é uma intérprete simbólica de mineralogia esotérica. Analise a combinação destes cristais da coleção do usuário: ${JSON.stringify(selected)}
+${goal ? `Objetivo declarado pelo usuário: "${goal}"` : ''}
+Classifique a combinação como uma destas categorias (e explique por quê): complementar, intensificadora, equilibradora, conflitante ou redundante. Considere elementos, chakras e planetas envolvidos. Não assuma que toda combinação é positiva. Ao final, sugira uma prática breve para usar essa combinação. Responda em português, texto corrido, sem JSON.`;
+
+  try {
+    const resposta = await callGeminiWorker(prompt);
+    resultEl.innerHTML = `<div class="ai-answer-box">${resposta}</div>`;
+  } catch (err) {
+    resultEl.innerHTML = `<div class="ai-answer-box" style="color:var(--red-alert);">Erro: ${err.message}</div>`;
+  }
+};
+
+// ==================== O QUE EU PRECISO AGORA? ====================
+window.askGuidance = async function() {
+  const input = document.getElementById('guidanceInput').value.trim();
+  if (!input) return;
+  const resultEl = document.getElementById('guidanceResult');
+  resultEl.innerHTML = '<div class="ai-answer-box">🧭 Consultando sua coleção...</div>';
+
+  const context = allCrystals.map(c => ({
+    nome: c.nickname||c.name, elemento: c.element, chakra: c.chakra, planeta: c.planet,
+    intencoes: c.intentions, seguranca_sol: c.sunSafe, seguranca_agua: c.waterSafe
+  }));
+  const moonPhase = getMoonPhase();
+
+  const prompt = `
+Você é uma pesquisadora e intérprete simbólica de mineralogia esotérica, nunca um oráculo determinista.
+Coleção pessoal do usuário (JSON): ${JSON.stringify(context)}
+Fase lunar atual: ${moonPhase}.
+O usuário descreve como está: "${input}"
+Responda EXCLUSIVAMENTE em JSON válido (sem markdown), escolhendo cristais apenas da coleção acima. Proponha uma prática simples e adaptável, nunca um ritual rígido — o usuário deve poder seguir sua intuição:
+{
+  "pedra_principal": "nome exato de um cristal da coleção, ou null se nenhum for adequado",
+  "pedra_complementar": "nome exato de outro cristal da coleção, ou null",
+  "elemento": "elemento predominante sugerido",
+  "planeta": "planeta relacionado",
+  "chakra": "chakra relacionado",
+  "arquetipo": "arquétipo psicológico em jogo",
+  "intencao": "intenção reformulada",
+  "pratica_sugerida": "prática breve, considerando os cuidados físicos das pedras escolhidas",
+  "posicao_das_pedras": "sugestão simples de onde/como posicionar as pedras (mão, altar, bolso, ambiente)",
+  "respiracao": "orientação breve de respiração para o início da prática",
+  "pergunta_reflexao": "uma pergunta de contemplação para o usuário levar consigo",
+  "encerramento": "como encerrar a prática de forma consciente",
+  "horario_solar_sugerido": "período do dia (manhã, meio-dia, entardecer etc.) e por quê",
+  "cuidados_fisicos": "avisos relevantes com base na segurança das pedras escolhidas",
+  "observacao": "nota honesta caso a coleção não tenha uma pedra ideal para essa necessidade"
+}`;
+
+  try {
+    const resposta = await callGeminiWorker(prompt);
+    const g = JSON.parse(resposta);
+    resultEl.innerHTML = `
+      <div class="section-block">
+        <h4>🌙 Fase lunar atual: ${moonPhase}</h4>
+        <div class="content-text">
+          <b>💎 Pedra principal:</b> ${g.pedra_principal || 'Nenhuma pedra ideal na coleção'}<br/>
+          <b>💎 Pedra complementar:</b> ${g.pedra_complementar || '—'}<br/>
+          <b>🌍 Elemento:</b> ${g.elemento || '—'} · <b>🪐 Planeta:</b> ${g.planeta || '—'} · <b>🔺 Chakra:</b> ${g.chakra || '—'}<br/>
+          <b>🎭 Arquétipo:</b> ${g.arquetipo || '—'}<br/>
+          <b>🎯 Intenção:</b> ${g.intencao || '—'}<br/><br/>
+          <b>🙏 Prática sugerida:</b> ${g.pratica_sugerida || '—'}<br/>
+          <b>📍 Posição das pedras:</b> ${g.posicao_das_pedras || '—'}<br/>
+          <b>🌬️ Respiração:</b> ${g.respiracao || '—'}<br/>
+          <b>💭 Pergunta de reflexão:</b> ${g.pergunta_reflexao || '—'}<br/>
+          <b>🔚 Encerramento:</b> ${g.encerramento || '—'}<br/>
+          <b>☀️ Horário solar sugerido:</b> ${g.horario_solar_sugerido || '—'}<br/>
+          <b>🛡️ Cuidados físicos:</b> ${g.cuidados_fisicos || '—'}
+          ${g.observacao ? `<br/><br/><i>${g.observacao}</i>` : ''}
+        </div>
+      </div>`;
+  } catch (err) {
+    resultEl.innerHTML = `<div class="ai-answer-box" style="color:var(--red-alert);">Erro: ${err.message}</div>`;
+  }
+};
+
+// ==================== NUMEROLOGIA (Pitagórica) ====================
+function calculateNumerology(name) {
+  const table = {a:1,j:1,s:1,b:2,k:2,t:2,c:3,l:3,u:3,d:4,m:4,v:4,e:5,n:5,w:5,f:6,o:6,x:6,g:7,p:7,y:7,h:8,q:8,z:8,i:9,r:9};
+  const clean = (name||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+  if (!clean) return null;
+  let sum = clean.split('').reduce((acc, ch) => acc + (table[ch]||0), 0);
+  const isMaster = (n) => n === 11 || n === 22 || n === 33;
+  while (sum > 9 && !isMaster(sum)) {
+    sum = String(sum).split('').reduce((a,d) => a + Number(d), 0);
+  }
+  return sum;
+}
+
+// ==================== GUIA ESOTÉRICO: LUA, SOL, CORRESPONDÊNCIAS ====================
+const MOON_PHASES_GUIDE = [
+  { name: 'Lua Nova', energy: 'Interiorização, potencial não manifesto, ponto de partida.', psych: 'Momento de silêncio interior antes da ação — o que ainda não tomou forma.', intention: 'Definir intenções, plantar sementes simbólicas.', practice: 'Meditação silenciosa, escrita de intenções, contemplação do cristal em repouso.' },
+  { name: 'Lua Crescente', energy: 'Impulso, crescimento, construção gradual.', psych: 'Mobilização da vontade em direção a um objetivo ainda em formação.', intention: 'Foco, disciplina, primeiros passos.', practice: 'Portar o cristal durante atividades que exigem constância.' },
+  { name: 'Quarto Crescente', energy: 'Tensão construtiva, decisão, ajuste de rota.', psych: 'Confronto entre o que foi planejado e os obstáculos reais.', intention: 'Coragem para ajustar e persistir.', practice: 'Reflexão ativa: o que precisa ser reafirmado ou corrigido?' },
+  { name: 'Gibosa Crescente', energy: 'Refinamento, aproximação da culminância.', psych: 'Ajustes finos antes da plenitude.', intention: 'Paciência, lapidação do processo.', practice: 'Revisão do que foi construído até aqui, pequenos ajustes.' },
+  { name: 'Lua Cheia', energy: 'Culminação, amplificação, plena consciência.', psych: 'Tudo que estava latente se torna visível — inclusive sombras.', intention: 'Celebração, consciência plena, integração.', practice: 'Contemplação prolongada, gratidão, observação sem pressa do cristal.' },
+  { name: 'Gibosa Minguante', energy: 'Compartilhamento, gratidão, início do desapego.', psych: 'Integração do que foi vivido na fase cheia.', intention: 'Compartilhar aprendizados, gratidão.', practice: 'Registro no diário do que a fase cheia revelou.' },
+  { name: 'Quarto Minguante', energy: 'Liberação, corte, encerramento de ciclos.', psych: 'Confronto com o que já não serve — trabalho de sombra.', intention: 'Soltar, encerrar, simplificar.', practice: 'Práticas de limpeza simbólica do cristal e de si mesmo.' },
+  { name: 'Lua Minguante', energy: 'Repouso, dissolução, preparação para o vazio fértil.', psych: 'Retorno ao silêncio antes de um novo ciclo.', intention: 'Descanso, introspecção final.', practice: 'Guardar o cristal em repouso, sem uso ativo, até a próxima Lua Nova.' }
+];
+
+const SOLAR_PERIODS_GUIDE = [
+  { name: 'Nascer do Sol', symbolism: 'Renascimento, início, primeira luz da consciência.', intention: 'Novos começos, clareza inicial.' },
+  { name: 'Manhã', symbolism: 'Vitalidade, impulso, energia em expansão.', intention: 'Ação, iniciativa, disposição.' },
+  { name: 'Meio-dia', symbolism: 'Plenitude, força máxima, consciência solar no auge.', intention: 'Manifestação, poder pessoal, vontade consciente.' },
+  { name: 'Tarde', symbolism: 'Sustentação, continuidade, trabalho em curso.', intention: 'Persistência, foco prolongado.' },
+  { name: 'Fim da Tarde', symbolism: 'Recolhimento, integração do que foi vivido no dia.', intention: 'Conclusão, síntese.' },
+  { name: 'Pôr do Sol', symbolism: 'Encerramento, transição, limiar entre consciência e repouso.', intention: 'Encerrar ciclos diários, agradecer, preparar o repouso.' }
+];
+
+function renderGuide() {
+  const currentPhase = getMoonPhase();
+
+  document.getElementById('guidePanelMoon').innerHTML = MOON_PHASES_GUIDE.map(p => `
+    <div class="section-block" style="${p.name === currentPhase ? 'border:2px solid var(--gold);' : ''}">
+      <h4>${p.name === currentPhase ? '🌕 ' : '🌙 '}${p.name} ${p.name === currentPhase ? '(fase atual)' : ''}</h4>
+      <div class="content-text">
+        <b>Energia tradicional:</b> ${p.energy}<br/>
+        <b>Psicológico:</b> ${p.psych}<br/>
+        <b>Tipo de intenção:</b> ${p.intention}<br/>
+        <b>Prática possível:</b> ${p.practice}
+      </div>
+    </div>`).join('');
+
+  document.getElementById('guidePanelSun').innerHTML = SOLAR_PERIODS_GUIDE.map(p => `
+    <div class="section-block">
+      <h4>☀️ ${p.name}</h4>
+      <div class="content-text"><b>Simbolismo:</b> ${p.symbolism}<br/><b>Intenção adequada:</b> ${p.intention}</div>
+    </div>`).join('') + `<p class="ai-note">Cristais sensíveis ao calor ou à luz solar direta: veja o campo "Sol" na segurança de cada exemplar antes de expor.</p>`;
+
+  const select = document.getElementById('corrCrystalSelect');
+  select.innerHTML = allCrystals.map(c => `<option value="${c.firestoreId}">${c.nickname||c.name}</option>`).join('') || '<option>Nenhum cristal cadastrado</option>';
+}
+
+window.switchGuidePanel = function(panel) {
+  ['moon','sun','corr'].forEach(p => {
+    document.getElementById('guidePanel' + p.charAt(0).toUpperCase() + p.slice(1)).style.display = (p === panel) ? 'block' : 'none';
+  });
+};
+
+window.findCorrespondence = async function() {
+  const type = document.getElementById('corrType').value;
+  const name = document.getElementById('corrItemName').value.trim();
+  if (!name) { alert('Digite o nome do item.'); return; }
+  const resultEl = document.getElementById('corrResult');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = '<div class="ai-answer-box">🔎 Buscando correspondências...</div>';
+
+  const context = allCrystals.map(c => ({ nome: c.nickname||c.name, elemento: c.element, planeta: c.planet, chakra: c.chakra }));
+  const prompt = `
+Você é uma pesquisadora de correspondências esotéricas (elemento, planeta, tradição, simbolismo). ${type}: "${name}".
+Coleção pessoal de cristais do usuário (JSON): ${JSON.stringify(context)}
+Diga com quais cristais DESTA coleção esse(a) ${type.toLowerCase()} combina simbolicamente, e explique o porquê (elemento, planeta, arquétipo). Se nenhum combinar bem, diga isso. Responda em português, texto corrido.`;
+
+  try {
+    resultEl.innerHTML = `<div class="ai-answer-box">${await callGeminiWorker(prompt)}</div>`;
+  } catch (err) {
+    resultEl.innerHTML = `<div class="ai-answer-box" style="color:var(--red-alert);">Erro: ${err.message}</div>`;
+  }
+};
+
+window.findCorrespondenceForCrystal = async function() {
+  const id = document.getElementById('corrCrystalSelect').value;
+  const c = allCrystals.find(x => x.firestoreId === id);
+  if (!c) { alert('Cadastre um cristal primeiro.'); return; }
+  const resultEl = document.getElementById('corrCrystalResult');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = '<div class="ai-answer-box">🔎 Buscando correspondências...</div>';
+
+  const prompt = `
+O cristal é "${c.nickname||c.name}", elemento ${c.element||'desconhecido'}, planeta ${c.planet||'desconhecido'}, chakra ${c.chakra||'desconhecido'}.
+Sugira: (1) 2-3 incensos, (2) 2-3 plantas, (3) 2-3 aromas/velas que combinam simbolicamente com este cristal, considerando elemento, planeta e tradição. Explique brevemente o porquê de cada sugestão. Não use cor como critério para velas, apenas aroma. Responda em português, organizado por tópico.`;
+
+  try {
+    resultEl.innerHTML = `<div class="ai-answer-box">${await callGeminiWorker(prompt)}</div>`;
+  } catch (err) {
+    resultEl.innerHTML = `<div class="ai-answer-box" style="color:var(--red-alert);">Erro: ${err.message}</div>`;
+  }
+};
+
+// ==================== DASHBOARD ====================
+function renderDashboard() {
+  const el = document.getElementById('dashboardContent');
+  const total = allCrystals.length;
+
+  const countBy = (field) => {
+    const map = {};
+    allCrystals.forEach(c => { const v = c[field]; if (v) map[v] = (map[v]||0)+1; });
+    return Object.entries(map).sort((a,b) => b[1]-a[1]);
+  };
+
+  const byElement = countBy('element');
+  const byChakra = countBy('chakra');
+
+  const intentionCount = {};
+  allCrystals.forEach(c => (c.intentions||[]).forEach(i => { intentionCount[i] = (intentionCount[i]||0)+1; }));
+  const topIntentions = Object.entries(intentionCount).sort((a,b) => b[1]-a[1]).slice(0,6);
+
+  const usageCount = {};
+  allJournal.forEach(j => (j.crystalNames||[]).forEach(n => { usageCount[n] = (usageCount[n]||0)+1; }));
+  const topUsed = Object.entries(usageCount).sort((a,b) => b[1]-a[1]).slice(0,5);
+
+  const lastAdded = [...allCrystals].sort((a,b) => (b.createdAt||'').localeCompare(a.createdAt||''))[0];
+  const lastJournal = [...allJournal].sort((a,b) => new Date(b.date)-new Date(a.date)).slice(0,4);
+
+  const allPhotos = [];
+  allCrystals.forEach(c => (c.photoHistory||[]).forEach(p => allPhotos.push({ ...p, crystal: c.nickname||c.name })));
+  const recentPhotos = allPhotos.sort((a,b) => new Date(b.date)-new Date(a.date)).slice(0,6);
+
+  el.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="num">${total}</div><div class="label">Cristais na coleção</div></div>
+      <div class="stat-card"><div class="num">${allJournal.length}</div><div class="label">Práticas registradas</div></div>
+      <div class="stat-card"><div class="num">${lastAdded ? (lastAdded.nickname||lastAdded.name) : '—'}</div><div class="label">Último cristal cadastrado</div></div>
+    </div>
+
+    <div class="section-block">
+      <h4>🌍 Coleção por Elemento</h4>
+      <div>${byElement.length ? byElement.map(([k,v]) => `<span class="tag">${k}: ${v}</span>`).join('') : '<p style="color:#888; font-size:0.85rem;">Sem dados ainda.</p>'}</div>
+    </div>
+
+    <div class="section-block">
+      <h4>🔺 Coleção por Chakra</h4>
+      <div>${byChakra.length ? byChakra.map(([k,v]) => `<span class="tag">${k}: ${v}</span>`).join('') : '<p style="color:#888; font-size:0.85rem;">Sem dados ainda.</p>'}</div>
+    </div>
+
+    <div class="section-block">
+      <h4>🎯 Intenções mais utilizadas</h4>
+      <div>${topIntentions.length ? topIntentions.map(([k,v]) => `<span class="tag">${k}: ${v}</span>`).join('') : '<p style="color:#888; font-size:0.85rem;">Sem dados ainda.</p>'}</div>
+    </div>
+
+    <div class="section-block">
+      <h4>💎 Cristais mais utilizados (diário)</h4>
+      <div>${topUsed.length ? topUsed.map(([k,v]) => `<span class="tag">${k}: ${v}x</span>`).join('') : '<p style="color:#888; font-size:0.85rem;">Sem práticas registradas ainda.</p>'}</div>
+    </div>
+
+    <div class="section-block">
+      <h4>📖 Últimas Práticas</h4>
+      ${lastJournal.length ? lastJournal.map(j => `<div class="journal-entry"><div class="date">${new Date(j.date).toLocaleDateString('pt-BR')}</div><div>${j.intention}</div></div>`).join('') : '<p style="color:#888; font-size:0.85rem;">Nenhuma ainda.</p>'}
+    </div>
+
+    <div class="section-block">
+      <h4>📸 Últimas Fotos</h4>
+      <div class="gallery-grid">
+        ${recentPhotos.length ? recentPhotos.map(p => `<div style="text-align:center;"><img src="${p.photo}" style="width:100%;height:100px;object-fit:cover;border-radius:8px;"/><div style="font-size:0.6rem;color:#888;">${p.crystal}</div></div>`).join('') : '<p style="color:#888; font-size:0.85rem;">Nenhuma foto ainda.</p>'}
+      </div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
