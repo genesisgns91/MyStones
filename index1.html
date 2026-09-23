@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6d28d9">
+<title>Meu Cristal GNS</title>
+<style>
+:root{
+  --purple:#6d28d9; --purple2:#8b5cf6; --purple3:#ede9fe;
+  --ink:#241b35; --muted:#756d83; --line:#e9e3f4; --bg:#fbfaff;
+  --card:#ffffff; --shadow:0 12px 40px rgba(75,45,120,.10);
+  --agua:#159fe3; --ar:#5b8def; --terra:#55a65b; --fogo:#ef6b4d;
+  --root:#ef4444; --sacral:#f97316; --solar:#f2b52d; --heart:#36b96d;
+  --throat:#27a9d6; --third:#5367d9; --crown:#9b5de5;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:
+radial-gradient(circle at 15% 10%,rgba(196,181,253,.18),transparent 28%),
+radial-gradient(circle at 90% 80%,rgba(221,214,254,.20),transparent 30%),var(--bg)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;background-image:
+linear-gradient(125deg,transparent 0 46%,rgba(124,88,196,.08) 46.2%,transparent 46.6%),
+linear-gradient(35deg,transparent 0 52%,rgba(124,88,196,.06) 52.2%,transparent 52.7%);
+background-size:150px 150px}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{width:248px;background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-right:1px solid var(--line);padding:24px 16px;position:fixed;top:0;bottom:0;z-index:20}
+.brand{display:flex;gap:12px;align-items:center;padding:4px 10px 26px}
+.brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;display:grid;place-items:center;box-shadow:0 8px 22px rgba(109,40,217,.25)}
+.brand h1{font-size:16px;margin:0}.brand small{color:var(--muted)}
+.nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:#5e566b;padding:12px 14px;border-radius:14px;text-align:left;display:flex;align-items:center;gap:11px}
+.nav button:hover,.nav button.active{background:#f1eafd;color:var(--purple);font-weight:700}
+.nav svg{width:19px;height:19px}
+.main{margin-left:248px;width:calc(100% - 248px);padding:28px;max-width:1500px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.title h2{margin:0;font-size:28px;letter-spacing:-.04em}.title p{margin:5px 0 0;color:var(--muted)}
+.actions{display:flex;gap:10px}.btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:11px 15px;border-radius:13px;font-weight:700;box-shadow:0 4px 14px rgba(80,50,120,.05)}
+.btn.primary{background:var(--purple);color:#fff;border-color:var(--purple)}.btn.ghost{background:#faf8ff;color:var(--purple)}
+.grid{display:grid;gap:18px}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:rgba(255,255,255,.91);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:20px;position:relative;overflow:hidden}
+.card:after{content:"";position:absolute;width:180px;height:180px;border:1px solid rgba(124,58,237,.06);transform:rotate(28deg);right:-100px;top:-100px;border-radius:30px;pointer-events:none}
+.stat{display:flex;align-items:center;gap:14px}.stat-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center}.stat strong{font-size:25px}.muted{color:var(--muted);font-size:13px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:8px 0 12px}.section-head h3{margin:0;font-size:17px}
+.collection-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:15px}
+.stone-card{padding:12px;border:1px solid var(--line);border-radius:18px;background:#fff;cursor:pointer;transition:.18s;position:relative}.stone-card:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(80,40,130,.10)}
+.stone-img{height:150px;border-radius:14px;background:linear-gradient(135deg,#f5f0ff,#eee7fb);display:grid;place-items:center;overflow:hidden}
+.stone-img img{width:100%;height:100%;object-fit:cover}.stone-placeholder{font-size:54px;color:#8b5cf6}
+.stone-name{font-weight:800;margin:10px 3px 3px}.tags{display:flex;flex-wrap:wrap;gap:5px}.tag{font-size:10px;padding:4px 7px;border-radius:999px;background:#f4f0fb;color:#66557e}
+.search{width:100%;border:1px solid var(--line);background:#fff;border-radius:13px;padding:12px 14px;outline:none}.search:focus{border-color:#b69be8;box-shadow:0 0 0 3px #f0e9ff}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}.hero-main{padding:26px;background:linear-gradient(135deg,#fff,#f3edff);border:1px solid #e6daf8;border-radius:25px;min-height:210px;display:flex;align-items:center;justify-content:space-between;overflow:hidden}
+.hero h2{font-size:32px;margin:0 0 7px}.hero p{max-width:650px;color:var(--muted);line-height:1.55}
+.crystal-orb{width:180px;height:180px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#d9c8ff 38%,#8b5cf6 72%,#5b21b6);box-shadow:inset -15px -15px 35px rgba(46,16,101,.22),0 20px 40px rgba(109,40,217,.20);clip-path:polygon(50% 0,78% 20%,100% 50%,78% 80%,50% 100%,22% 80%,0 50%,22% 20%)}
+.progress{height:8px;background:#eeeaf5;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.element-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.element{text-align:center;padding:12px 5px;border:1px solid var(--line);border-radius:15px}.el-icon{width:40px;height:40px;border-radius:50%;margin:auto auto 7px;display:grid;place-items:center;color:#fff;font-size:19px}
+.mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.mini{text-align:center;border:1px solid var(--line);border-radius:14px;padding:10px 5px}.mini .symbol{font-size:23px}.mini strong{font-size:11px;display:block;margin-top:5px}
+.moon{width:155px;height:155px;border-radius:50%;margin:auto;background:radial-gradient(circle at 30% 28%,#fff,#f7f5ff 35%,#b9afd0 36%,#262238 70%);box-shadow:0 0 0 12px rgba(139,92,246,.07),0 0 0 24px rgba(139,92,246,.04)}
+.chakra-list{display:grid;gap:10px}.chakra{display:grid;grid-template-columns:38px 1fr 42px;align-items:center;gap:10px}.chakra-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800}
+.tabs{display:flex;gap:7px;border-bottom:1px solid var(--line);margin-bottom:18px}.tab{border:0;background:transparent;padding:10px 13px;color:var(--muted);font-weight:700;border-bottom:2px solid transparent}.tab.active{color:var(--purple);border-color:var(--purple)}
+.detail-head{display:grid;grid-template-columns:280px 1fr;gap:22px;align-items:center}.detail-photo{height:280px;border-radius:24px;background:linear-gradient(135deg,#f4efff,#ebe2fb);display:grid;place-items:center;overflow:hidden}.detail-photo img{width:100%;height:100%;object-fit:cover}
+.kv{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.kv-item{padding:14px;border:1px solid var(--line);border-radius:16px}.kv-item b{display:block;margin-bottom:5px}.source{font-size:10px;color:#8a8095;margin-top:6px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:800;color:#5f566d}.field input,.field textarea,.field select{border:1px solid var(--line);border-radius:13px;padding:11px;background:#fff;outline:none}.field textarea{min-height:90px;resize:vertical}
+.color-dots{display:flex;gap:7px;flex-wrap:wrap}.dot{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #ddd}
+.modal{position:fixed;inset:0;background:rgba(30,20,45,.38);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:50;padding:18px}.modal.show{display:flex}.modal-box{background:#fff;border-radius:24px;max-width:800px;width:100%;max-height:92vh;overflow:auto;padding:23px;box-shadow:0 25px 80px rgba(30,20,45,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:#f4f0fa;width:36px;height:36px;border-radius:50%}
+.toast{position:fixed;right:22px;bottom:22px;background:#2b2138;color:#fff;padding:13px 17px;border-radius:13px;display:none;z-index:100}.toast.show{display:block}
+.mobile-nav{display:none}
+.empty{padding:45px;text-align:center;color:var(--muted)}
+@media(max-width:1100px){.grid4{grid-template-columns:repeat(2,1fr)}.hero{grid-template-columns:1fr}.sidebar{width:210px}.main{margin-left:210px;width:calc(100% - 210px)}}
+@media(max-width:760px){.sidebar{display:none}.main{margin:0;padding:16px 14px 90px;width:100%}.grid2,.grid3,.grid4{grid-template-columns:1fr}.detail-head{grid-template-columns:1fr}.detail-photo{height:240px}.mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(15px);border-top:1px solid var(--line);z-index:30;justify-content:space-around;padding:8px}.mobile-nav button{border:0;background:none;color:#6c6475;font-size:10px;display:grid;gap:4px;justify-items:center}.mobile-nav .plus{background:var(--purple);color:#fff;width:46px;height:46px;border-radius:50%;margin-top:-22px;font-size:22px}.hero-main{min-height:190px}.crystal-orb{width:125px;height:125px}.collection-grid{grid-template-columns:repeat(2,1fr)}.stone-img{height:125px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.topbar{gap:10px}.topbar .actions .btn:not(.primary){display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">◇</div><div><h1>Meu Cristal GNS</h1><small>Elementos · Energia · Equilíbrio</small></div></div>
+  <nav class="nav">
+    <button data-page="inicio" class="active">⌂ <span>Início</span></button>
+    <button data-page="colecao">◇ <span>Minha coleção</span></button>
+    <button data-page="chakras">✥ <span>Chakras</span></button>
+    <button data-page="lua">☾ <span>Fases da Lua</span></button>
+    <button data-page="rituais">✧ <span>Rituais</span></button>
+    <button data-page="diario">▤ <span>Diário</span></button>
+  </nav>
+</aside>
+<main class="main" id="app"></main>
+</div>
+<div class="mobile-nav">
+  <button data-page="inicio">⌂<span>Início</span></button>
+  <button data-page="colecao">◇<span>Coleção</span></button>
+  <button class="plus" id="mobileAdd">+</button>
+  <button data-page="lua">☾<span>Lua</span></button>
+  <button data-page="rituais">✧<span>Rituais</span></button>
+</div>
+
+<div class="modal" id="stoneModal">
+ <div class="modal-box">
+  <div class="modal-head"><h2 id="modalTitle">Adicionar pedra</h2><button class="close" id="closeModal">×</button></div>
+  <form id="stoneForm">
+   <input type="hidden" id="stoneId">
+   <div class="form-grid">
+    <div class="field"><label>Nome da pedra</label><input id="fName" required placeholder="Ex.: Cianita Azul"></div>
+    <div class="field"><label>Variedade / forma</label><input id="fVariety" placeholder="Bruta, rolada, lapidada, ponta..."></div>
+    <div class="field"><label>Foto</label><input id="fPhoto" type="file" accept="image/*"></div>
+    <div class="field"><label>Data de aquisição</label><input id="fDate" type="date"></div>
+    <div class="field"><label>Dureza (Mohs)</label><input id="fHardness" type="number" step=".1" placeholder="Ex.: 7"></div>
+    <div class="field"><label>Pode molhar?</label><select id="fWater"><option>Sim</option><option>Com cautela</option><option>Não</option></select></div>
+    <div class="field"><label>Pode enterrar?</label><select id="fEarth"><option>Sim</option><option>Com cautela</option><option>Não</option></select></div>
+    <div class="field"><label>Pode pegar sol?</label><select id="fSun"><option>Sim</option><option>Com cautela</option><option>Não</option></select></div>
+    <div class="field"><label>Melhor período solar</label><select id="fSunTime"><option>Amanhecer</option><option>Manhã</option><option>Meio do dia</option><option>Tarde</option><option>Pôr do sol</option><option>Evitar sol</option></select></div>
+    <div class="field"><label>Incenso</label><input id="fIncense" placeholder="Lavanda, olíbano, sândalo..."></div>
+    <div class="field"><label>Planta correspondente</label><input id="fPlant" placeholder="Ex.: Alecrim"></div>
+    <div class="field"><label>Frequência / referência</label><input id="fFrequency" placeholder="Ex.: fonte tradicional / experimental"></div>
+    <div class="field full"><label>Intenção pessoal</label><input id="fIntent" placeholder="Ex.: discernimento, foco e verdadeira vontade"></div>
+    <div class="field full"><label>Observações</label><textarea id="fNotes" placeholder="Experiências, correspondências, cuidados, referências..."></textarea></div>
+   </div>
+   <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px"><button type="button" class="btn" id="cancelForm">Cancelar</button><button class="btn primary">Salvar pedra</button></div>
+  </form>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import { getFirestore, collection, addDoc, setDoc, doc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+/* ============================================================
+   1) COLE AQUI A CONFIGURAÇÃO DO SEU APP WEB DO FIREBASE
+   Firebase Console > Configurações do projeto > Seus apps > Web
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "COLE_SUA_API_KEY",
+  authDomain: "SEU-PROJETO.firebaseapp.com",
+  projectId: "SEU-PROJETO",
+  appId: "SEU_APP_ID"
+};
+
+const DEMO_MODE = firebaseConfig.apiKey.startsWith("COLE_");
+
+let db=null, auth=null, user=null, unsubscribe=null;
+const state={stones:[],page:"inicio",selected:null,loading:true};
+
+const chakras=[
+ {name:"Raiz",s:"Muladhara",color:"#ef4444",symbol:"✦"},
+ {name:"Sacral",s:"Svadhisthana",color:"#f97316",symbol:"◈"},
+ {name:"Plexo Solar",s:"Manipura",color:"#f2b52d",symbol:"✺"},
+ {name:"Coração",s:"Anahata",color:"#36b96d",symbol:"✤"},
+ {name:"Garganta",s:"Vishuddha",color:"#27a9d6",symbol:"◇"},
+ {name:"Terceiro Olho",s:"Ajna",color:"#5367d9",symbol:"◉"},
+ {name:"Coronário",s:"Sahasrara",color:"#9b5de5",symbol:"✥"}
+];
+const elements=[
+ {name:"Água",icon:"◯",color:"#159fe3"}, {name:"Ar",icon:"△",color:"#5b8def"},
+ {name:"Terra",icon:"⌂",color:"#55a65b"}, {name:"Fogo",icon:"♨",color:"#ef6b4d"}
+];
+const zodiac=[
+ ["♈","Áries"],["♉","Touro"],["♊","Gêmeos"],["♋","Câncer"],["♌","Leão"],["♍","Virgem"],
+ ["♎","Libra"],["♏","Escorpião"],["♐","Sagitário"],["♑","Capricórnio"],["♒","Aquário"],["♓","Peixes"]
+];
+const moonPhases=["Nova","Crescente","Quarto Crescente","Gibosa Crescente","Cheia","Gibosa Minguante","Quarto Minguante","Minguante"];
+
+const seedStones=[
+ {name:"Selenita",intent:"purificação e elevação",elements:[50,10,20,20],chakras:[6,7],zodiac:[2,11],moon:[25,25,10,10,10,10,5,5],hardness:2,water:"Não",earth:"Com cautela",sun:"Com cautela",sunTime:"Amanhecer",incense:"Olíbano",plant:"Sálvia",frequency:"Correspondência esotérica; sem Hz físico atribuído",notes:"Registrar aqui a tradição usada e a experiência pessoal."},
+ {name:"Ametista",intent:"introspecção, clareza e transformação",elements:[35,20,10,35],chakras:[5,6,7],zodiac:[0,7,10],moon:[35,25,15,5,5,5,5,5],hardness:7,water:"Com cautela",earth:"Sim",sun:"Com cautela",sunTime:"Amanhecer",incense:"Lavanda / olíbano",plant:"Lavanda",frequency:"Não atribuir Hz como fato mineralógico",notes:""},
+ {name:"Olho de Tigre",intent:"discernimento, foco e verdadeira vontade",elements:[10,20,35,35],chakras:[0,2],zodiac:[0,4,8],moon:[10,10,20,20,25,5,5,5],hardness:7,water:"Sim",earth:"Sim",sun:"Sim",sunTime:"Manhã",incense:"Alecrim / sândalo",plant:"Alecrim",frequency:"Correspondência simbólica; não confundir com frequência física",notes:"Seu uso pessoal: discernimento, foco e expressão da verdadeira vontade."},
+ {name:"Labradorita",intent:"intuição, limiar e imaginação",elements:[35,30,5,30],chakras:[5,6],zodiac:[7,10],moon:[15,20,20,15,10,10,5,5],hardness:6,water:"Com cautela",earth:"Sim",sun:"Com cautela",sunTime:"Pôr do sol",incense:"Artemísia",plant:"Artemísia",frequency:"Referência simbólica",notes:""},
+ {name:"Rodonita",intent:"integração afetiva e equilíbrio",elements:[40,25,15,20],chakras:[3,1],zodiac:[1,6],moon:[10,15,15,10,25,10,5,5],hardness:5.5,water:"Com cautela",earth:"Sim",sun:"Com cautela",sunTime:"Manhã",incense:"Rosa",plant:"Rosa",frequency:"Referência simbólica",notes:""},
+ {name:"Amazonita",intent:"expressão autêntica e serenidade",elements:[40,30,10,20],chakras:[4,3],zodiac:[1,10],moon:[15,15,15,10,10,10,10,15],hardness:6,water:"Com cautela",earth:"Sim",sun:"Com cautela",sunTime:"Amanhecer",incense:"Jasmim",plant:"Jasmim",frequency:"Referência simbólica",notes:""},
+ {name:"Hematita",intent:"aterramento, presença e estrutura",elements:[5,10,60,25],chakras:[0,2],zodiac:[1,9],moon:[5,5,15,10,10,10,20,25],hardness:6.5,water:"Com cautela",earth:"Sim",sun:"Sim",sunTime:"Manhã",incense:"Cedro",plant:"Cedro",frequency:"Referência simbólica",notes:""},
+ {name:"Turmalina Negra",intent:"limites, proteção e estabilidade",elements:[5,15,60,20],chakras:[0,2],zodiac:[1,9],moon:[20,10,10,10,10,10,10,20],hardness:7,water:"Com cautela",earth:"Sim",sun:"Sim",sunTime:"Manhã",incense:"Arruda / cedro",plant:"Arruda",frequency:"Referência simbólica",notes:""},
+ {name:"Obsidiana",intent:"sombra, verdade e confrontação",elements:[10,20,55,15],chakras:[0,5],zodiac:[7,9],moon:[30,10,5,5,5,10,15,20],hardness:5,water:"Sim",earth:"Sim",sun:"Sim",sunTime:"Pôr do sol",incense:"Mirra",plant:"Cipreste",frequency:"Referência simbólica",notes:""},
+ {name:"Ágata de Fogo",intent:"vitalidade, paixão e transformação",elements:[5,10,20,65],chakras:[1,2],zodiac:[0,4],moon:[5,10,20,20,25,5,5,10],hardness:7,water:"Sim",earth:"Sim",sun:"Sim",sunTime:"Amanhecer",incense:"Canela",plant:"Canela",frequency:"Referência simbólica",notes:""},
+ {name:"Granada",intent:"força vital, desejo e perseverança",elements:[5,10,20,65],chakras:[0,1,2],zodiac:[0,4,7],moon:[5,10,20,20,25,5,5,10],hardness:7.5,water:"Sim",earth:"Sim",sun:"Sim",sunTime:"Manhã",incense:"Cravo",plant:"Cravo",frequency:"Referência simbólica",notes:""},
+ {name:"Cornalina",intent:"criatividade, impulso e expressão",elements:[10,10,20,60],chakras:[1,2],zodiac:[0,4,7],moon:[5,15,20,20,25,5,5,5],hardness:7,water:"Sim",earth:"Sim",sun:"Sim",sunTime:"Manhã",incense:"Laranja",plant:"Laranjeira",frequency:"Referência simbólica",notes:""},
+ {name:"Pirita",intent:"ação, valor material e prosperidade",elements:[5,15,55,25],chakras:[2,3],zodiac:[1,9],moon:[5,10,20,20,25,5,5,10],hardness:6,water:"Não",earth:"Sim",sun:"Sim",sunTime:"Manhã",incense:"Louro",plant:"Louro",frequency:"Referência simbólica",notes:""},
+ {name:"Sodalita",intent:"clareza mental, discernimento e verdade",elements:[15,45,10,30],chakras:[4,5,6],zodiac:[2,10],moon:[10,20,15,10,10,10,10,15],hardness:5.5,water:"Com cautela",earth:"Sim",sun:"Com cautela",sunTime:"Amanhecer",incense:"Sálvia",plant:"Sálvia",frequency:"Referência simbólica",notes:""},
+ {name:"Cianita Azul",intent:"alinhamento e comunicação",elements:[35,35,10,20],chakras:[4,5],zodiac:[2,10],moon:[10,20,15,10,10,10,10,15],hardness:5.5,water:"Com cautela",earth:"Com cautela",sun:"Com cautela",sunTime:"Amanhecer",incense:"Lavanda",plant:"Lavanda",frequency:"Não existe Hz esotérico universal estabelecido",notes:"Correspondências devem ser identificadas por tradição; não atribuir automaticamente à Golden Dawn."},
+ {name:"Cristal Transparente",intent:"clareza, contemplação e amplificação simbólica",elements:[25,25,25,25],chakras:[6,5],zodiac:[10,11],moon:[10,15,15,10,20,10,10,10],hardness:7,water:"Com cautela",earth:"Sim",sun:"Com cautela",sunTime:"Amanhecer",incense:"Olíbano",plant:"Lótus",frequency:"Quartzo possui propriedades piezoelétricas; não há 'frequência espiritual' comprovada",notes:""},
+ {name:"Citrino Bruto",intent:"vitalidade, confiança e manifestação",elements:[10,20,20,50],chakras:[2,3],zodiac:[4,8],moon:[5,10,20,20,25,5,5,10],hardness:7,water:"Com cautela",earth:"Sim",sun:"Com cautela",sunTime:"Manhã",incense:"Laranja / canela",plant:"Girassol",frequency:"Referência simbólica",notes:""}
+];
+
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}
+function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function pct(arr){const s=arr.reduce((a,b)=>a+b,0)||1;return arr.map(x=>Math.round(x/s*100))}
+function stonePhoto(stone,cls=""){return stone.photo?`<img class="${cls}" src="${stone.photo}" alt="${esc(stone.name)}">`:`<div class="stone-placeholder">◇</div>`}
+function avgChakra(){const counts=Array(7).fill(0);state.stones.forEach(s=>(s.chakras||[]).forEach(c=>counts[c]++));return counts}
+function currentMoonIndex(){
+ const syn=29.530588853, known=new Date(Date.UTC(2000,0,6,18,14,0)), now=new Date();
+ const days=(now-known)/86400000, age=((days%syn)+syn)%syn;
+ return Math.floor((age/syn)*8+0.5)%8;
+}
+function moonName(){return moonPhases[currentMoonIndex()]}
+function moonText(){return ["recomeço, intenção e recolhimento","início, crescimento e preparação","ação, expansão e desenvolvimento","construção, vitalidade e impulso","plenitude, manifestação e culminação","integração, gratidão e distribuição","revisão, desapego e encerramento","limpeza, descanso e preparação para um novo ciclo"][currentMoonIndex()]}
+function moonPct(stone){return (stone.moon||[])[currentMoonIndex()]||0}
+
+function render(){
+ const app=document.getElementById("app");
+ if(state.page==="inicio") app.innerHTML=pageHome();
+ else if(state.page==="colecao") app.innerHTML=pageCollection();
+ else if(state.page==="chakras") app.innerHTML=pageChakras();
+ else if(state.page==="lua") app.innerHTML=pageMoon();
+ else if(state.page==="rituais") app.innerHTML=pageRituals();
+ else app.innerHTML=pageDiary();
+ bindPage();
+}
+function pageHeader(title,sub,button=true){return `<div class="topbar"><div class="title"><h2>${title}</h2><p>${sub}</p></div><div class="actions">${button?`<button class="btn primary" id="addBtn">+ Nova pedra</button>`:""}</div></div>`}
+
+function pageHome(){
+ const counts=avgChakra(), total=state.stones.length, moon=moonName(), mstones=state.stones.filter(s=>moonPct(s)>0).sort((a,b)=>moonPct(b)-moonPct(a)).slice(0,4);
+ return pageHeader("Meu Cristal GNS","Sua coleção como instrumento de estudo, correspondência e prática.")+
+ `<div class="hero">
+  <div class="hero-main"><div><div class="muted">COLEÇÃO</div><h2>${total} pedras</h2><p>Mineralogia, correspondências simbólicas, cuidados físicos e suas próprias experiências reunidos em um só lugar.</p><button class="btn primary" data-page="colecao">Abrir coleção</button></div><div class="crystal-orb"></div></div>
+  <div class="card"><div class="section-head"><h3>Lua atual</h3><span class="tag">${moon}</span></div><div style="display:flex;align-items:center;gap:18px"><div class="moon" style="width:100px;height:100px"></div><div><strong style="font-size:20px">${moon}</strong><p class="muted">${moonText()}.</p><button class="btn ghost" data-page="lua">Ver correspondências</button></div></div></div>
+ </div>
+ <div class="section-head"><h3>Visão da coleção</h3><button class="btn ghost" data-page="chakras">Ver chakras</button></div>
+ <div class="grid grid4">
+  <div class="card stat"><div class="stat-icon" style="background:#fbe8e5;color:var(--fogo)">♨</div><div><strong>${sumElement(3)}</strong><div class="muted">Fogo</div></div></div>
+  <div class="card stat"><div class="stat-icon" style="background:#e5f4fd;color:var(--agua)">◯</div><div><strong>${sumElement(0)}</strong><div class="muted">Água</div></div></div>
+  <div class="card stat"><div class="stat-icon" style="background:#eaf6eb;color:var(--terra)">⌂</div><div><strong>${sumElement(2)}</strong><div class="muted">Terra</div></div></div>
+  <div class="card stat"><div class="stat-icon" style="background:#eaf0ff;color:var(--ar)">△</div><div><strong>${sumElement(1)}</strong><div class="muted">Ar</div></div></div>
+ </div>
+ <div class="grid grid2" style="margin-top:18px">
+  <div class="card"><div class="section-head"><h3>7 Chakras</h3><span class="muted">pedras correspondentes</span></div>${chakraSummary(counts)}</div>
+  <div class="card"><div class="section-head"><h3>Pedras em destaque nesta lua</h3><span class="muted">${moon}</span></div>${mstones.length?`<div class="mini-grid">${mstones.map(s=>`<div class="mini" onclick="openStone('${s.id}')">${stonePhoto(s)}<strong>${esc(s.name)}</strong><span class="muted">${moonPct(s)}%</span></div>`).join("")}</div>`:`<div class="empty">Cadastre pedras para gerar correspondências.</div>`}</div>
+ </div>`;
+}
+function sumElement(i){return state.stones.reduce((n,s)=>n+((s.elements||[])[i]?1:0),0)}
+function chakraSummary(counts){return `<div class="chakra-list">${chakras.map((c,i)=>`<div class="chakra"><div class="chakra-icon" style="background:${c.color}">${c.symbol}</div><div><b>${c.name}</b><div class="progress"><i style="width:${state.stones.length?Math.min(100,counts[i]/state.stones.length*100):0}%;background:${c.color}"></i></div></div><b>${counts[i]}</b></div>`).join("")}</div>`}
+
+function pageCollection(){
+ return pageHeader("Minha coleção",`${state.stones.length} pedras cadastradas. Você pode editar, registrar cuidados e anotações pessoais.`)+
+ `<div class="card" style="margin-bottom:18px"><input class="search" id="search" placeholder="Buscar por nome, intenção, incenso, planta ou propriedade..."></div>
+ <div class="collection-grid" id="collectionGrid">${collectionCards(state.stones)}</div>`;
+}
+function collectionCards(list){return list.length?list.map(s=>`<div class="stone-card" onclick="openStone('${s.id}')"><div class="stone-img">${stonePhoto(s)}</div><div class="stone-name">${esc(s.name)}</div><div class="tags">${(s.elements||[]).map((v,i)=>v?`<span class="tag">${elements[i].name}</span>`:"").join("")}</div><div class="muted" style="margin-top:7px">${esc(s.intent||"Sem intenção registrada")}</div></div>`).join(""):`<div class="card empty" style="grid-column:1/-1">Nenhuma pedra cadastrada. Clique em “+ Nova pedra” para começar.</div>`}
+
+function pageChakras(){
+ const counts=avgChakra();
+ return pageHeader("Chakras","Visão da sua coleção por centros de correspondência simbólica.",false)+
+ `<div class="card"><div class="section-head"><h3>Os 7 chakras</h3><span class="muted">${state.stones.length} pedras na coleção</span></div><div class="chakra-list">${chakras.map((c,i)=>{
+ const matching=state.stones.filter(s=>(s.chakras||[]).includes(i));
+ return `<div class="card" style="box-shadow:none;padding:14px"><div style="display:grid;grid-template-columns:45px 1fr auto;gap:12px;align-items:center"><div class="chakra-icon" style="background:${c.color};width:42px;height:42px">${c.symbol}</div><div><b>${c.name} <span class="muted">(${c.s})</span></b><div class="progress" style="margin-top:8px"><i style="width:${state.stones.length?Math.min(100,counts[i]/state.stones.length*100):0}%;background:${c.color}"></i></div></div><strong>${matching.length} pedras</strong></div><div class="tags" style="margin:12px 0 0 57px">${matching.map(s=>`<span class="tag" onclick="event.stopPropagation();openStone('${s.id}')">${esc(s.name)}</span>`).join("")||'<span class="muted">Nenhuma ainda</span>'}</div></div>`}).join("")}</div></div>`;
+}
+
+function pageMoon(){
+ const idx=currentMoonIndex(), m=moonPhases[idx], best=state.stones.filter(s=>moonPct(s)>0).sort((a,b)=>moonPct(b)-moonPct(a));
+ return pageHeader("Fase da Lua","A lua como marcador simbólico de ritmo, intenção e prática.",false)+
+ `<div class="grid grid2"><div class="card" style="text-align:center;padding:30px"><div class="moon"></div><div style="font-size:24px;font-weight:800;margin-top:22px">${m}</div><div class="muted" style="margin-top:7px">${moonText()}</div><div class="mini-grid" style="margin-top:24px">${moonPhases.map((p,i)=>`<div class="mini" style="${i===idx?'border-color:#8b5cf6;background:#faf7ff':''}"><div class="symbol">${["●","◔","◑","◕","○","◔","◑","◕"][i]}</div><strong>${p}</strong></div>`).join("")}</div></div>
+ <div class="card"><div class="section-head"><h3>Pedras desta fase</h3><span class="tag">${m}</span></div><p class="muted">Percentual abaixo é uma correspondência configurável da sua ficha, não uma medida científica de “energia lunar”.</p>${best.length?best.map(s=>`<div style="display:grid;grid-template-columns:48px 1fr 45px;gap:12px;align-items:center;margin:14px 0;cursor:pointer" onclick="openStone('${s.id}')"><div class="stone-img" style="height:48px">${stonePhoto(s)}</div><div><b>${esc(s.name)}</b><div class="progress" style="margin-top:6px"><i style="width:${moonPct(s)}%"></i></div></div><b>${moonPct(s)}%</b></div>`).join(""):`<div class="empty">Cadastre pedras para criar essa relação.</div>`}</div></div>`;
+}
+
+function pageRituals(){
+ return pageHeader("Rituais","Use os elementos como linguagem simbólica de purificação, alinhamento e intenção.",false)+
+ `<div class="grid grid2">
+ <div class="card"><div class="section-head"><h3>Os quatro elementos</h3><span class="muted">correspondência</span></div><div class="element-row">${elements.map(e=>`<div class="element"><div class="el-icon" style="background:${e.color}">${e.icon}</div><b>${e.name}</b><div class="muted">${({Água:"emoção e fluxo",Ar:"intelecto e percepção",Terra:"aterramento e forma",Fogo:"vontade e transformação"})[e.name]}</div></div>`).join("")}</div></div>
+ <div class="card"><h3>Seu ciclo de purificação</h3><div style="display:grid;gap:10px;margin-top:14px">${[
+ ["⌂","Terra","descarregar, estabilizar e retornar à matéria","#55a65b"],
+ ["◯","Água","limpar, dissolver e renovar","#159fe3"],
+ ["≋","Ar","perfumar, respirar, compreender e organizar","#5b8def"],
+ ["♨","Fogo","transformar, aquecer e revitalizar","#ef6b4d"],
+ ["♫","Som","ritmo, atenção e concentração","#8b5cf6"],
+ ["✦","Prece","integrar, agradecer e direcionar a intenção","#6d28d9"]
+].map(x=>`<div style="display:grid;grid-template-columns:42px 1fr;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px"><div class="el-icon" style="background:${x[3]};width:38px;height:38px">${x[0]}</div><div><b>${x[1]}</b><div class="muted">${x[2]}</div></div></div>`).join("")}</div></div></div>`;
+}
+function pageDiary(){
+ return pageHeader("Diário","Registre o que você percebeu antes, durante e depois do uso de uma pedra.",false)+
+ `<div class="card"><textarea id="diaryText" style="width:100%;min-height:220px;border:1px solid var(--line);border-radius:16px;padding:15px" placeholder="Data, pedra, intenção, estado emocional, sonhos, prática, resultado percebido..."></textarea><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn primary" id="saveDiary">Salvar nota</button></div></div>`;
+}
+
+function bindPage(){
+ document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>{state.page=b.dataset.page;render()});
+ const add=document.getElementById("addBtn");if(add)add.onclick=()=>openModal();
+ const search=document.getElementById("search");if(search)search.oninput=()=>{const q=search.value.toLowerCase();document.getElementById("collectionGrid").innerHTML=collectionCards(state.stones.filter(s=>JSON.stringify(s).toLowerCase().includes(q)))};
+ const sd=document.getElementById("saveDiary");if(sd)sd.onclick=()=>{localStorage.setItem("crystal_diary",document.getElementById("diaryText").value);toast("Nota salva neste dispositivo.")};
+}
+document.getElementById("mobileAdd").onclick=()=>openModal();
+window.openStone=id=>{state.selected=state.stones.find(s=>s.id===id);if(state.selected)openStoneDetail(state.selected)};
+window.deleteStone=async id=>{if(!confirm("Excluir esta pedra?"))return; if(!DEMO_MODE&&db){await deleteDoc(doc(db,"users",user.uid,"stones",id));toast("Pedra excluída.");}else{state.stones=state.stones.filter(s=>s.id!==id);localStorage.setItem("gns_stones",JSON.stringify(state.stones));render();toast("Pedra excluída.");}};
+function openStoneDetail(s){
+ const el=elements.map((e,i)=>`<div class="element"><div class="el-icon" style="background:${e.color}">${e.icon}</div><b>${e.name}</b><div class="muted">${pct(s.elements||[25,25,25,25])[i]}%</div></div>`).join("");
+ const ch=(s.chakras||[]).map(i=>`<span class="tag" style="border-left:3px solid ${chakras[i].color}">${chakras[i].symbol} ${chakras[i].name}</span>`).join("")||'<span class="muted">Não informado</span>';
+ const moons=(s.moon||[]).map((v,i)=>`<div class="mini"><div class="symbol">${["●","◔","◑","◕","○","◔","◑","◕"][i]}</div><strong>${moonPhases[i]}</strong><span class="muted">${v}%</span></div>`).join("");
+ const zodiacTags=(s.zodiac||[]).map(i=>`<span class="tag" style="font-size:13px">${zodiac[i][0]} ${zodiac[i][1]}</span>`).join("")||'<span class="muted">Não informado</span>';
+ const body=`<div class="topbar"><div class="title"><h2>${esc(s.name)}</h2><p>${esc(s.intent||"Sem intenção registrada")}</p></div><div class="actions"><button class="btn" id="editStone">Editar</button><button class="btn" style="color:#b42318" id="deleteStone">Excluir</button></div></div>
+ <div class="card detail-head"><div class="detail-photo">${stonePhoto(s)}</div><div><div class="tags" style="margin-bottom:15px">${(s.elements||[]).map((v,i)=>v?`<span class="tag">${elements[i].name} ${pct(s.elements||[25,25,25,25])[i]}%</span>`:"").join("")}</div><h3>Intenção</h3><p class="muted">${esc(s.intent||"Defina uma intenção pessoal para esta pedra.")}</p><div class="section-head"><h3>Elementos</h3></div><div class="element-row">${el}</div></div></div>
+ <div class="tabs" style="margin-top:18px"><button class="tab active">Visão geral</button></div>
+ <div class="grid grid2">
+  <div class="card"><h3>Chakras</h3><div class="tags" style="margin-top:13px">${ch}</div><h3 style="margin-top:22px">Signos</h3><div class="tags" style="margin-top:13px">${zodiacTags}</div></div>
+  <div class="card"><h3>Lua</h3><div class="mini-grid" style="margin-top:13px">${moons}</div></div>
+  <div class="card"><h3>Correspondências</h3><div class="kv" style="margin-top:13px">
+   <div class="kv-item"><b>Cabala</b><span class="muted">Registrar Sephirah, caminho e fonte tradicional.</span></div>
+   <div class="kv-item"><b>Numerologia</b><span class="muted">Registrar número e método utilizado.</span></div>
+   <div class="kv-item"><b>Frequência</b><span class="muted">${esc(s.frequency||"Não registrada")}</span></div>
+   <div class="kv-item"><b>Incenso</b><span class="muted">${esc(s.incense||"Não registrado")}</span></div>
+   <div class="kv-item"><b>Planta</b><span class="muted">${esc(s.plant||"Não registrada")}</span></div>
+   <div class="kv-item"><b>Forma</b><span class="muted">${esc(s.variety||"Não registrada")}</span></div>
+  </div></div>
+  <div class="card"><h3>Cuidados físicos e energéticos</h3><div class="kv" style="margin-top:13px">
+   <div class="kv-item"><b>Dureza</b><span class="muted">${esc(s.hardness||"—")} Mohs</span></div>
+   <div class="kv-item"><b>Água</b><span class="muted">${esc(s.water||"—")}</span></div>
+   <div class="kv-item"><b>Terra</b><span class="muted">${esc(s.earth||"—")}</span></div>
+   <div class="kv-item"><b>Sol</b><span class="muted">${esc(s.sun||"—")} · ${esc(s.sunTime||"—")}</span></div>
+  </div><div class="source">“Energia” aqui é apresentada como linguagem simbólica da prática pessoal. Cuidados minerais devem prevalecer sobre o ritual.</div></div>
+ </div>
+ <div class="card" style="margin-top:18px"><h3>Notas pessoais</h3><p class="muted" style="white-space:pre-wrap">${esc(s.notes||"Nenhuma anotação.")}</p></div>`;
+ document.getElementById("app").innerHTML=body;
+ document.getElementById("editStone").onclick=()=>openModal(s);
+ document.getElementById("deleteStone").onclick=()=>window.deleteStone(s.id);
+}
+function openModal(stone=null){
+ document.getElementById("stoneModal").classList.add("show");
+ document.getElementById("modalTitle").textContent=stone?"Editar pedra":"Adicionar pedra";
+ document.getElementById("stoneId").value=stone?.id||"";
+ ["fName","fVariety","fDate","fHardness","fWater","fEarth","fSun","fSunTime","fIncense","fPlant","fFrequency","fIntent","fNotes"].forEach(id=>{
+  const k={fName:"name",fVariety:"variety",fDate:"date",fHardness:"hardness",fWater:"water",fEarth:"earth",fSun:"sun",fSunTime:"sunTime",fIncense:"incense",fPlant:"plant",fFrequency:"frequency",fIntent:"intent",fNotes:"notes"}[id];
+  document.getElementById(id).value=stone?.[k]??"";
+ });
+ document.getElementById("fPhoto").value="";
+}
+function closeModal(){document.getElementById("stoneModal").classList.remove("show")}
+document.getElementById("closeModal").onclick=closeModal;document.getElementById("cancelForm").onclick=closeModal;
+async function compressImage(file){
+ return new Promise((resolve,reject)=>{
+  if(!file){resolve("");return}
+  const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{
+   const max=900, scale=Math.min(1,max/Math.max(img.width,img.height)), c=document.createElement("canvas");
+   c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+   resolve(c.toDataURL("image/jpeg",.68));
+  };img.onerror=reject;img.src=e.target.result};r.onerror=reject;r.readAsDataURL(file)
+ })
+}
+document.getElementById("stoneForm").onsubmit=async e=>{
+ e.preventDefault();
+ const btn=e.submitter;btn.disabled=true;btn.textContent="Salvando...";
+ try{
+  const id=document.getElementById("stoneId").value||crypto.randomUUID();
+  const old=state.stones.find(s=>s.id===id);
+  const photo=await compressImage(document.getElementById("fPhoto").files[0]);
+  const data={name:fName.value.trim(),variety:fVariety.value.trim(),date:fDate.value,hardness:fHardness.value,water:fWater.value,earth:fEarth.value,sun:fSun.value,sunTime:fSunTime.value,incense:fIncense.value.trim(),plant:fPlant.value.trim(),frequency:fFrequency.value.trim(),intent:fIntent.value.trim(),notes:fNotes.value.trim(),photo:photo||old?.photo||"",elements:old?.elements||[25,25,25,25],chakras:old?.chakras||[],zodiac:old?.zodiac||[],moon:old?.moon||[12,13,13,12,13,12,13,12],updatedAt:Date.now()};
+  if(!DEMO_MODE&&db){await setDoc(doc(db,"users",user.uid,"stones",id),{...data,updatedAt:serverTimestamp()},{merge:true})}
+  else{const idx=state.stones.findIndex(s=>s.id===id);data.id=id;if(idx>=0)state.stones[idx]=data;else state.stones.push(data);localStorage.setItem("gns_stones",JSON.stringify(state.stones))}
+  closeModal();toast("Pedra salva.");state.page="colecao";render();
+ }catch(err){console.error(err);toast("Não foi possível salvar. Verifique a configuração do Firebase.")}finally{btn.disabled=false;btn.textContent="Salvar pedra"}
+};
+
+async function initFirebase(){
+ if(DEMO_MODE){
+   const raw=localStorage.getItem("gns_stones");
+   state.stones=raw?JSON.parse(raw):seedStones.map((s,i)=>({...s,id:"demo-"+i}));
+   state.loading=false;render();return;
+ }
+ try{
+  const app=initializeApp(firebaseConfig);db=getFirestore(app);auth=getAuth(app);
+  await signInAnonymously(auth);
+  onAuthStateChanged(auth,u=>{
+   user=u;if(!u)return;
+   const q=query(collection(db,"users",u.uid,"stones"),orderBy("updatedAt","desc"));
+   unsubscribe?.();unsubscribe=onSnapshot(q,snap=>{state.stones=snap.docs.map(d=>({id:d.id,...d.data()}));state.loading=false;render()},err=>{console.error(err);toast("Erro ao ler o Firestore.")});
+  });
+ }catch(e){console.error(e);state.stones=seedStones.map((s,i)=>({...s,id:"demo-"+i}));state.loading=false;render();toast("Firebase ainda não configurado. Rodando em modo local.")}}
+initFirebase();
+</script>
+</body>
+</html>
