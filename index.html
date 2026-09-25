@@ -189,7 +189,14 @@
   .element-bar-track { height:9px; border-radius:6px; background:var(--mist); overflow:hidden; }
   .element-bar-fill { height:100%; border-radius:6px; transition:width .3s; }
 
-  /* Ícones de signo: mesmo símbolo tradicional, sem fundo circular (evita aspecto "emoji") */
+  /* Ícones de signo: no PC força a apresentação em texto/vetorial (evita o emoji colorido do SO); no celular mantém o padrão */
+  .zodiac-icon { display:inline-flex; align-items:center; justify-content:center; }
+  .zodiac-mobile { display:inline; }
+  .zodiac-desktop { display:none; }
+  @media (min-width:769px) {
+    .zodiac-mobile { display:none; }
+    .zodiac-desktop { display:inline; font-variant-emoji:text; }
+  }
 
   /* Correspondências com ícones em destaque (Elementos, Signos, Planeta, Chakra, Cabala) */
   .corr-card { background:var(--white); border:1px solid var(--mist); border-radius:16px; padding:1rem; text-align:center; }
@@ -733,7 +740,8 @@ const ZODIAC_ELEMENT = { 'Áries':'Fogo','Leão':'Fogo','Sagitário':'Fogo','Tou
 function zodiacColor(name) { return ELEMENT_COLORS[ZODIAC_ELEMENT[name]] || 'var(--purple)'; }
 function zodiacIconSVG(name, size=22) {
   const color = zodiacColor(name);
-  return `<span style="font-size:${size}px; line-height:1; color:${color};">${ZODIAC_SYMBOLS[name]||''}</span>`;
+  const symbol = ZODIAC_SYMBOLS[name] || '';
+  return `<span class="zodiac-icon" style="font-size:${size}px; line-height:1; color:${color};"><span class="zodiac-mobile">${symbol}</span><span class="zodiac-desktop">${symbol}\uFE0E</span></span>`;
 }
 
 // ---- Planetas: símbolos astrológicos padrão, coloridos ----
