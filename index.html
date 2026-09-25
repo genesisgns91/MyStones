@@ -80,15 +80,15 @@
   .moon-banner-item .name { font-size:0.72rem; font-weight:700; margin-top:0.4rem; }
   .moon-banner-item .pct { font-size:0.68rem; color:var(--purple); font-weight:800; }
 
-  .crystal-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:1.1rem; }
+  .crystal-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:1.1rem; }
   .crystal-card { background:var(--white); border-radius:18px; overflow:hidden; box-shadow:var(--shadow); cursor:pointer; transition:transform .18s; border:1px solid var(--mist); display:flex; flex-direction:column; }
   .crystal-card:hover { transform:translateY(-3px); }
-  .crystal-img { width:100%; aspect-ratio:1/1; object-fit:cover; background:var(--lilac); display:flex; align-items:center; justify-content:center; color:var(--purple2); flex-shrink:0; }
-  .card-icon-strip { display:flex; flex-direction:column; gap:0.5rem; }
-  .card-icon-row { display:flex; align-items:center; gap:0.55rem; }
-  .card-icon-chip { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .card-icon-text { font-size:0.72rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .crystal-card-body { padding:0.9rem; display:flex; flex-direction:column; flex:1; }
+  .crystal-img { width:100%; aspect-ratio:1.6/1; object-fit:cover; background:var(--lilac); display:flex; align-items:center; justify-content:center; color:var(--purple2); flex-shrink:0; }
+  .card-icon-strip { display:grid; grid-template-columns:1fr 1fr; gap:0.55rem 0.7rem; }
+  .card-icon-row { display:flex; align-items:center; gap:0.5rem; min-width:0; }
+  .card-icon-chip { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 5px rgba(0,0,0,.06); }
+  .card-icon-text { font-size:0.73rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .crystal-card-body { padding:0.9rem; display:flex; flex-direction:column; flex:1; gap:0.7rem; }
   .tag { display:inline-block; background:var(--lilac); color:var(--purple); padding:0.2rem 0.55rem; border-radius:8px; font-size:0.66rem; font-weight:700; margin-right:0.3rem; margin-bottom:0.3rem; }
 
   .section-block { background:var(--white); padding:1.2rem; border-radius:var(--radius); margin-bottom:1.3rem; box-shadow:var(--shadow); border:1px solid var(--mist); }
@@ -246,7 +246,7 @@
     .modal-overlay { align-items:flex-end; }
     .modal-overlay.active .drawer { transform:translateY(0); }
     .form-row, .form-row-4, .element-form-grid, .info-grid { grid-template-columns:1fr 1fr; }
-    .crystal-grid { grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); }
+    .crystal-grid { grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); }
     .icon-checkbox-grid { grid-template-columns:repeat(3,1fr); }
     .moon-rings-row { flex-wrap:wrap; justify-content:space-between; }
     .moon-ring-wrap { width:22%; }
@@ -1016,8 +1016,10 @@ function renderCrystalGrid() {
     card.innerHTML = `
       ${img ? `<img src="${img}" class="crystal-img" />` : `<div class="crystal-img">${icon('gem',28)}</div>`}
       <div class="crystal-card-body">
-        <h3 style="font-family:'Cinzel',serif; font-size:0.92rem; color:var(--ink); margin-bottom:0.1rem;">${c.nickname || c.name}</h3>
-        <p style="font-size:0.7rem; font-style:italic; color:var(--muted); margin-bottom:0.6rem;">${c.variety || ''}</p>
+        <div>
+          <h3 style="font-family:'Cinzel',serif; font-size:0.94rem; color:var(--ink); margin-bottom:0.15rem;">${c.nickname || c.name}</h3>
+          <p style="font-size:0.7rem; font-style:italic; color:var(--muted);">${c.variety || ''}</p>
+        </div>
         <div class="card-icon-strip">
           ${iconChips.map(ic => `<div class="card-icon-row"><span class="card-icon-chip" style="background:${ic.color}22;">${ic.html}</span><span class="card-icon-text" style="color:${ic.color};">${ic.label}</span></div>`).join('')}
         </div>
