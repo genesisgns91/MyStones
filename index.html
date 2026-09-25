@@ -83,7 +83,9 @@
   .crystal-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1.1rem; }
   .crystal-card { background:var(--white); border-radius:18px; overflow:hidden; box-shadow:var(--shadow); cursor:pointer; transition:transform .18s; border:1px solid var(--mist); }
   .crystal-card:hover { transform:translateY(-3px); }
-  .crystal-img { width:100%; height:135px; object-fit:cover; background:var(--lilac); display:flex; align-items:center; justify-content:center; color:var(--purple2); }
+  .crystal-img { width:100%; height:88px; object-fit:cover; background:var(--lilac); display:flex; align-items:center; justify-content:center; color:var(--purple2); }
+  .card-icon-strip { display:flex; flex-wrap:wrap; gap:0.4rem; }
+  .card-icon-chip { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .crystal-card-body { padding:0.9rem; }
   .tag { display:inline-block; background:var(--lilac); color:var(--purple); padding:0.2rem 0.55rem; border-radius:8px; font-size:0.66rem; font-weight:700; margin-right:0.3rem; margin-bottom:0.3rem; }
 
@@ -171,7 +173,9 @@
   .chakra-badge-mini { display:inline-flex; align-items:center; gap:0.3rem; font-size:0.66rem; font-weight:700; }
 
   /* Selo de elemento (badge circular colorido) */
-  .element-badge-row { display:grid; grid-template-columns:repeat(4,1fr); gap:0.7rem; }
+  .element-badge-row { display:grid; grid-template-columns:repeat(4,1fr); gap:0.7rem; margin-bottom:0.9rem; }
+  .element-bar { display:flex; height:14px; border-radius:8px; overflow:hidden; background:var(--mist); }
+  .element-bar > div { height:100%; transition:width .3s; }
   .element-badge { text-align:center; }
   .element-badge .circle { width:46px; height:46px; border-radius:50%; margin:0 auto 0.4rem; display:flex; align-items:center; justify-content:center; }
   .element-badge .name { font-size:0.72rem; font-weight:700; }
@@ -201,7 +205,7 @@
   .info-card { background:var(--white); border:1px solid var(--mist); border-radius:16px; padding:0.9rem; }
   .info-card.wide { grid-column:1 / -1; }
   .info-card-head { display:flex; align-items:center; gap:0.55rem; margin-bottom:0.5rem; }
-  .info-card-icon { width:32px; height:32px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .info-card-icon { width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .info-card-label { font-size:0.66rem; font-weight:800; letter-spacing:0.03em; text-transform:uppercase; color:var(--muted); }
   .info-card-value { font-size:0.83rem; line-height:1.55; color:var(--ink); }
   .info-card-value .muted-sub { font-size:0.72rem; color:var(--muted); margin-top:0.2rem; }
@@ -335,6 +339,11 @@
             <div class="form-group"><label>Apelido / Nº do Exemplar</label><input type="text" id="cNickname" class="form-control" placeholder="Ex: Olho de Tigre nº 01" /></div>
           </div>
           <div class="form-group"><label>Descrição pessoal</label><textarea id="cDescription" class="form-control" rows="2"></textarea></div>
+          <div class="form-group"><label>Polaridade</label>
+            <select id="cPolarity" class="form-control">
+              <option value="">Não definida</option><option>Solar</option><option>Lunar</option>
+            </select>
+          </div>
           <div class="form-row">
             <div class="form-group"><label>Data de Aquisição</label><input type="date" id="cAcquiredDate" class="form-control" /></div>
             <div class="form-group"><label>Formato</label>
@@ -701,6 +710,11 @@ const PLANET_COLORS = { 'Sol':'#f2b52d','Lua':'#9b5de5','Mercúrio':'#f97316','V
 function planetIcon(name, size=20) {
   return `<span style="font-size:${size}px; line-height:1; color:${PLANET_COLORS[name]||'var(--purple)'};">${PLANET_SYMBOLS[name]||'☉'}</span>`;
 }
+function polarityIcon(polarity, size=20) {
+  if (polarity === 'Solar') return icon('sun', size, PLANET_COLORS['Sol']);
+  if (polarity === 'Lunar') return icon('moon', size, PLANET_COLORS['Lua']);
+  return '';
+}
 
 // ---- Tarot: numeração dos Arcanos Maiores (Rider-Waite) ----
 const TAROT_NUMBERS = {
@@ -925,17 +939,28 @@ function renderCrystalGrid() {
   list.forEach(c => {
     const img = c.photo || c.referenceImageUrl;
     const elem = dominantElement(c);
+    const firstSign = (c.signs||[])[0];
     const card = document.createElement('div');
     card.className = 'crystal-card';
     card.onclick = () => openCrystalDetail(c.firestoreId);
+
+    const iconChips = [
+      c.polarity ? { html: polarityIcon(c.polarity, 20), bg: c.polarity==='Solar'?PLANET_COLORS['Sol']:PLANET_COLORS['Lua'], title: c.polarity } : null,
+      elem ? { html: elementIconSVG(elem, 20), bg: ELEMENT_COLORS[elem], title: elem } : null,
+      c.chakra ? { html: chakraImg(c.chakra, 18), bg: CHAKRA_COLORS[c.chakra], title: c.chakra } : null,
+      c.planet ? { html: planetIcon(c.planet, 18), bg: PLANET_COLORS[c.planet], title: c.planet } : null,
+      firstSign ? { html: zodiacIconSVG(firstSign, 18), bg: zodiacColor(firstSign), title: firstSign + ((c.signs||[]).length>1?` +${c.signs.length-1}`:'') } : null,
+      c.kabbalahSephirah ? { html: icon('kabbalah',16,'var(--purple)'), bg: 'var(--purple)', title: c.kabbalahSephirah } : null,
+      (c.naturalFrequency || c.workingFrequency) ? { html: icon('waveform',16,'var(--purple2)'), bg: 'var(--purple2)', title: 'Frequência' } : null
+    ].filter(Boolean);
+
     card.innerHTML = `
-      ${img ? `<img src="${img}" class="crystal-img" />` : `<div class="crystal-img">${icon('gem',36)}</div>`}
+      ${img ? `<img src="${img}" class="crystal-img" />` : `<div class="crystal-img">${icon('gem',28)}</div>`}
       <div class="crystal-card-body">
-        <h3 style="font-family:'Cinzel',serif; font-size:0.95rem; color:var(--ink);">${c.nickname || c.name}</h3>
-        <p style="font-size:0.72rem; font-style:italic; color:var(--muted); margin-bottom:0.5rem;">${c.variety || ''}</p>
-        <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
-          ${c.chakra ? `<span class="chakra-badge-mini" style="color:${CHAKRA_COLORS[c.chakra]||'#999'};">${chakraIconSVG(c.chakra,15)} ${c.chakra}</span>` : ''}
-          ${elem ? `<span class="chakra-badge-mini" style="color:${ELEMENT_COLORS[elem]};">${elementIconSVG(elem,14)} ${elem}</span>` : ''}
+        <h3 style="font-family:'Cinzel',serif; font-size:0.92rem; color:var(--ink); margin-bottom:0.1rem;">${c.nickname || c.name}</h3>
+        <p style="font-size:0.7rem; font-style:italic; color:var(--muted); margin-bottom:0.6rem;">${c.variety || ''}</p>
+        <div class="card-icon-strip">
+          ${iconChips.map(ic => `<span class="card-icon-chip" style="background:${ic.bg}22;" title="${ic.title}">${ic.html}</span>`).join('')}
         </div>
       </div>`;
     container.appendChild(card);
@@ -1013,7 +1038,7 @@ window.openEditCrystalModal = function() {
 };
 
 const FIELD_MAP = {
-  cName:'name', cVariety:'variety', cNickname:'nickname', cDescription:'description',
+  cName:'name', cVariety:'variety', cNickname:'nickname', cDescription:'description', cPolarity:'polarity',
   cAcquiredDate:'acquiredDate', cFormat:'format', cColor:'color', cTransparency:'transparency',
   cChakra:'chakra', cPlanet:'planet',
   cKabbalahSephirah:'kabbalahSephirah', cKabbalahText:'kabbalahText',
@@ -1070,6 +1095,7 @@ Você é uma pesquisadora de mineralogia simbólica e ocultismo ocidental (Herme
 Regras: não afirme propriedades físicas/curativas como fato científico; quando não houver correspondência tradicional confiável, diga isso no próprio texto; textos curtos e diretos (2-4 frases). Para moon_phases, avalie a intensidade/recomendação de trabalhar com este cristal em CADA uma das 8 fases numa escala 0-100.
 Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
 {
+  "polarity": "Solar ou Lunar",
   "element_percentages": { "terra": 0, "agua": 0, "ar": 0, "fogo": 0 },
   "moon_phases": [
     {"phase":"Lua Nova","percent":0,"impact":"..."}, {"phase":"Lua Crescente","percent":0,"impact":"..."},
@@ -1126,6 +1152,7 @@ Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
       ZODIAC_SIGNS.forEach((name, i) => { const el = document.getElementById('zodiac_' + i); if (el) el.checked = d.signs.includes(name); });
     }
     document.getElementById('cChakra').value = d.chakra || '';
+    document.getElementById('cPolarity').value = d.polarity || '';
     document.getElementById('cPlanet').value = d.planet || '';
     document.getElementById('cKabbalahSephirah').value = d.kabbalah_sephirah || '';
     document.getElementById('cKabbalahText').value = d.kabbalah_text || '';
@@ -1277,11 +1304,16 @@ function calculateNumerology(name) {
 function renderElementInfographic(elementPct) {
   const p = elementPct || {};
   const entries = [['Terra', p.terra||0], ['Água', p.agua||0], ['Ar', p.ar||0], ['Fogo', p.fogo||0]];
-  return `<div class="element-badge-row">${entries.map(([name,v]) => `
+  const total = entries.reduce((s,[,v]) => s+v, 0);
+  const badgeRow = `<div class="element-badge-row">${entries.map(([name,v]) => `
     <div class="element-badge">
       <div class="circle" style="background:${ELEMENT_COLORS[name]}1f;">${elementIconSVG(name,26)}</div>
       <div class="name">${name}</div><div class="pct">${v}%</div>
     </div>`).join('')}</div>`;
+  const bar = total > 0
+    ? entries.filter(([,v]) => v > 0).map(([name,v]) => `<div style="width:${(v/total*100).toFixed(1)}%; background:${ELEMENT_COLORS[name]};" title="${name}: ${v}%"></div>`).join('')
+    : `<div style="width:100%; background:var(--mist);"></div>`;
+  return `${badgeRow}<div class="element-bar">${bar}</div>`;
 }
 
 function renderMoonInfographic(c) {
@@ -1311,7 +1343,7 @@ window.selectDetailMoonPhase = function(i) {
 
 function infoCard(iconName, label, valueHtml, wide=false, iconColor='var(--purple)') {
   return `<div class="info-card ${wide?'wide':''}">
-    <div class="info-card-head"><span class="info-card-icon" style="background:${iconColor}1f; color:${iconColor};">${icon(iconName,16,iconColor)}</span><span class="info-card-label">${label}</span></div>
+    <div class="info-card-head"><span class="info-card-icon" style="background:${iconColor}1f; color:${iconColor};">${icon(iconName,18,iconColor)}</span><span class="info-card-label">${label}</span></div>
     <div class="info-card-value">${valueHtml}</div>
   </div>`;
 }
@@ -1319,6 +1351,13 @@ function infoCardCustomIcon(iconHtml, label, valueHtml, wide=false, bgColor='var
   return `<div class="info-card ${wide?'wide':''}">
     <div class="info-card-head"><span class="info-card-icon" style="background:${bgColor}1f;">${iconHtml}</span><span class="info-card-label">${label}</span></div>
     <div class="info-card-value">${valueHtml}</div>
+  </div>`;
+}
+function bigIconCard(iconHtml, label, valueText, bgColor='var(--purple)') {
+  return `<div class="info-card" style="text-align:center;">
+    <div style="width:58px; height:58px; border-radius:50%; background:${bgColor}22; display:flex; align-items:center; justify-content:center; margin:0 auto 0.5rem;">${iconHtml}</div>
+    <div class="info-card-label" style="justify-content:center;">${label}</div>
+    <div class="info-card-value" style="margin-top:0.25rem; font-weight:700; text-align:center;">${valueText}</div>
   </div>`;
 }
 
@@ -1345,13 +1384,16 @@ function renderCrystalDetail(id) {
   // ---- Grade de correspondências (de Signos para baixo) ----
   const cards = [];
 
-  if ((c.signs||[]).length) {
-    cards.push(infoCard('zodiac', 'Signos', `<div style="display:flex; gap:0.5rem; flex-wrap:wrap;">${c.signs.map(s => `<span style="display:inline-flex; align-items:center; gap:0.3rem; background:var(--lilac); padding:0.25rem 0.6rem; border-radius:20px; font-size:0.75rem; font-weight:700; color:var(--purple);">${zodiacIconSVG(s,15)} ${s}</span>`).join('')}</div>`, true));
+  if (c.polarity) {
+    cards.push(bigIconCard(polarityIcon(c.polarity, 30), 'Polaridade', c.polarity, c.polarity === 'Solar' ? PLANET_COLORS['Sol'] : PLANET_COLORS['Lua']));
   }
-  if (c.planet) cards.push(infoCardCustomIcon(planetIcon(c.planet,18), 'Planeta', c.planet, false, PLANET_COLORS[c.planet]));
+  if ((c.signs||[]).length) {
+    cards.push(infoCard('zodiac', 'Signos', `<div style="display:flex; gap:0.6rem; flex-wrap:wrap; justify-content:center;">${c.signs.map(s => `<span style="display:inline-flex; flex-direction:column; align-items:center; gap:0.2rem;">${zodiacIconSVG(s,26)}<span style="font-size:0.65rem; font-weight:700; color:var(--purple);">${s}</span></span>`).join('')}</div>`, true));
+  }
+  if (c.planet) cards.push(bigIconCard(planetIcon(c.planet,30), 'Planeta', c.planet, PLANET_COLORS[c.planet]));
   if (c.chakra) {
     const cc = CHAKRA_COLORS[c.chakra];
-    cards.push(infoCardCustomIcon(chakraImg(c.chakra,20), 'Chakra', c.chakra, false, cc));
+    cards.push(bigIconCard(chakraImg(c.chakra,32), 'Chakra', c.chakra, cc));
   }
   if (c.kabbalahSephirah || c.kabbalahText) {
     cards.push(`<div class="info-card wide">
