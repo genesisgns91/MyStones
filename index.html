@@ -60,6 +60,19 @@
   .icon-btn:hover { filter:brightness(0.96); }
 
   .toolbar { display:flex; gap:0.7rem; margin-bottom:1.3rem; flex-wrap:wrap; }
+  .filter-btn-wrap { position:relative; }
+  .filter-btn { width:42px; height:42px; border-radius:13px; border:1.5px solid var(--mist); background:var(--white); color:var(--purple); display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; transition:.15s; flex-shrink:0; }
+  .filter-btn:hover { border-color:var(--purple2); background:var(--lilac); }
+  .filter-btn.active { border-color:var(--purple); background:var(--lilac); }
+  .filter-btn-badge { position:absolute; top:-4px; right:-4px; min-width:16px; height:16px; padding:0 3px; border-radius:8px; background:var(--purple); color:#fff; font-size:0.62rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .filter-panel { position:absolute; top:calc(100% + 8px); right:0; background:var(--white); border:1px solid var(--mist); border-radius:16px; box-shadow:var(--shadow); padding:0.9rem; display:none; flex-direction:column; gap:0.55rem; width:230px; z-index:30; }
+  .filter-panel.show { display:flex; }
+  .filter-panel-head { display:flex; align-items:center; justify-content:space-between; font-size:0.78rem; font-weight:800; color:var(--ink); margin-bottom:0.15rem; }
+  .filter-clear-btn { background:none; border:none; color:var(--purple2); font-size:0.74rem; font-weight:700; cursor:pointer; padding:0; }
+  .filter-panel .filter-select { width:100%; }
+  @media (max-width:768px) {
+    .filter-panel { right:auto; left:0; width:min(78vw,260px); }
+  }
   .search-wrap { position:relative; flex:1; min-width:200px; }
   .search-wrap .icon { position:absolute; left:0.9rem; top:50%; transform:translateY(-50%); color:var(--purple); }
   .search-wrap input { width:100%; padding:0.75rem 0.9rem 0.75rem 2.5rem; border:1.5px solid var(--mist); border-radius:13px; font-family:inherit; font-size:0.86rem; background:var(--white); color:var(--ink); outline:none; }
@@ -86,7 +99,7 @@
   .crystal-img { width:100%; aspect-ratio:1.6/1; object-fit:cover; background:var(--lilac); display:flex; align-items:center; justify-content:center; color:var(--purple2); flex-shrink:0; }
   .card-icon-strip { display:grid; grid-template-columns:1fr 1fr; gap:0.55rem 0.7rem; }
   .card-icon-row { display:flex; align-items:center; gap:0.5rem; min-width:0; }
-  .card-icon-chip { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 5px rgba(0,0,0,.06); }
+  .card-icon-chip { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 5px rgba(0,0,0,.06); }
   .card-icon-text { font-size:0.73rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .crystal-card-body { padding:0.9rem; display:flex; flex-direction:column; flex:1; gap:0.7rem; }
   .tag { display:inline-block; background:var(--lilac); color:var(--purple); padding:0.2rem 0.55rem; border-radius:8px; font-size:0.66rem; font-weight:700; margin-right:0.3rem; margin-bottom:0.3rem; }
@@ -275,10 +288,42 @@
 
     <div class="toolbar">
       <div class="search-wrap"><span class="icon" data-icon="search" data-size="16"></span><input id="collectionSearch" placeholder="Buscar por nome, apelido ou variedade..." oninput="renderCrystalGrid()" /></div>
-      <select id="collectionChakraFilter" class="filter-select" onchange="renderCrystalGrid()">
-        <option value="">Todos os chakras</option>
-        <option>Raiz</option><option>Sacral</option><option>Plexo Solar</option><option>Cardíaco</option><option>Laríngeo</option><option>Terceiro Olho</option><option>Coronário</option>
-      </select>
+      <div class="filter-btn-wrap">
+        <button type="button" class="filter-btn" id="filterToggleBtn" onclick="toggleFilterPanel(event)" title="Filtros">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="10" y2="6"/><circle cx="13" cy="6" r="2.4" fill="currentColor" stroke="none"/><line x1="15.5" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="9.5" y2="12"/><circle cx="12.5" cy="12" r="2.4" fill="currentColor" stroke="none"/><line x1="15" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="10" y2="18"/><circle cx="13" cy="18" r="2.4" fill="currentColor" stroke="none"/><line x1="15.5" y1="18" x2="20" y2="18"/></svg>
+          <span class="filter-btn-badge" id="filterBadge" style="display:none;"></span>
+        </button>
+        <div class="filter-panel" id="filterPanel">
+          <div class="filter-panel-head">
+            <span>Filtros</span>
+            <button type="button" class="filter-clear-btn" onclick="clearAllFilters()">Limpar</button>
+          </div>
+          <select id="collectionPolarityFilter" class="filter-select" onchange="renderCrystalGrid()">
+            <option value="">Solar/Lunar</option>
+            <option>Solar</option><option>Lunar</option>
+          </select>
+          <select id="collectionChakraFilter" class="filter-select" onchange="renderCrystalGrid()">
+            <option value="">Todos os chakras</option>
+            <option>Raiz</option><option>Sacral</option><option>Plexo Solar</option><option>Cardíaco</option><option>Laríngeo</option><option>Terceiro Olho</option><option>Coronário</option>
+          </select>
+          <select id="collectionSignFilter" class="filter-select" onchange="renderCrystalGrid()">
+            <option value="">Todos os signos</option>
+            <option>Áries</option><option>Touro</option><option>Gêmeos</option><option>Câncer</option><option>Leão</option><option>Virgem</option><option>Libra</option><option>Escorpião</option><option>Sagitário</option><option>Capricórnio</option><option>Aquário</option><option>Peixes</option>
+          </select>
+          <select id="collectionPlanetFilter" class="filter-select" onchange="renderCrystalGrid()">
+            <option value="">Todos os planetas</option>
+            <option>Sol</option><option>Lua</option><option>Mercúrio</option><option>Vênus</option><option>Marte</option><option>Júpiter</option><option>Saturno</option><option>Urano</option><option>Netuno</option><option>Plutão</option>
+          </select>
+          <select id="collectionElementFilter" class="filter-select" onchange="renderCrystalGrid()">
+            <option value="">Todos os elementos</option>
+            <option>Terra</option><option>Água</option><option>Ar</option><option>Fogo</option>
+          </select>
+          <select id="collectionMoonPhaseFilter" class="filter-select" onchange="renderCrystalGrid()">
+            <option value="">Todas as fases da lua</option>
+            <option>Lua Nova</option><option>Lua Crescente</option><option>Quarto Crescente</option><option>Gibosa Crescente</option><option>Lua Cheia</option><option>Gibosa Minguante</option><option>Quarto Minguante</option><option>Lua Minguante</option>
+          </select>
+        </div>
+      </div>
     </div>
     <div class="crystal-grid" id="crystalGrid"></div>
   </section>
@@ -722,6 +767,7 @@ function chakraIconSVG(name, size=24) {
 
 // ---- Elementos: símbolos alquímicos clássicos ----
 const ELEMENT_COLORS = { 'Terra':'#55a65b', 'Água':'#159fe3', 'Ar':'#5b8def', 'Fogo':'#ef6b4d' };
+const ELEMENT_PCT_KEY = { 'Terra':'terra', 'Água':'agua', 'Ar':'ar', 'Fogo':'fogo' };
 const ELEMENT_ALCHEMY = {
   'Fogo': (c) => `<path d="M12 4 L20 19 H4 Z" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round"/>`,
   'Ar':   (c) => `<path d="M12 4 L20 19 H4 Z" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round"/><line x1="7" y1="13.3" x2="17" y2="13.3" stroke="${c}" stroke-width="2.2"/>`,
@@ -975,16 +1021,51 @@ function renderMoonBanner() {
     </div>`;
 }
 
+// ==================== FILTROS (painel compacto) ====================
+window.toggleFilterPanel = function(e) {
+  e.stopPropagation();
+  document.getElementById('filterPanel').classList.toggle('show');
+};
+document.addEventListener('click', (e) => {
+  const wrap = document.querySelector('.filter-btn-wrap');
+  const panel = document.getElementById('filterPanel');
+  if (wrap && panel && panel.classList.contains('show') && !wrap.contains(e.target)) {
+    panel.classList.remove('show');
+  }
+});
+window.clearAllFilters = function() {
+  ['collectionPolarityFilter','collectionChakraFilter','collectionSignFilter','collectionPlanetFilter','collectionElementFilter','collectionMoonPhaseFilter'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  renderCrystalGrid();
+};
+
 // ==================== RENDER: COLEÇÃO ====================
 function renderCrystalGrid() {
   const container = document.getElementById('crystalGrid');
   const q = (document.getElementById('collectionSearch').value || '').toLowerCase().trim();
+  const polarityFilter = document.getElementById('collectionPolarityFilter').value;
   const chakraFilter = document.getElementById('collectionChakraFilter').value;
+  const signFilter = document.getElementById('collectionSignFilter').value;
+  const planetFilter = document.getElementById('collectionPlanetFilter').value;
+  const elementFilter = document.getElementById('collectionElementFilter').value;
+  const moonPhaseFilter = document.getElementById('collectionMoonPhaseFilter').value;
 
   let list = allCrystals.slice();
   if (q) list = list.filter(c => [c.name, c.nickname, c.variety].filter(Boolean).some(f => f.toLowerCase().includes(q)));
+  if (polarityFilter) list = list.filter(c => c.polarity === polarityFilter);
   if (chakraFilter) list = list.filter(c => c.chakra === chakraFilter);
+  if (signFilter) list = list.filter(c => (c.signs||[]).includes(signFilter));
+  if (planetFilter) list = list.filter(c => c.planet === planetFilter);
+  if (elementFilter) list = list.filter(c => (c.elementPct && c.elementPct[ELEMENT_PCT_KEY[elementFilter]] > 0));
+  if (moonPhaseFilter) list = list.filter(c => c.moonPhases && c.moonPhases[moonPhaseFilter] && (c.moonPhases[moonPhaseFilter].percent||0) >= 50);
   list.sort((a,b) => (b.createdAt||'').localeCompare(a.createdAt||''));
+
+  const activeFilterCount = [polarityFilter, chakraFilter, signFilter, planetFilter, elementFilter, moonPhaseFilter].filter(Boolean).length;
+  const badge = document.getElementById('filterBadge');
+  const filterBtn = document.getElementById('filterToggleBtn');
+  if (activeFilterCount > 0) { badge.style.display = 'flex'; badge.innerText = activeFilterCount; filterBtn.classList.add('active'); }
+  else { badge.style.display = 'none'; filterBtn.classList.remove('active'); }
 
   if (allCrystals.length === 0) {
     container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">${icon('gem',44,'var(--purple2)')}<p>Sua coleção está vazia.<br/>Cadastre seu primeiro cristal para começar.</p>
@@ -1000,17 +1081,17 @@ function renderCrystalGrid() {
   list.forEach(c => {
     const img = c.photo || c.referenceImageUrl;
     const elem = dominantElement(c);
-    const firstSign = (c.signs||[])[0];
     const card = document.createElement('div');
     card.className = 'crystal-card';
     card.onclick = () => openCrystalDetail(c.firestoreId);
 
+    const signChips = (c.signs||[]).map(s => ({ html: zodiacIconSVG(s, 19), color: zodiacColor(s), label: s }));
     const iconChips = [
-      c.polarity ? { html: polarityIcon(c.polarity, 16), color: c.polarity==='Solar'?PLANET_COLORS['Sol']:PLANET_COLORS['Lua'], label: c.polarity } : null,
-      elem ? { html: elementIconSVG(elem, 16), color: ELEMENT_COLORS[elem], label: elem } : null,
-      c.chakra ? { html: chakraImg(c.chakra, 15), color: CHAKRA_COLORS[c.chakra], label: c.chakra } : null,
-      c.planet ? { html: planetIcon(c.planet, 15), color: PLANET_COLORS[c.planet], label: c.planet } : null,
-      firstSign ? { html: zodiacIconSVG(firstSign, 15), color: zodiacColor(firstSign), label: firstSign + ((c.signs||[]).length>1?` +${c.signs.length-1}`:'') } : null
+      c.polarity ? { html: polarityIcon(c.polarity, 19), color: c.polarity==='Solar'?PLANET_COLORS['Sol']:PLANET_COLORS['Lua'], label: c.polarity } : null,
+      elem ? { html: elementIconSVG(elem, 19), color: ELEMENT_COLORS[elem], label: elem } : null,
+      c.chakra ? { html: chakraImg(c.chakra, 18), color: CHAKRA_COLORS[c.chakra], label: c.chakra } : null,
+      c.planet ? { html: planetIcon(c.planet, 18), color: PLANET_COLORS[c.planet], label: c.planet } : null,
+      ...signChips
     ].filter(Boolean);
 
     card.innerHTML = `
@@ -1034,7 +1115,7 @@ function buildElementFormGrid() {
   const grid = document.getElementById('elementFormGrid');
   grid.innerHTML = ELEMENT_KEYS.map(([name, id]) => `
     <div class="element-form-item">
-      ${elementIconSVG(name, 24)}
+      ${elementIconSVG(name, 30)}
       <input type="range" min="0" max="100" value="0" id="${id}" oninput="document.getElementById('${id}_val').innerText=this.value+'%'" />
       <span class="pct-val" id="${id}_val">0%</span>
     </div>`).join('');
@@ -1045,7 +1126,7 @@ function buildMoonPhaseFormRows() {
   const container = document.getElementById('moonPhaseFormContainer');
   container.innerHTML = MOON_PHASE_NAMES.map((name, i) => `
     <div class="moon-form-row">
-      <div class="moon-form-icon">${moonPhaseIconSVG(name, 34)}</div>
+      <div class="moon-form-icon">${moonPhaseIconSVG(name, 38)}</div>
       <div class="moon-form-fields">
         <label style="font-size:0.72rem; font-weight:700; color:var(--purple); text-transform:none;">${name}</label>
         <div style="display:flex; align-items:center; gap:0.6rem;">
@@ -1063,7 +1144,7 @@ function buildZodiacFormGrid() {
   grid.innerHTML = ZODIAC_SIGNS.map((name, i) => `
     <label class="icon-checkbox">
       <input type="checkbox" value="${name}" id="zodiac_${i}" />
-      <div class="box">${zodiacIconSVG(name, 24)}<span>${name}</span></div>
+      <div class="box">${zodiacIconSVG(name, 30)}<span>${name}</span></div>
     </label>`).join('');
 }
 
