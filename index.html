@@ -99,7 +99,8 @@
   .crystal-img { width:100%; aspect-ratio:1.6/1; object-fit:cover; background:var(--lilac); display:flex; align-items:center; justify-content:center; color:var(--purple2); flex-shrink:0; }
   .card-icon-strip { display:grid; grid-template-columns:1fr 1fr; gap:0.55rem 0.7rem; }
   .card-icon-row { display:flex; align-items:center; gap:0.5rem; min-width:0; }
-  .card-icon-chip { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 5px rgba(0,0,0,.06); }
+  .card-icon-chip { width:34px; height:34px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .card-moon-pct { display:inline-flex; align-items:center; gap:0.22rem; font-size:0.64rem; font-weight:800; color:var(--purple2); background:var(--lilac); padding:0.18rem 0.45rem; border-radius:8px; white-space:nowrap; flex-shrink:0; margin-top:0.1rem; }
   .card-icon-text { font-size:0.73rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .crystal-card-body { padding:0.9rem; display:flex; flex-direction:column; flex:1; gap:0.7rem; }
   .tag { display:inline-block; background:var(--lilac); color:var(--purple); padding:0.2rem 0.55rem; border-radius:8px; font-size:0.66rem; font-weight:700; margin-right:0.3rem; margin-bottom:0.3rem; }
@@ -1078,6 +1079,7 @@ window.renderCrystalGrid = function() {
   }
 
   container.innerHTML = '';
+  const currentMoonPhase = getMoonPhase();
   list.forEach(c => {
     const img = c.photo || c.referenceImageUrl;
     const elem = dominantElement(c);
@@ -1085,24 +1087,29 @@ window.renderCrystalGrid = function() {
     card.className = 'crystal-card';
     card.onclick = () => openCrystalDetail(c.firestoreId);
 
-    const signChips = (c.signs||[]).map(s => ({ html: zodiacIconSVG(s, 28), color: zodiacColor(s), label: s }));
+    const signChips = (c.signs||[]).map(s => ({ html: zodiacIconSVG(s, 32), color: zodiacColor(s), label: s }));
     const iconChips = [
-      c.polarity ? { html: polarityIcon(c.polarity, 28), color: c.polarity==='Solar'?PLANET_COLORS['Sol']:PLANET_COLORS['Lua'], label: c.polarity } : null,
-      elem ? { html: elementIconSVG(elem, 28), color: ELEMENT_COLORS[elem], label: elem } : null,
-      c.chakra ? { html: chakraImg(c.chakra, 28), color: CHAKRA_COLORS[c.chakra], label: c.chakra } : null,
-      c.planet ? { html: planetIcon(c.planet, 28), color: PLANET_COLORS[c.planet], label: c.planet } : null,
+      c.polarity ? { html: polarityIcon(c.polarity, 32), color: c.polarity==='Solar'?PLANET_COLORS['Sol']:PLANET_COLORS['Lua'], label: c.polarity } : null,
+      elem ? { html: elementIconSVG(elem, 32), color: ELEMENT_COLORS[elem], label: elem } : null,
+      c.chakra ? { html: chakraImg(c.chakra, 32), color: CHAKRA_COLORS[c.chakra], label: c.chakra } : null,
+      c.planet ? { html: planetIcon(c.planet, 32), color: PLANET_COLORS[c.planet], label: c.planet } : null,
       ...signChips
     ].filter(Boolean);
+
+    const moonPct = (c.moonPhases && c.moonPhases[currentMoonPhase]) ? c.moonPhases[currentMoonPhase].percent : null;
 
     card.innerHTML = `
       ${img ? `<img src="${img}" class="crystal-img" />` : `<div class="crystal-img">${icon('gem',28)}</div>`}
       <div class="crystal-card-body">
-        <div>
-          <h3 style="font-family:'Cinzel',serif; font-size:0.94rem; color:var(--ink); margin-bottom:0.15rem;">${c.nickname || c.name}</h3>
-          <p style="font-size:0.7rem; font-style:italic; color:var(--muted);">${c.variety || ''}</p>
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:0.4rem;">
+          <div style="min-width:0;">
+            <h3 style="font-family:'Cinzel',serif; font-size:0.94rem; color:var(--ink); margin-bottom:0.15rem;">${c.nickname || c.name}</h3>
+            <p style="font-size:0.7rem; font-style:italic; color:var(--muted);">${c.variety || ''}</p>
+          </div>
+          ${moonPct !== null ? `<span class="card-moon-pct" title="Recomendação para a fase lunar atual: ${currentMoonPhase}">${icon('moon',10)} ${moonPct}%</span>` : ''}
         </div>
         <div class="card-icon-strip">
-          ${iconChips.map(ic => `<div class="card-icon-row"><span class="card-icon-chip" style="background:${ic.color}22;">${ic.html}</span><span class="card-icon-text" style="color:${ic.color};">${ic.label}</span></div>`).join('')}
+          ${iconChips.map(ic => `<div class="card-icon-row"><span class="card-icon-chip" style="color:${ic.color};">${ic.html}</span><span class="card-icon-text" style="color:${ic.color};">${ic.label}</span></div>`).join('')}
         </div>
       </div>`;
     container.appendChild(card);
