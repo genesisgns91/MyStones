@@ -19,7 +19,7 @@
   }
   [data-theme="dark"] { --cream:#171225; --ink:#eee9fb; --white:#20182f; --mist:#332a4a; --lilac:#2a2140; --shadow:0 12px 34px rgba(0,0,0,.4); }
   * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-  html, body { height:100%; }
+  html, body { height:100%; overflow-x:hidden; }
   body { font-family:'DM Sans', sans-serif; color:var(--ink); min-height:100vh;
     background: radial-gradient(circle at 15% 10%, rgba(196,181,253,.20), transparent 30%), radial-gradient(circle at 90% 80%, rgba(221,214,254,.22), transparent 32%), var(--cream);
     transition: background .2s, color .2s; }
@@ -65,13 +65,13 @@
   .filter-btn:hover { border-color:var(--purple2); background:var(--lilac); }
   .filter-btn.active { border-color:var(--purple); background:var(--lilac); }
   .filter-btn-badge { position:absolute; top:-4px; right:-4px; min-width:16px; height:16px; padding:0 3px; border-radius:8px; background:var(--purple); color:#fff; font-size:0.62rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
-  .filter-panel { position:absolute; top:calc(100% + 8px); right:0; background:var(--white); border:1px solid var(--mist); border-radius:16px; box-shadow:var(--shadow); padding:0.9rem; display:none; flex-direction:column; gap:0.55rem; width:230px; z-index:30; }
+  .filter-panel { position:absolute; top:calc(100% + 8px); right:0; background:var(--white); border:1px solid var(--mist); border-radius:16px; box-shadow:var(--shadow); padding:0.9rem; display:none; flex-direction:column; gap:0.55rem; width:230px; max-width:calc(100vw - 2rem); z-index:30; }
   .filter-panel.show { display:flex; }
   .filter-panel-head { display:flex; align-items:center; justify-content:space-between; font-size:0.78rem; font-weight:800; color:var(--ink); margin-bottom:0.15rem; }
   .filter-clear-btn { background:none; border:none; color:var(--purple2); font-size:0.74rem; font-weight:700; cursor:pointer; padding:0; }
   .filter-panel .filter-select { width:100%; }
   @media (max-width:768px) {
-    .filter-panel { right:auto; left:0; width:min(78vw,260px); }
+    .filter-panel { width:min(78vw,260px); }
   }
   .search-wrap { position:relative; flex:1; min-width:200px; }
   .search-wrap .icon { position:absolute; left:0.9rem; top:50%; transform:translateY(-50%); color:var(--purple); }
@@ -1041,7 +1041,7 @@ window.clearAllFilters = function() {
 };
 
 // ==================== RENDER: COLEÇÃO ====================
-function renderCrystalGrid() {
+window.renderCrystalGrid = function() {
   const container = document.getElementById('crystalGrid');
   const q = (document.getElementById('collectionSearch').value || '').toLowerCase().trim();
   const polarityFilter = document.getElementById('collectionPolarityFilter').value;
@@ -1085,12 +1085,12 @@ function renderCrystalGrid() {
     card.className = 'crystal-card';
     card.onclick = () => openCrystalDetail(c.firestoreId);
 
-    const signChips = (c.signs||[]).map(s => ({ html: zodiacIconSVG(s, 19), color: zodiacColor(s), label: s }));
+    const signChips = (c.signs||[]).map(s => ({ html: zodiacIconSVG(s, 28), color: zodiacColor(s), label: s }));
     const iconChips = [
-      c.polarity ? { html: polarityIcon(c.polarity, 19), color: c.polarity==='Solar'?PLANET_COLORS['Sol']:PLANET_COLORS['Lua'], label: c.polarity } : null,
-      elem ? { html: elementIconSVG(elem, 19), color: ELEMENT_COLORS[elem], label: elem } : null,
-      c.chakra ? { html: chakraImg(c.chakra, 18), color: CHAKRA_COLORS[c.chakra], label: c.chakra } : null,
-      c.planet ? { html: planetIcon(c.planet, 18), color: PLANET_COLORS[c.planet], label: c.planet } : null,
+      c.polarity ? { html: polarityIcon(c.polarity, 28), color: c.polarity==='Solar'?PLANET_COLORS['Sol']:PLANET_COLORS['Lua'], label: c.polarity } : null,
+      elem ? { html: elementIconSVG(elem, 28), color: ELEMENT_COLORS[elem], label: elem } : null,
+      c.chakra ? { html: chakraImg(c.chakra, 28), color: CHAKRA_COLORS[c.chakra], label: c.chakra } : null,
+      c.planet ? { html: planetIcon(c.planet, 28), color: PLANET_COLORS[c.planet], label: c.planet } : null,
       ...signChips
     ].filter(Boolean);
 
@@ -1107,7 +1107,7 @@ function renderCrystalGrid() {
       </div>`;
     container.appendChild(card);
   });
-}
+};
 
 // ==================== FORM: ELEMENTOS ====================
 const ELEMENT_KEYS = [['Terra','cPctTerra'], ['Água','cPctAgua'], ['Ar','cPctAr'], ['Fogo','cPctFogo']];
