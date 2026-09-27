@@ -1123,7 +1123,7 @@ function buildElementFormGrid() {
   const grid = document.getElementById('elementFormGrid');
   grid.innerHTML = ELEMENT_KEYS.map(([name, id]) => `
     <div class="element-form-item">
-      ${elementIconSVG(name, 36)}
+      ${elementIconSVG(name, 45)}
       <input type="range" min="0" max="100" value="0" id="${id}" oninput="document.getElementById('${id}_val').innerText=this.value+'%'" />
       <span class="pct-val" id="${id}_val">0%</span>
     </div>`).join('');
@@ -1134,7 +1134,7 @@ function buildMoonPhaseFormRows() {
   const container = document.getElementById('moonPhaseFormContainer');
   container.innerHTML = MOON_PHASE_NAMES.map((name, i) => `
     <div class="moon-form-row">
-      <div class="moon-form-icon">${moonPhaseIconSVG(name, 44)}</div>
+      <div class="moon-form-icon">${moonPhaseIconSVG(name, 55)}</div>
       <div class="moon-form-fields">
         <label style="font-size:0.72rem; font-weight:700; color:var(--purple); text-transform:none;">${name}</label>
         <div style="display:flex; align-items:center; gap:0.6rem;">
@@ -1152,7 +1152,7 @@ function buildZodiacFormGrid() {
   grid.innerHTML = ZODIAC_SIGNS.map((name, i) => `
     <label class="icon-checkbox">
       <input type="checkbox" value="${name}" id="zodiac_${i}" />
-      <div class="box">${zodiacIconSVG(name, 36)}<span>${name}</span></div>
+      <div class="box">${zodiacIconSVG(name, 45)}<span>${name}</span></div>
     </label>`).join('');
 }
 
