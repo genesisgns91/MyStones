@@ -410,10 +410,17 @@
             <div class="form-group"><label>Apelido / Nº do Exemplar</label><input type="text" id="cNickname" class="form-control" placeholder="Ex: Olho de Tigre nº 01" /></div>
           </div>
           <div class="form-group"><label>Descrição pessoal</label><textarea id="cDescription" class="form-control" rows="2"></textarea></div>
-          <div class="form-group"><label>Polaridade</label>
-            <select id="cPolarity" class="form-control">
-              <option value="">Não definida</option><option>Solar</option><option>Lunar</option>
-            </select>
+          <div class="form-row">
+            <div class="form-group"><label>Polaridade (Solar/Lunar)</label>
+              <select id="cPolarity" class="form-control">
+                <option value="">Não definida</option><option>Solar</option><option>Lunar</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Yin / Yang</label>
+              <select id="cYinYang" class="form-control">
+                <option value="">Não definido</option><option>Yin</option><option>Yang</option>
+              </select>
+            </div>
           </div>
           <div class="form-row">
             <div class="form-group"><label>Data de Aquisição</label><input type="date" id="cAcquiredDate" class="form-control" /></div>
@@ -427,6 +434,25 @@
           <div class="form-row">
             <div class="form-group"><label>Cor</label><input type="text" id="cColor" class="form-control" /></div>
             <div class="form-group"><label>Transparência/Acabamento</label><input type="text" id="cTransparency" class="form-control" /></div>
+          </div>
+          <div class="form-group"><label>Geometria (hábito cristalino)</label>
+            <select id="cGeometry" class="form-control">
+              <option value="">Selecione</option>
+              <option value="Prismático">Prismático — crescimento alongado como um prisma</option>
+              <option value="Acicular">Acicular — extremamente fino, parecido com uma agulha</option>
+              <option value="Fibroso">Fibroso — formado por fibras</option>
+              <option value="Tabular">Tabular — achatado, parecido com uma placa</option>
+              <option value="Laminar">Laminar — formado por lâminas</option>
+              <option value="Botrioidal">Botrioidal — superfícies arredondadas em "cachos", como uvas</option>
+              <option value="Reniforme">Reniforme — semelhante a um rim</option>
+              <option value="Maciço">Maciço — sem faces cristalinas bem definidas</option>
+              <option value="Dendrítico">Dendrítico — ramificado, semelhante a uma árvore</option>
+              <option value="Globular">Globular — aproximadamente esférico</option>
+              <option value="Piramidal">Piramidal — terminações em forma de pirâmide</option>
+              <option value="Cúbico">Cúbico — faces formando cubos</option>
+              <option value="Octaédrico">Octaédrico — oito faces triangulares</option>
+              <option value="Drusiforme">Drusiforme — superfície recoberta por muitos microcristais</option>
+            </select>
           </div>
         </div>
       </div>
@@ -483,7 +509,7 @@
         <button type="button" class="accordion-header" onclick="toggleAccordion(this)"><span class="icon" data-icon="tarot" data-size="16"></span><span>6. Tarot (Rider-Waite)</span><span class="chevron icon" data-icon="chevron-down" data-size="16"></span></button>
         <div class="accordion-body">
           <div class="form-group"><label>Arcano Maior associado</label>
-            <select id="cTarotCard" class="form-control">
+            <select id="cTarotCard" class="form-control" onchange="updateTarotPreview()">
               <option value="">Selecione</option>
               <option value="O Louco">0 — O Louco</option><option value="O Mago">I — O Mago</option><option value="A Sacerdotisa">II — A Sacerdotisa</option><option value="A Imperatriz">III — A Imperatriz</option><option value="O Imperador">IV — O Imperador</option>
               <option value="O Hierofante">V — O Hierofante</option><option value="Os Enamorados">VI — Os Enamorados</option><option value="O Carro">VII — O Carro</option><option value="A Força">VIII — A Força</option><option value="O Eremita">IX — O Eremita</option>
@@ -492,18 +518,20 @@
               <option value="O Julgamento">XX — O Julgamento</option><option value="O Mundo">XXI — O Mundo</option>
             </select>
           </div>
+          <div id="tarotPreview" style="margin-bottom:0.8rem;"></div>
           <div class="form-group"><label>Por que essa carta se relaciona com o cristal</label><textarea id="cTarotText" class="form-control" rows="2"></textarea></div>
         </div>
       </div>
 
       <div class="accordion-item">
-        <button type="button" class="accordion-header" onclick="toggleAccordion(this)"><span class="icon" data-icon="waveform" data-size="16"></span><span>7. Frequência</span><span class="chevron icon" data-icon="chevron-down" data-size="16"></span></button>
+        <button type="button" class="accordion-header" onclick="toggleAccordion(this)"><span class="icon" data-icon="waveform" data-size="16"></span><span>7. Numerologia & Frequência</span><span class="chevron icon" data-icon="chevron-down" data-size="16"></span></button>
         <div class="accordion-body">
+          <div class="form-group"><label>Numerologia — o que o número do nome representa nesta pedra</label><textarea id="cNumerologyText" class="form-control" rows="2"></textarea></div>
           <div class="form-row">
-            <div class="form-group"><label>Frequência natural (Hz)</label><input type="text" id="cNaturalFrequency" class="form-control" /></div>
-            <div class="form-group"><label>Frequência purificação/energização (Hz)</label><input type="text" id="cWorkingFrequency" class="form-control" /></div>
+            <div class="form-group"><label>Melhor frequência para limpeza (Hz)</label><input type="text" id="cCleaningFrequency" class="form-control" placeholder="Ex: 396 Hz" /></div>
+            <div class="form-group"><label>Melhor frequência para energização (Hz)</label><input type="text" id="cEnergizingFrequency" class="form-control" placeholder="Ex: 528 Hz" /></div>
           </div>
-          <p class="ai-note"><span class="icon" data-icon="info" data-size="13"></span> Correspondência vibracional simbólica/esotérica moderna, não propriedade física medida.</p>
+          <p class="ai-note"><span class="icon" data-icon="info" data-size="13"></span> Frequências esotéricas de intenção (não são medições físicas). O número da numerologia é calculado automaticamente a partir do nome.</p>
         </div>
       </div>
 
@@ -573,10 +601,11 @@
         <button type="button" class="accordion-header" onclick="toggleAccordion(this)"><span class="icon" data-icon="zap" data-size="16"></span><span>12. Energia, Mantra, Arquétipo & Propósito</span><span class="chevron icon" data-icon="chevron-down" data-size="16"></span></button>
         <div class="accordion-body">
           <div class="form-group"><label>Energia natural do cristal</label><textarea id="cNaturalEnergyText" class="form-control" rows="2"></textarea></div>
-          <div class="form-group"><label>Mantra alinhado</label><input type="text" id="cMantraText" class="form-control" /></div>
+          <div class="form-group"><label>Mantra esotérico (tradicional)</label><input type="text" id="cMantraText" class="form-control" placeholder="Ex: Om Namah Shivaya" /></div>
           <div class="form-group"><label>Arquétipo</label><textarea id="cArchetypeText" class="form-control" rows="2"></textarea></div>
           <div class="form-group"><label>Influência psicológica</label><textarea id="cPsychologicalText" class="form-control" rows="2"></textarea></div>
           <div class="form-group"><label>Propósito / para que pode servir</label><textarea id="cPurposeText" class="form-control" rows="2"></textarea></div>
+          <div class="form-group"><label>Mantra pessoal (intenção para esta pedra)</label><input type="text" id="cPersonalMantra" class="form-control" placeholder="Frase curta, na primeira pessoa" /></div>
           <div class="form-group"><label>Intenções pessoais (separadas por vírgula)</label><input type="text" id="cIntentions" class="form-control" placeholder="discernimento, foco, coragem" /></div>
         </div>
       </div>
@@ -613,14 +642,13 @@
     <div id="detailIntentionTags"></div>
 
     <div class="section-block">
-      <h4><span class="icon" data-icon="earth" data-size="17"></span> Elementos</h4>
-      <div id="detailElementInfographic"></div>
-      <div class="info-grid" id="detailTopCorrespondences" style="margin-top:1.1rem;"></div>
+      <h4><span class="icon" data-icon="moon" data-size="17"></span> Fases da Lua — Recomendação para este cristal</h4>
+      <div id="detailMoonInfographic"></div>
     </div>
 
     <div class="section-block">
-      <h4><span class="icon" data-icon="moon" data-size="17"></span> Fases da Lua — Recomendação para este cristal</h4>
-      <div id="detailMoonInfographic"></div>
+      <h4><span class="icon" data-icon="earth" data-size="17"></span> Elementos</h4>
+      <div id="detailElementInfographic"></div>
     </div>
 
     <div class="section-block">
@@ -833,6 +861,43 @@ const TAROT_NUMBERS = {
   'O Diabo':'XV', 'A Torre':'XVI', 'A Estrela':'XVII', 'A Lua':'XVIII', 'O Sol':'XIX',
   'O Julgamento':'XX', 'O Mundo':'XXI'
 };
+
+// ---- Tarot: arquivos das cartas (pasta "cards") ----
+const TAROT_FILES = {
+  'O Louco':'00_Fool', 'O Mago':'01_Magician', 'A Sacerdotisa':'02_High_Priestess', 'A Imperatriz':'03_Empress', 'O Imperador':'04_Emperor',
+  'O Hierofante':'05_Hierophant', 'Os Enamorados':'06_Lovers', 'O Carro':'07_Chariot', 'A Força':'08_Strength', 'O Eremita':'09_Hermit',
+  'A Roda da Fortuna':'10_Wheel_of_Fortune', 'A Justiça':'11_Justice', 'O Enforcado':'12_Hanged_Man', 'A Morte':'13_Death', 'A Temperança':'14_Temperance',
+  'O Diabo':'15_Devil', 'A Torre':'16_Tower', 'A Estrela':'17_Star', 'A Lua':'18_Moon', 'O Sol':'19_Sun',
+  'O Julgamento':'20_Judgement', 'O Mundo':'21_World'
+};
+// Mesmo tamanho da Árvore da Vida (120 x 180)
+function tarotCardImg(name, width=120) {
+  const file = TAROT_FILES[name];
+  if (!file) return '';
+  return `<img src="cards/${file}.jpg" alt="${name}" style="width:${width}px;height:${width*1.5}px;object-fit:cover;border-radius:8px;box-shadow:var(--shadow);display:block;" onerror="this.style.display='none'" />`;
+}
+window.updateTarotPreview = function() {
+  const box = document.getElementById('tarotPreview');
+  const sel = document.getElementById('cTarotCard');
+  if (box && sel) box.innerHTML = sel.value ? tarotCardImg(sel.value) : '';
+};
+
+// ---- Geometria (hábito cristalino) ----
+const GEOMETRY_INFO = {
+  'Prismático':'Crescimento alongado como um prisma.', 'Acicular':'Extremamente fino, parecido com uma agulha.',
+  'Fibroso':'Formado por fibras.', 'Tabular':'Achatado, parecido com uma placa.', 'Laminar':'Formado por lâminas.',
+  'Botrioidal':'Superfícies arredondadas em "cachos", como uvas.', 'Reniforme':'Semelhante a um rim.',
+  'Maciço':'Sem faces cristalinas bem definidas.', 'Dendrítico':'Ramificado, semelhante a uma árvore.',
+  'Globular':'Aproximadamente esférico.', 'Piramidal':'Terminações em forma de pirâmide.', 'Cúbico':'Faces formando cubos.',
+  'Octaédrico':'Oito faces triangulares.', 'Drusiforme':'Superfície recoberta por muitos microcristais.'
+};
+
+// ---- Yin / Yang ----
+function yinYangIcon(kind, size=24) {
+  const color = '#6d28d9';
+  const rot = kind === 'Yin' ? ' style="transform:rotate(180deg);"' : '';
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24"${rot}><circle cx="12" cy="12" r="10.2" fill="none" stroke="${color}" stroke-width="1.5"/><path d="M12 1.8A10.2 10.2 0 0 1 12 22.2A5.1 5.1 0 0 1 12 12A5.1 5.1 0 0 0 12 1.8Z" fill="${color}"/><circle cx="12" cy="6.9" r="1.5" fill="${color}"/><circle cx="12" cy="17.1" r="1.5" style="fill:var(--white);"/></svg>`;
+}
 
 // ---- Cabala: árvore da vida com Sephirah destacada ----
 const SEPHIROT = ['Keter','Chokmah','Binah','Chesed','Gevurah','Tiferet','Netzach','Hod','Yesod','Malkuth'];
@@ -1163,6 +1228,7 @@ window.openAddCrystalModal = function() {
   document.getElementById('crystalFormTitle').innerText = 'Novo Cristal';
   document.getElementById('identifyResultBox').classList.remove('show');
   document.getElementById('sigilPreviewBox').innerHTML = '';
+  document.getElementById('tarotPreview').innerHTML = '';
   buildElementFormGrid();
   buildMoonPhaseFormRows();
   buildZodiacFormGrid();
@@ -1188,7 +1254,7 @@ window.openEditCrystalModal = function() {
 };
 
 const FIELD_MAP = {
-  cName:'name', cVariety:'variety', cNickname:'nickname', cDescription:'description', cPolarity:'polarity',
+  cName:'name', cVariety:'variety', cNickname:'nickname', cDescription:'description', cPolarity:'polarity', cYinYang:'yinYang', cGeometry:'geometry',
   cAcquiredDate:'acquiredDate', cFormat:'format', cColor:'color', cTransparency:'transparency',
   cChakra:'chakra', cPlanet:'planet',
   cKabbalahSephirah:'kabbalahSephirah', cKabbalahText:'kabbalahText',
@@ -1197,8 +1263,8 @@ const FIELD_MAP = {
   cWaterTap:'waterTap', cWaterSalt:'waterSalt', cWaterSea:'waterSea', cWaterRiver:'waterRiver',
   cEarthSafe:'earthSafe', cSafetyNotes:'safetyNotes',
   cCleaningIncense:'cleaningIncense', cEnergizingIncense:'energizingIncense', cEsotericSymbol:'esotericSymbol',
-  cAssociatedPlant:'associatedPlant', cNaturalFrequency:'naturalFrequency', cWorkingFrequency:'workingFrequency',
-  cMantraText:'mantraText', cNaturalEnergyText:'naturalEnergyText',
+  cAssociatedPlant:'associatedPlant', cCleaningFrequency:'cleaningFrequency', cEnergizingFrequency:'energizingFrequency', cNumerologyText:'numerologyText',
+  cMantraText:'mantraText', cPersonalMantra:'personalMantra', cNaturalEnergyText:'naturalEnergyText',
   cArchetypeText:'archetypeText', cPsychologicalText:'psychologicalText', cPurposeText:'purposeText',
   cReferenceImageUrl:'referenceImageUrl'
 };
@@ -1231,6 +1297,7 @@ function fillCrystalForm(c) {
     const el = document.getElementById('zodiac_' + i);
     if (el) el.checked = signs.includes(name);
   });
+  updateTarotPreview();
 }
 
 window.autoFillWithAI = async function(event) {
@@ -1240,12 +1307,16 @@ window.autoFillWithAI = async function(event) {
   const original = btn.innerHTML;
   btn.disabled = true; btn.innerHTML = icon('sparkle',15) + ' Consultando IA...';
 
+  const numerologyNumber = calculateNumerology(name);
+
   const prompt = `
 Você é uma pesquisadora de mineralogia simbólica e ocultismo ocidental (Hermetismo, Cabala, Tarot Rider-Waite, Alquimia, Astrologia, psicologia junguiana). Monte uma ficha esotérica para o cristal "${name}".
-Regras: não afirme propriedades físicas/curativas como fato científico; quando não houver correspondência tradicional confiável, diga isso no próprio texto; textos curtos e diretos (2-4 frases). Para moon_phases, avalie a intensidade/recomendação de trabalhar com este cristal em CADA uma das 8 fases numa escala 0-100.
+Regras: não afirme propriedades físicas/curativas como fato científico; quando não houver correspondência tradicional consolidada, escolha ainda assim a opção simbólica mais coerente (nunca responda "não há correspondência" ou deixe em branco); textos curtos e diretos (2-4 frases). Para moon_phases, avalie a intensidade/recomendação de trabalhar com este cristal em CADA uma das 8 fases numa escala 0-100.
 Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
 {
   "polarity": "Solar ou Lunar",
+  "yin_yang": "Yin ou Yang",
+  "geometry": "um entre Prismático, Acicular, Fibroso, Tabular, Laminar, Botrioidal, Reniforme, Maciço, Dendrítico, Globular, Piramidal, Cúbico, Octaédrico, Drusiforme — o hábito cristalino mais comum desta pedra",
   "element_percentages": { "terra": 0, "agua": 0, "ar": 0, "fogo": 0 },
   "moon_phases": [
     {"phase":"Lua Nova","percent":0,"impact":"..."}, {"phase":"Lua Crescente","percent":0,"impact":"..."},
@@ -1260,8 +1331,9 @@ Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
   "kabbalah_text": "explicando o porquê dessa Sephirah, não só o nome",
   "tarot_card": "um Arcano Maior (tradição Rider-Waite/Golden Dawn)",
   "tarot_text": "por que essa carta se relaciona com o cristal",
-  "natural_frequency_hz": "correspondência vibracional natural em Hz, se existir em alguma tradição moderna, com ressalva de que não é medição física",
-  "working_frequency_hz": "frequência em Hz de purificação/energização, com a mesma ressalva",
+  "numerology_text": "O número deste cristal, pelo cálculo pitagórico do nome, é ${numerologyNumber}. Explique em 2-3 frases o que o número ${numerologyNumber} representa simbolicamente aplicado a este cristal especificamente (não repita a definição genérica do número isoladamente)",
+  "cleaning_frequency_hz": "responda apenas com o valor esotérico/de intenção mais próximo, no formato \"XXX Hz\" (ex.: \"396 Hz\"), escolhendo entre frequências simbólicas conhecidas (como as Solfeggio: 174, 285, 396, 417, 432, 528, 639, 741, 852, 963 Hz) a que melhor combina com LIMPEZA/purificação deste cristal — nunca responda que não há correspondência nem que não é medição física, apenas dê o Hz",
+  "energizing_frequency_hz": "mesmo formato \"XXX Hz\", escolhendo a frequência simbólica que melhor combina com ENERGIZAÇÃO/ativação deste cristal — sempre dê um valor",
   "esoteric_symbol": "um nome exatamente igual a um destes, o que combinar melhor simbolicamente com limpeza/energização deste cristal: Pentagrama, Hexagrama (Estrela de Salomão), Triquetra, Ankh, Olho de Hórus, Flor da Vida, Triskele, Cruz Solar, Ouroboros, Espiral Lunar",
   "cleaning_incense": "incenso(s) para limpeza", "energizing_incense": "incenso(s) para energização",
   "associated_plant": "planta mais associada",
@@ -1270,7 +1342,9 @@ Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
   "water_tap": "Seguro, Cuidado ou Não recomendado", "water_salt": "Seguro, Cuidado ou Não recomendado",
   "water_sea": "Seguro, Cuidado ou Não recomendado", "water_river": "Seguro, Cuidado ou Não recomendado",
   "earth_safety": "Seguro, Cuidado ou Não recomendado", "safety_notes": "riscos físicos gerais",
-  "natural_energy_text": "energia natural/tradicional resumida", "mantra_text": "mantra ou afirmação alinhada",
+  "natural_energy_text": "energia natural/tradicional resumida",
+  "mantra_text": "um mantra TRADICIONAL de verdade (nunca uma frase inventada), escolhido entre mantras reais consagrados — ex.: uma bija mantra/vogal sagrada como Om, Ram, Yam, Lam, Hum, ou um mantra completo como \"Om Namah Shivaya\", \"Om Mani Padme Hum\", \"Om Gam Ganapataye Namaha\", \"Om Shanti Shanti Shanti\" — o que mais se alinhar a este cristal",
+  "personal_mantra": "uma frase curta em primeira pessoa (não um mantra tradicional), tipo afirmação pessoal de intenção para trabalhar com este cristal",
   "archetype_text": "arquétipo psicológico representado", "psychological_text": "influência psicológica simbólica",
   "purpose_text": "para que propósitos costuma ser utilizado simbolicamente",
   "suggested_intentions": ["intenção1", "intenção2", "intenção3"]
@@ -1303,13 +1377,16 @@ Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
     }
     document.getElementById('cChakra').value = d.chakra || '';
     document.getElementById('cPolarity').value = d.polarity || '';
+    document.getElementById('cYinYang').value = d.yin_yang || '';
+    document.getElementById('cGeometry').value = d.geometry || '';
     document.getElementById('cPlanet').value = d.planet || '';
     document.getElementById('cKabbalahSephirah').value = d.kabbalah_sephirah || '';
     document.getElementById('cKabbalahText').value = d.kabbalah_text || '';
     document.getElementById('cTarotCard').value = d.tarot_card || '';
     document.getElementById('cTarotText').value = d.tarot_text || '';
-    document.getElementById('cNaturalFrequency').value = d.natural_frequency_hz || '';
-    document.getElementById('cWorkingFrequency').value = d.working_frequency_hz || '';
+    document.getElementById('cNumerologyText').value = d.numerology_text || '';
+    document.getElementById('cCleaningFrequency').value = d.cleaning_frequency_hz || '';
+    document.getElementById('cEnergizingFrequency').value = d.energizing_frequency_hz || '';
     document.getElementById('cEsotericSymbol').value = d.esoteric_symbol || '';
     document.getElementById('cCleaningIncense').value = d.cleaning_incense || '';
     document.getElementById('cEnergizingIncense').value = d.energizing_incense || '';
@@ -1324,6 +1401,7 @@ Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
     document.getElementById('cSafetyNotes').value = d.safety_notes || '';
     document.getElementById('cNaturalEnergyText').value = d.natural_energy_text || '';
     document.getElementById('cMantraText').value = d.mantra_text || '';
+    document.getElementById('cPersonalMantra').value = d.personal_mantra || '';
     document.getElementById('cArchetypeText').value = d.archetype_text || '';
     document.getElementById('cPsychologicalText').value = d.psychological_text || '';
     document.getElementById('cPurposeText').value = d.purpose_text || '';
@@ -1529,19 +1607,24 @@ function renderCrystalDetail(id) {
   document.getElementById('detailMoonInfographic').innerHTML = renderMoonInfographic(c);
   selectDetailMoonPhase(currentDetailSelectedPhaseIdx);
 
-  // ---- Correspondências principais (junto dos Elementos, acima das Fases da Lua) ----
-  const topCards = [];
+  // ---- Correspondências (ordem: Solar/Lunar-Yin/Yang, Planeta-Chakra, Signos, Cabala, Tarot,
+  //      Sigilo, Numerologia-Frequência, Geometria, Mantra esotérico, Incenso-Planta, Sol,
+  //      Água-Terra, Energia natural, Arquétipo, Influência psicológica, Propósito, Mantra pessoal) ----
+  const cards = [];
 
   if (c.polarity) {
-    topCards.push(bigIconCard(polarityIcon(c.polarity, 48), 'Polaridade', c.polarity, c.polarity === 'Solar' ? PLANET_COLORS['Sol'] : PLANET_COLORS['Lua']));
+    cards.push(bigIconCard(polarityIcon(c.polarity, 48), 'Polaridade', c.polarity, c.polarity === 'Solar' ? PLANET_COLORS['Sol'] : PLANET_COLORS['Lua']));
   }
-  if (c.planet) topCards.push(bigIconCard(planetIcon(c.planet,48), 'Planeta', c.planet, PLANET_COLORS[c.planet]));
+  if (c.yinYang) cards.push(bigIconCard(yinYangIcon(c.yinYang, 48), 'Yin / Yang', c.yinYang, '#6d28d9'));
+
+  if (c.planet) cards.push(bigIconCard(planetIcon(c.planet,48), 'Planeta', c.planet, PLANET_COLORS[c.planet]));
   if (c.chakra) {
     const cc = CHAKRA_COLORS[c.chakra];
-    topCards.push(bigIconCard(chakraImg(c.chakra,52), 'Chakra', c.chakra, cc));
+    cards.push(bigIconCard(chakraImg(c.chakra,52), 'Chakra', c.chakra, cc));
   }
+
   if ((c.signs||[]).length) {
-    topCards.push(`<div class="corr-card">
+    cards.push(`<div class="corr-card wide">
       <div class="corr-card-label" style="margin-bottom:0.7rem;">Signos</div>
       <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
         ${c.signs.map(s => `<span style="display:inline-flex; flex-direction:column; align-items:center; gap:0.25rem;">
@@ -1549,29 +1632,24 @@ function renderCrystalDetail(id) {
           <span style="font-size:0.68rem; font-weight:700; color:${zodiacColor(s)};">${s}</span></span>`).join('')}
       </div></div>`);
   }
+
   if (c.kabbalahSephirah || c.kabbalahText) {
-    topCards.push(`<div class="corr-card wide" style="text-align:left;">
+    cards.push(`<div class="corr-card wide" style="text-align:left;">
       <div class="corr-card-label">Cabala</div>
       <div style="display:flex; gap:1.1rem; align-items:center; flex-wrap:wrap; margin-top:0.4rem;">
         ${c.kabbalahSephirah ? `<div style="flex-shrink:0;">${sephirahTreeSVG(c.kabbalahSephirah, 120)}</div>` : ''}
         <div style="flex:1; min-width:160px;"><b style="font-size:1rem;">${c.kabbalahSephirah || ''}</b><div class="muted-sub" style="font-size:0.8rem;">${c.kabbalahText || 'Não preenchido.'}</div></div>
       </div></div>`);
   }
-  document.getElementById('detailTopCorrespondences').innerHTML = topCards.join('') || `<p style="color:var(--muted); font-size:0.85rem; grid-column:1/-1;">Nenhuma correspondência preenchida ainda.</p>`;
-
-  // ---- Demais correspondências esotéricas ----
-  const cards = [];
 
   if (c.tarotCard || c.tarotText) {
     const num = TAROT_NUMBERS[c.tarotCard] || '';
-    cards.push(infoCard('tarot', 'Tarot (Rider-Waite)', `<b>${num ? num + ' — ' : ''}${c.tarotCard || ''}</b><div class="muted-sub">${c.tarotText || ''}</div>`, true));
-  }
-
-  const numNumber = calculateNumerology(c.name);
-  cards.push(infoCard('hash', 'Numerologia', numNumber ? `Número <b>${numNumber}</b><div class="muted-sub">Sistema pitagórico — correspondência simbólica moderna.</div>` : 'Não foi possível calcular.'));
-
-  if (c.naturalFrequency || c.workingFrequency) {
-    cards.push(infoCard('waveform', 'Frequência', `${c.naturalFrequency ? `Natural: <b>${c.naturalFrequency}</b><br/>` : ''}${c.workingFrequency ? `Purificação/energização: <b>${c.workingFrequency}</b>` : ''}`));
+    cards.push(`<div class="info-card wide">
+      <div class="info-card-label">Tarot (Rider-Waite)</div>
+      <div style="display:flex; gap:1.1rem; align-items:flex-start; flex-wrap:wrap; margin-top:0.4rem;">
+        ${c.tarotCard ? `<div style="flex-shrink:0;">${tarotCardImg(c.tarotCard, 120)}</div>` : ''}
+        <div style="flex:1; min-width:160px;"><b style="font-size:1rem;">${num ? num + ' — ' : ''}${c.tarotCard || ''}</b><div class="muted-sub">${c.tarotText || ''}</div></div>
+      </div></div>`);
   }
 
   if (c.sigilImage || c.esotericSymbol) {
@@ -1582,21 +1660,32 @@ function renderCrystalDetail(id) {
       ${c.sigilImage ? `<img class="sigil-img" src="${c.sigilImage}" />` : ''}</div>`);
   }
 
+  const numNumber = calculateNumerology(c.name);
+  cards.push(infoCard('hash', 'Numerologia', numNumber ? `Número <b>${numNumber}</b>${c.numerologyText ? `<div class="muted-sub">${c.numerologyText}</div>` : ''}` : 'Não foi possível calcular.'));
+  if (c.cleaningFrequency || c.energizingFrequency) {
+    cards.push(infoCard('waveform', 'Frequência', `${c.cleaningFrequency ? `Limpeza: <b>${c.cleaningFrequency}</b><br/>` : ''}${c.energizingFrequency ? `Energização: <b>${c.energizingFrequency}</b>` : ''}`));
+  }
+
+  if (c.geometry) cards.push(infoCard('gem', 'Geometria', `<b>${c.geometry}</b>${GEOMETRY_INFO[c.geometry] ? `<div class="muted-sub">${GEOMETRY_INFO[c.geometry]}</div>` : ''}`, true));
+
+  if (c.mantraText) cards.push(infoCard('droplet2', 'Mantra Esotérico', c.mantraText, true));
+
   if (c.cleaningIncense || c.energizingIncense) {
     cards.push(infoCard('incense', 'Incenso', `${c.cleaningIncense ? `Limpeza: <b>${c.cleaningIncense}</b><br/>` : ''}${c.energizingIncense ? `Energização: <b>${c.energizingIncense}</b>` : ''}`));
   }
   if (c.associatedPlant) cards.push(infoCard('leaf', 'Planta', c.associatedPlant));
-  if (c.sunBestPeriod || c.sunBenefitText) cards.push(infoCard('sun', 'Sol', `${c.sunBestPeriod ? `<b>${c.sunBestPeriod}</b><br/>` : ''}${c.sunBenefitText || ''}`));
+
+  if (c.sunBestPeriod || c.sunBenefitText) cards.push(infoCard('sun', 'Sol', `${c.sunBestPeriod ? `<b>${c.sunBestPeriod}</b><br/>` : ''}${c.sunBenefitText || ''}`, true));
 
   const waterVals = [['Torneira', c.waterTap], ['Sal', c.waterSalt], ['Mar', c.waterSea], ['Rio', c.waterRiver]];
   cards.push(infoCard('droplet', 'Água', waterVals.map(([l,v]) => `<div class="safety-row" style="padding:0.15rem 0;">${l}: <span class="safety-pill ${SAFETY_CLASS[v]||'caution'}">${v||'Não confirmado'}</span></div>`).join('')));
   cards.push(infoCard('earth', 'Terra', `<span class="safety-pill ${SAFETY_CLASS[c.earthSafe]||'caution'}">${c.earthSafe||'Não confirmado'}</span>${c.safetyNotes ? `<div class="muted-sub">${c.safetyNotes}</div>` : ''}`));
 
   if (c.naturalEnergyText) cards.push(infoCard('zap', 'Energia Natural', c.naturalEnergyText, true));
-  if (c.mantraText) cards.push(infoCard('droplet2', 'Mantra', c.mantraText));
   if (c.archetypeText) cards.push(infoCard('mask', 'Arquétipo', c.archetypeText, true));
   if (c.psychologicalText) cards.push(infoCard('lightbulb', 'Influência Psicológica', c.psychologicalText, true));
   if (c.purposeText) cards.push(infoCard('target', 'Propósito', c.purposeText, true));
+  if (c.personalMantra) cards.push(infoCard('droplet2', 'Mantra Pessoal', c.personalMantra, true));
 
   document.getElementById('detailInfoGrid').innerHTML = cards.join('') || `<p style="color:var(--muted); font-size:0.85rem; grid-column:1/-1;">Nenhuma correspondência preenchida ainda. Edite a ficha para adicionar.</p>`;
 
