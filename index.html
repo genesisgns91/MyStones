@@ -874,8 +874,25 @@ const TAROT_FILES = {
 function tarotCardImg(name, width=120) {
   const file = TAROT_FILES[name];
   if (!file) return '';
-  return `<img src="cards/${file}.jpg" alt="${name}" style="width:${width}px;height:${width*1.5}px;object-fit:cover;border-radius:8px;box-shadow:var(--shadow);display:block;" onerror="this.style.display='none'" />`;
+  const height = Math.round(width*1.5);
+  return `<img src="cards/${file}.jpg" data-tarot-file="${file}" data-attempt="0" alt="${name}" style="width:${width}px;height:${height}px;object-fit:cover;border-radius:8px;box-shadow:var(--shadow);display:block;flex-shrink:0;" onerror="handleTarotImgError(this)" />`;
 }
+// Se cards/NOME.jpg falhar, tenta outras extensões/maiúsculas comuns antes de desistir;
+// se nada funcionar, mostra um aviso visível (em vez de sumir silenciosamente) para facilitar o debug do caminho.
+window.handleTarotImgError = function(img) {
+  const exts = ['JPG','png','PNG','jpeg','JPEG'];
+  const attempt = parseInt(img.dataset.attempt || '0', 10);
+  const file = img.dataset.tarotFile;
+  if (attempt < exts.length) {
+    img.dataset.attempt = String(attempt + 1);
+    img.src = `cards/${file}.${exts[attempt]}`;
+    return;
+  }
+  const ph = document.createElement('div');
+  ph.style.cssText = `width:${img.style.width};height:${img.style.height};border-radius:8px;border:1.5px dashed var(--mist);display:flex;align-items:center;justify-content:center;text-align:center;font-size:0.62rem;color:var(--muted);padding:0.4rem;flex-shrink:0;`;
+  ph.innerHTML = `Imagem não encontrada:<br/><code style="font-size:0.6rem;">cards/${file}.jpg</code>`;
+  img.replaceWith(ph);
+};
 window.updateTarotPreview = function() {
   const box = document.getElementById('tarotPreview');
   const sel = document.getElementById('cTarotCard');
