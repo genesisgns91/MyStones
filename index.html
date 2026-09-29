@@ -215,7 +215,7 @@
   /* Correspondências com ícones em destaque (Elementos, Signos, Planeta, Chakra, Cabala) */
   .corr-card { background:var(--white); border:1px solid var(--mist); border-radius:16px; padding:1rem; text-align:center; }
   .corr-card.wide { grid-column:1 / -1; }
-  .corr-card .corr-icon-circle { width:76px; height:76px; display:flex; align-items:center; justify-content:center; margin:0 auto 0.55rem; }
+  .corr-card .corr-icon-circle { width:95px; height:95px; display:flex; align-items:center; justify-content:center; margin:0 auto 0.55rem; }
   .corr-card-label { font-size:0.66rem; font-weight:800; letter-spacing:0.03em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; }
   .corr-card-value { font-size:0.9rem; font-weight:700; color:var(--ink); }
 
@@ -871,7 +871,7 @@ const TAROT_FILES = {
   'O Julgamento':'20_Judgement', 'O Mundo':'21_World'
 };
 // Mesmo tamanho da Árvore da Vida (120 x 180)
-function tarotCardImg(name, width=120) {
+function tarotCardImg(name, width=90) {
   const file = TAROT_FILES[name];
   if (!file) return '';
   const height = Math.round(width*1.5);
@@ -1205,7 +1205,7 @@ function buildElementFormGrid() {
   const grid = document.getElementById('elementFormGrid');
   grid.innerHTML = ELEMENT_KEYS.map(([name, id]) => `
     <div class="element-form-item">
-      ${elementIconSVG(name, 56)}
+      ${elementIconSVG(name, 28)}
       <input type="range" min="0" max="100" value="0" id="${id}" oninput="document.getElementById('${id}_val').innerText=this.value+'%'" />
       <span class="pct-val" id="${id}_val">0%</span>
     </div>`).join('');
@@ -1216,7 +1216,7 @@ function buildMoonPhaseFormRows() {
   const container = document.getElementById('moonPhaseFormContainer');
   container.innerHTML = MOON_PHASE_NAMES.map((name, i) => `
     <div class="moon-form-row">
-      <div class="moon-form-icon">${moonPhaseIconSVG(name, 69)}</div>
+      <div class="moon-form-icon">${moonPhaseIconSVG(name, 35)}</div>
       <div class="moon-form-fields">
         <label style="font-size:0.72rem; font-weight:700; color:var(--purple); text-transform:none;">${name}</label>
         <div style="display:flex; align-items:center; gap:0.6rem;">
@@ -1234,7 +1234,7 @@ function buildZodiacFormGrid() {
   grid.innerHTML = ZODIAC_SIGNS.map((name, i) => `
     <label class="icon-checkbox">
       <input type="checkbox" value="${name}" id="zodiac_${i}" />
-      <div class="box">${zodiacIconSVG(name, 56)}<span>${name}</span></div>
+      <div class="box">${zodiacIconSVG(name, 28)}<span>${name}</span></div>
     </label>`).join('');
 }
 
@@ -1552,7 +1552,7 @@ function renderElementInfographic(elementPct) {
   return `<div class="element-bars">${entries.map(([name,v]) => `
     <div class="element-bar-row">
       <div class="element-bar-row-head">
-        <span class="element-bar-row-label">${elementIconSVG(name,20)} ${name}</span>
+        <span class="element-bar-row-label">${elementIconSVG(name,25)} ${name}</span>
         <span>${v}%</span>
       </div>
       <div class="element-bar-track"><div class="element-bar-fill" style="width:${v}%; background:${ELEMENT_COLORS[name]};"></div></div>
@@ -1568,7 +1568,7 @@ function renderMoonInfographic(c) {
     const pct = d.percent || 0;
     return `
       <div class="moon-ring-wrap ${i===currentDetailSelectedPhaseIdx?'selected':''} ${name===current?'current':''}" onclick="selectDetailMoonPhase(${i})">
-        <div class="moon-phase-ring" style="--pct:${pct};"><div class="moon-phase-ring-inner">${moonPhaseIconSVG(name,26)}</div></div>
+        <div class="moon-phase-ring" style="--pct:${pct};"><div class="moon-phase-ring-inner">${moonPhaseIconSVG(name,33)}</div></div>
         <div class="moon-ring-label">${pct}%</div>
       </div>`;
   }).join('');
@@ -1630,14 +1630,14 @@ function renderCrystalDetail(id) {
   const cards = [];
 
   if (c.polarity) {
-    cards.push(bigIconCard(polarityIcon(c.polarity, 48), 'Polaridade', c.polarity, c.polarity === 'Solar' ? PLANET_COLORS['Sol'] : PLANET_COLORS['Lua']));
+    cards.push(bigIconCard(polarityIcon(c.polarity, 60), 'Polaridade', c.polarity, c.polarity === 'Solar' ? PLANET_COLORS['Sol'] : PLANET_COLORS['Lua']));
   }
-  if (c.yinYang) cards.push(bigIconCard(yinYangIcon(c.yinYang, 48), 'Yin / Yang', c.yinYang, '#6d28d9'));
+  if (c.yinYang) cards.push(bigIconCard(yinYangIcon(c.yinYang, 60), 'Yin / Yang', c.yinYang, '#6d28d9'));
 
-  if (c.planet) cards.push(bigIconCard(planetIcon(c.planet,48), 'Planeta', c.planet, PLANET_COLORS[c.planet]));
+  if (c.planet) cards.push(bigIconCard(planetIcon(c.planet,60), 'Planeta', c.planet, PLANET_COLORS[c.planet]));
   if (c.chakra) {
     const cc = CHAKRA_COLORS[c.chakra];
-    cards.push(bigIconCard(chakraImg(c.chakra,52), 'Chakra', c.chakra, cc));
+    cards.push(bigIconCard(chakraImg(c.chakra,65), 'Chakra', c.chakra, cc));
   }
 
   if ((c.signs||[]).length) {
@@ -1645,7 +1645,7 @@ function renderCrystalDetail(id) {
       <div class="corr-card-label" style="margin-bottom:0.7rem;">Signos</div>
       <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
         ${c.signs.map(s => `<span style="display:inline-flex; flex-direction:column; align-items:center; gap:0.25rem;">
-          ${zodiacIconSVG(s,42)}
+          ${zodiacIconSVG(s,53)}
           <span style="font-size:0.68rem; font-weight:700; color:${zodiacColor(s)};">${s}</span></span>`).join('')}
       </div></div>`);
   }
@@ -1664,7 +1664,7 @@ function renderCrystalDetail(id) {
     cards.push(`<div class="info-card wide">
       <div class="info-card-label">Tarot (Rider-Waite)</div>
       <div style="display:flex; gap:1.1rem; align-items:flex-start; flex-wrap:wrap; margin-top:0.4rem;">
-        ${c.tarotCard ? `<div style="flex-shrink:0;">${tarotCardImg(c.tarotCard, 120)}</div>` : ''}
+        ${c.tarotCard ? `<div style="flex-shrink:0;">${tarotCardImg(c.tarotCard, 90)}</div>` : ''}
         <div style="flex:1; min-width:160px;"><b style="font-size:1rem;">${num ? num + ' — ' : ''}${c.tarotCard || ''}</b><div class="muted-sub">${c.tarotText || ''}</div></div>
       </div></div>`);
   }
@@ -1672,7 +1672,7 @@ function renderCrystalDetail(id) {
   if (c.sigilImage || c.esotericSymbol) {
     cards.push(`<div class="info-card wide" style="text-align:center;">
       <div class="info-card-label" style="justify-content:center; margin-bottom:0.6rem;">Sigilo Mágico</div>
-      ${c.esotericSymbol ? `<div style="width:76px;height:76px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.5rem;">${esotericSigilSVG(c.esotericSymbol,52)}</div>
+      ${c.esotericSymbol ? `<div style="width:95px;height:95px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.5rem;">${esotericSigilSVG(c.esotericSymbol,65)}</div>
       <div class="info-card-value" style="font-weight:700;">${c.esotericSymbol}</div>` : ''}
       ${c.sigilImage ? `<img class="sigil-img" src="${c.sigilImage}" />` : ''}</div>`);
   }
@@ -1797,7 +1797,7 @@ function renderGuide() {
   const currentPhase = getMoonPhase();
   document.getElementById('guidePanelMoon').innerHTML = MOON_PHASES_GUIDE.map(p => `
     <div class="section-block" style="${p.name === currentPhase ? 'border-color:var(--purple);' : ''} display:flex; gap:1rem; align-items:flex-start;">
-      <div>${moonPhaseIconSVG(p.name, 40)}</div>
+      <div>${moonPhaseIconSVG(p.name, 50)}</div>
       <div><h4 style="margin-bottom:0.4rem;">${p.name} ${p.name === currentPhase ? '(fase atual)' : ''}</h4>
       <div class="content-text"><b>Energia:</b> ${p.energy}<br/><b>Prática possível:</b> ${p.practice}</div></div>
     </div>`).join('');
