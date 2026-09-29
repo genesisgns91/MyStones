@@ -303,6 +303,14 @@
             <option value="">Solar/Lunar</option>
             <option>Solar</option><option>Lunar</option>
           </select>
+          <select id="collectionYinYangFilter" class="filter-select" onchange="renderCrystalGrid()">
+            <option value="">Yin/Yang</option>
+            <option>Yin</option><option>Yang</option>
+          </select>
+          <select id="collectionPlanetFilter" class="filter-select" onchange="renderCrystalGrid()">
+            <option value="">Todos os planetas</option>
+            <option>Sol</option><option>Lua</option><option>Mercúrio</option><option>Vênus</option><option>Marte</option><option>Júpiter</option><option>Saturno</option><option>Urano</option><option>Netuno</option><option>Plutão</option>
+          </select>
           <select id="collectionChakraFilter" class="filter-select" onchange="renderCrystalGrid()">
             <option value="">Todos os chakras</option>
             <option>Raiz</option><option>Sacral</option><option>Plexo Solar</option><option>Cardíaco</option><option>Laríngeo</option><option>Terceiro Olho</option><option>Coronário</option>
@@ -311,9 +319,13 @@
             <option value="">Todos os signos</option>
             <option>Áries</option><option>Touro</option><option>Gêmeos</option><option>Câncer</option><option>Leão</option><option>Virgem</option><option>Libra</option><option>Escorpião</option><option>Sagitário</option><option>Capricórnio</option><option>Aquário</option><option>Peixes</option>
           </select>
-          <select id="collectionPlanetFilter" class="filter-select" onchange="renderCrystalGrid()">
-            <option value="">Todos os planetas</option>
-            <option>Sol</option><option>Lua</option><option>Mercúrio</option><option>Vênus</option><option>Marte</option><option>Júpiter</option><option>Saturno</option><option>Urano</option><option>Netuno</option><option>Plutão</option>
+          <select id="collectionKabbalahFilter" class="filter-select" onchange="renderCrystalGrid()">
+            <option value="">Todas as sephirot (Cabala)</option>
+            <option>Keter</option><option>Chokmah</option><option>Binah</option><option>Chesed</option><option>Gevurah</option><option>Tiferet</option><option>Netzach</option><option>Hod</option><option>Yesod</option><option>Malkuth</option>
+          </select>
+          <select id="collectionTarotFilter" class="filter-select" onchange="renderCrystalGrid()">
+            <option value="">Todas as cartas (Tarot)</option>
+            <option>O Louco</option><option>O Mago</option><option>A Sacerdotisa</option><option>A Imperatriz</option><option>O Imperador</option><option>O Hierofante</option><option>Os Enamorados</option><option>O Carro</option><option>A Força</option><option>O Eremita</option><option>A Roda da Fortuna</option><option>A Justiça</option><option>O Enforcado</option><option>A Morte</option><option>A Temperança</option><option>O Diabo</option><option>A Torre</option><option>A Estrela</option><option>A Lua</option><option>O Sol</option><option>O Julgamento</option><option>O Mundo</option>
           </select>
           <select id="collectionElementFilter" class="filter-select" onchange="renderCrystalGrid()">
             <option value="">Todos os elementos</option>
@@ -1118,7 +1130,7 @@ document.addEventListener('click', (e) => {
   }
 });
 window.clearAllFilters = function() {
-  ['collectionPolarityFilter','collectionChakraFilter','collectionSignFilter','collectionPlanetFilter','collectionElementFilter','collectionMoonPhaseFilter'].forEach(id => {
+  ['collectionPolarityFilter','collectionYinYangFilter','collectionChakraFilter','collectionSignFilter','collectionPlanetFilter','collectionKabbalahFilter','collectionTarotFilter','collectionElementFilter','collectionMoonPhaseFilter'].forEach(id => {
     document.getElementById(id).value = '';
   });
   renderCrystalGrid();
@@ -1129,23 +1141,29 @@ window.renderCrystalGrid = function() {
   const container = document.getElementById('crystalGrid');
   const q = (document.getElementById('collectionSearch').value || '').toLowerCase().trim();
   const polarityFilter = document.getElementById('collectionPolarityFilter').value;
+  const yinYangFilter = document.getElementById('collectionYinYangFilter').value;
   const chakraFilter = document.getElementById('collectionChakraFilter').value;
   const signFilter = document.getElementById('collectionSignFilter').value;
   const planetFilter = document.getElementById('collectionPlanetFilter').value;
+  const kabbalahFilter = document.getElementById('collectionKabbalahFilter').value;
+  const tarotFilter = document.getElementById('collectionTarotFilter').value;
   const elementFilter = document.getElementById('collectionElementFilter').value;
   const moonPhaseFilter = document.getElementById('collectionMoonPhaseFilter').value;
 
   let list = allCrystals.slice();
   if (q) list = list.filter(c => [c.name, c.nickname, c.variety].filter(Boolean).some(f => f.toLowerCase().includes(q)));
   if (polarityFilter) list = list.filter(c => c.polarity === polarityFilter);
+  if (yinYangFilter) list = list.filter(c => c.yinYang === yinYangFilter);
   if (chakraFilter) list = list.filter(c => c.chakra === chakraFilter);
   if (signFilter) list = list.filter(c => (c.signs||[]).includes(signFilter));
   if (planetFilter) list = list.filter(c => c.planet === planetFilter);
+  if (kabbalahFilter) list = list.filter(c => c.kabbalahSephirah === kabbalahFilter);
+  if (tarotFilter) list = list.filter(c => c.tarotCard === tarotFilter);
   if (elementFilter) list = list.filter(c => (c.elementPct && c.elementPct[ELEMENT_PCT_KEY[elementFilter]] > 0));
   if (moonPhaseFilter) list = list.filter(c => c.moonPhases && c.moonPhases[moonPhaseFilter] && (c.moonPhases[moonPhaseFilter].percent||0) >= 50);
   list.sort((a,b) => (b.createdAt||'').localeCompare(a.createdAt||''));
 
-  const activeFilterCount = [polarityFilter, chakraFilter, signFilter, planetFilter, elementFilter, moonPhaseFilter].filter(Boolean).length;
+  const activeFilterCount = [polarityFilter, yinYangFilter, chakraFilter, signFilter, planetFilter, kabbalahFilter, tarotFilter, elementFilter, moonPhaseFilter].filter(Boolean).length;
   const badge = document.getElementById('filterBadge');
   const filterBtn = document.getElementById('filterToggleBtn');
   if (activeFilterCount > 0) { badge.style.display = 'flex'; badge.innerText = activeFilterCount; filterBtn.classList.add('active'); }
