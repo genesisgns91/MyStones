@@ -162,6 +162,24 @@
   .stat-card .num { font-family:'Cinzel', serif; font-size:1.5rem; color:var(--ink); }
   .stat-card .label { font-size:0.75rem; color:var(--muted); }
   .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+  .dash-charts-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.2rem; }
+  .dash-chart-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1rem; gap:0.5rem; }
+  .dash-chart-head h4 { margin:0; }
+  .dash-chart-sub { font-size:0.66rem; color:var(--muted); white-space:nowrap; }
+  .dash-chart-rows { display:flex; flex-direction:column; gap:0.85rem; }
+  .dash-chart-row { display:flex; align-items:center; gap:0.7rem; }
+  .dash-chart-icon { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .dash-chart-mid { flex:1; min-width:0; }
+  .dash-chart-label { font-size:0.82rem; font-weight:700; margin-bottom:0.3rem; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .dash-chart-track { height:9px; border-radius:6px; background:var(--mist); overflow:hidden; }
+  .dash-chart-fill { height:100%; border-radius:6px; }
+  .dash-chart-value { font-size:0.85rem; font-weight:800; min-width:18px; text-align:right; flex-shrink:0; color:var(--ink); }
+  .dash-donut-wrap { display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap; }
+  .dash-donut { width:110px; height:110px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .dash-donut-hole { width:58px; height:58px; border-radius:50%; background:var(--white); }
+  .dash-donut-legend { display:flex; flex-direction:column; gap:0.5rem; font-size:0.8rem; flex:1; min-width:120px; }
+  .dash-donut-legend-item { display:flex; align-items:center; gap:0.5rem; }
+  .dash-donut-legend-item .dot { width:11px; height:11px; border-radius:50%; flex-shrink:0; }
 
   .ai-answer-box { white-space:pre-line; font-size:0.87rem; line-height:1.7; background:var(--white); border:1px solid var(--mist); padding:1.1rem; border-radius:14px; margin-top:1rem; display:flex; gap:0.6rem; }
   .ai-answer-box .icon { flex-shrink:0; color:var(--purple); margin-top:0.15rem; }
@@ -348,6 +366,20 @@
       <div class="form-group"><label>Objetivo da combinação (opcional)</label><input type="text" id="combineGoal" class="form-control" placeholder="Ex: quero decidir algo importante mantendo o foco" /></div>
       <button class="btn-primary" style="width:100%; justify-content:center;" onclick="analyzeCombination()"><span class="icon" data-icon="shuffle" data-size="16"></span> Analisar Combinação</button>
       <div id="combineResult"></div>
+    </div>
+
+    <div class="section-block">
+      <h4 style="margin-bottom:0.8rem;"><span class="icon" data-icon="leaf" data-size="16"></span> Combinar com uma Planta</h4>
+      <div class="form-group"><label>Nome da planta</label><input type="text" id="combinePlantName" class="form-control" placeholder="Ex: alecrim, lavanda, arruda..." /></div>
+      <button class="btn-primary" style="width:100%; justify-content:center;" onclick="findCrystalForPlant()"><span class="icon" data-icon="search" data-size="16"></span> Ver qual cristal mais combina</button>
+      <div id="combinePlantResult"></div>
+    </div>
+
+    <div class="section-block">
+      <h4 style="margin-bottom:0.8rem;"><span class="icon" data-icon="incense" data-size="16"></span> Combinar com um Incenso</h4>
+      <div class="form-group"><label>Nome do incenso</label><input type="text" id="combineIncenseName" class="form-control" placeholder="Ex: sândalo, palo santo, mirra..." /></div>
+      <button class="btn-primary" style="width:100%; justify-content:center;" onclick="findCrystalForIncense()"><span class="icon" data-icon="search" data-size="16"></span> Ver qual cristal mais combina</button>
+      <div id="combineIncenseResult"></div>
     </div>
   </section>
 
@@ -670,9 +702,10 @@
 
     <div class="section-block">
       <h4><span class="icon" data-icon="target" data-size="17"></span> Últimas Práticas</h4>
+      <div class="form-group"><label>Data da prática</label><input type="date" id="careDateInput" class="form-control" /></div>
       <div class="form-row">
-        <button class="btn-secondary" onclick="recordCare('lastCleaning')"><span class="icon" data-icon="droplet" data-size="14"></span> Limpeza Hoje</button>
-        <button class="btn-secondary" onclick="recordCare('lastEnergization')"><span class="icon" data-icon="sun" data-size="14"></span> Energização Hoje</button>
+        <button class="btn-secondary" onclick="recordCare('lastCleaning')"><span class="icon" data-icon="droplet" data-size="14"></span> Registrar Limpeza</button>
+        <button class="btn-secondary" onclick="recordCare('lastEnergization')"><span class="icon" data-icon="sun" data-size="14"></span> Registrar Energização</button>
       </div>
       <div id="detailCareStats" style="margin-top:0.8rem; font-size:0.85rem;"></div>
     </div>
@@ -1626,6 +1659,10 @@ function renderCrystalDetail(id) {
   const c = allCrystals.find(x => x.firestoreId === id);
   if (!c) return;
 
+  const todayStr = new Date().toISOString().split('T')[0];
+  const careDateEl = document.getElementById('careDateInput');
+  if (careDateEl) { careDateEl.max = todayStr; if (!careDateEl.value) careDateEl.value = todayStr; }
+
   document.getElementById('detailName').innerText = c.nickname || c.name;
 
   const photoEl = document.getElementById('detailPhoto');
@@ -1737,9 +1774,15 @@ function renderCrystalDetail(id) {
 
 window.recordCare = async function(careType) {
   if (!currentDetailId) return;
-  const now = new Date().toISOString();
+  const dateEl = document.getElementById('careDateInput');
+  const chosen = dateEl && dateEl.value ? dateEl.value : null;
+  if (chosen && chosen > new Date().toISOString().split('T')[0]) { showToast('A data não pode ser no futuro.', 'error'); return; }
+  const iso = chosen ? new Date(chosen + 'T12:00:00').toISOString() : new Date().toISOString();
   try {
-    await updateDoc(doc(db, "crystals", currentDetailId), { [careType]: now, history: arrayUnion({ type: careType, date: now }) });
+    const c = allCrystals.find(x => x.firestoreId === currentDetailId);
+    const updates = { history: arrayUnion({ type: careType, date: iso }) };
+    if (!c || !c[careType] || new Date(iso) > new Date(c[careType])) updates[careType] = iso;
+    await updateDoc(doc(db, "crystals", currentDetailId), updates);
     showToast('Prática registrada.', 'success');
   } catch (err) { showToast('Erro ao registrar: ' + err.message, 'error'); }
 };
@@ -1825,6 +1868,46 @@ function renderGuide() {
   document.getElementById('corrCrystalSelect').innerHTML = allCrystals.map(c => `<option value="${c.firestoreId}">${c.nickname||c.name}</option>`).join('') || '<option>Nenhum cristal cadastrado</option>';
 }
 
+window.findCrystalForPlant = async function() {
+  const name = document.getElementById('combinePlantName').value.trim();
+  if (!name) { showToast('Digite o nome da planta.', 'error'); return; }
+  const resultEl = document.getElementById('combinePlantResult');
+  resultEl.innerHTML = `<div class="ai-answer-box">${icon('search',18)}<span>Buscando...</span></div>`;
+  const q = name.toLowerCase();
+  const direct = allCrystals.filter(c => (c.associatedPlant||'').toLowerCase().includes(q));
+  if (direct.length) {
+    resultEl.innerHTML = direct.map(c => `<div class="ai-answer-box">${icon('leaf',18)}<span><b>${c.nickname||c.name}</b> já tem <b>${c.associatedPlant}</b> cadastrada como planta associada na ficha.</span></div>`).join('');
+    return;
+  }
+  if (!allCrystals.length) { resultEl.innerHTML = `<p style="font-size:0.8rem; color:var(--muted);">Cadastre pelo menos 1 cristal.</p>`; return; }
+  const context = allCrystals.map(c => ({ nome: c.nickname||c.name, elemento: dominantElement(c), planeta: c.planet, chakra: c.chakra, signos: c.signs, plantaJaCadastrada: c.associatedPlant||null }));
+  const prompt = `Planta: "${name}". Coleção de cristais (JSON): ${JSON.stringify(context)}. Diga QUAL ÚNICO cristal desta coleção mais combina simbolicamente com essa planta (escolha só o melhor) e explique por quê em 2-4 frases. Se nenhum combinar bem, diga isso. Português, texto corrido.`;
+  try { resultEl.innerHTML = `<div class="ai-answer-box">${icon('leaf',18)}<span>${await callGeminiWorker(prompt)}</span></div>`; }
+  catch (err) { resultEl.innerHTML = `<div class="ai-answer-box" style="border-color:var(--red-alert); color:var(--red-alert);">${icon('alert-triangle',18)}<span>${err.message}</span></div>`; }
+};
+
+window.findCrystalForIncense = async function() {
+  const name = document.getElementById('combineIncenseName').value.trim();
+  if (!name) { showToast('Digite o nome do incenso.', 'error'); return; }
+  const resultEl = document.getElementById('combineIncenseResult');
+  resultEl.innerHTML = `<div class="ai-answer-box">${icon('search',18)}<span>Buscando...</span></div>`;
+  const q = name.toLowerCase();
+  const directCleaning = allCrystals.filter(c => (c.cleaningIncense||'').toLowerCase().includes(q));
+  const directEnergizing = allCrystals.filter(c => (c.energizingIncense||'').toLowerCase().includes(q));
+  if (directCleaning.length || directEnergizing.length) {
+    let html = '';
+    directCleaning.forEach(c => { html += `<div class="ai-answer-box">${icon('droplet',18)}<span><b>${c.nickname||c.name}</b> já usa <b>${c.cleaningIncense}</b> para <b>Limpeza</b>.</span></div>`; });
+    directEnergizing.forEach(c => { html += `<div class="ai-answer-box">${icon('sun',18)}<span><b>${c.nickname||c.name}</b> já usa <b>${c.energizingIncense}</b> para <b>Energização</b>.</span></div>`; });
+    resultEl.innerHTML = html;
+    return;
+  }
+  if (!allCrystals.length) { resultEl.innerHTML = `<p style="font-size:0.8rem; color:var(--muted);">Cadastre pelo menos 1 cristal.</p>`; return; }
+  const context = allCrystals.map(c => ({ nome: c.nickname||c.name, elemento: dominantElement(c), planeta: c.planet, chakra: c.chakra, incensoLimpezaJaCadastrado: c.cleaningIncense||null, incensoEnergizacaoJaCadastrado: c.energizingIncense||null }));
+  const prompt = `Incenso: "${name}". Coleção de cristais (JSON): ${JSON.stringify(context)}. Diga QUAL ÚNICO cristal desta coleção mais combina simbolicamente com esse incenso (escolha só o melhor) e explique por quê em 2-4 frases. Depois classifique claramente se esse incenso combina mais para LIMPEZA ou para ENERGIZAÇÃO desse cristal (escolha só uma das duas opções). Se nenhum combinar bem, diga isso. Português, texto corrido.`;
+  try { resultEl.innerHTML = `<div class="ai-answer-box">${icon('incense',18)}<span>${await callGeminiWorker(prompt)}</span></div>`; }
+  catch (err) { resultEl.innerHTML = `<div class="ai-answer-box" style="border-color:var(--red-alert); color:var(--red-alert);">${icon('alert-triangle',18)}<span>${err.message}</span></div>`; }
+};
+
 window.switchGuidePanel = function(panel) {
   ['moon','sun','corr'].forEach(p => { document.getElementById('guidePanel' + p.charAt(0).toUpperCase() + p.slice(1)).style.display = (p === panel) ? 'block' : 'none'; });
 };
@@ -1865,11 +1948,58 @@ window.askAI = async function() {
 };
 
 // ==================== DASHBOARD ====================
+// ==================== DASHBOARD: helpers de gráficos ====================
+const DASH_PALETTE = ['#ef4444','#f97316','#f59e0b','#84cc16','#10b981','#06b6d4','#3b82f6','#6366f1','#8b5cf6','#ec4899'];
+const SEPHIRAH_COLORS = { Keter:'#c4b5fd', Chokmah:'#60a5fa', Binah:'#6b7280', Chesed:'#3b82f6', Gevurah:'#ef4444', Tiferet:'#f59e0b', Netzach:'#10b981', Hod:'#f97316', Yesod:'#8b5cf6', Malkuth:'#92400e' };
+
+function countBy(list, fn) {
+  const counts = {};
+  list.forEach(item => { const v = fn(item); if (v) counts[v] = (counts[v]||0) + 1; });
+  return counts;
+}
+
+function dashBarChart(title, subtitle, countsObj, colorFn, iconFn) {
+  const entries = Object.entries(countsObj).sort((a,b) => b[1]-a[1]);
+  if (!entries.length) return `<div class="section-block"><h4 style="margin-bottom:0.4rem;">${title}</h4><p style="color:var(--muted); font-size:0.85rem;">Sem dados ainda.</p></div>`;
+  const max = Math.max(...entries.map(e => e[1]));
+  return `<div class="section-block dash-chart">
+    <div class="dash-chart-head"><h4>${title}</h4><span class="dash-chart-sub">${subtitle}</span></div>
+    <div class="dash-chart-rows">
+      ${entries.map(([label,value],i) => { const color = colorFn(label,i); return `
+        <div class="dash-chart-row">
+          <span class="dash-chart-icon" style="background:${color};">${iconFn(label,i)}</span>
+          <div class="dash-chart-mid">
+            <div class="dash-chart-label">${label}</div>
+            <div class="dash-chart-track"><div class="dash-chart-fill" style="width:${(value/max*100)}%; background:${color};"></div></div>
+          </div>
+          <span class="dash-chart-value">${value}</span>
+        </div>`; }).join('')}
+    </div>
+  </div>`;
+}
+
+function dashDonutChart(title, dataArr) {
+  const total = dataArr.reduce((s,d) => s+d.value, 0);
+  if (!total) return `<div class="section-block"><h4 style="margin-bottom:0.4rem;">${title}</h4><p style="color:var(--muted); font-size:0.85rem;">Sem dados ainda.</p></div>`;
+  let acc = 0;
+  const stops = dataArr.map(d => {
+    const start = acc/total*360; acc += d.value; const end = acc/total*360;
+    return `${d.color} ${start}deg ${end}deg`;
+  }).join(', ');
+  return `<div class="section-block">
+    <h4 style="margin-bottom:0.9rem;">${title}</h4>
+    <div class="dash-donut-wrap">
+      <div class="dash-donut" style="background:conic-gradient(${stops});"><div class="dash-donut-hole"></div></div>
+      <div class="dash-donut-legend">
+        ${dataArr.map(d => `<div class="dash-donut-legend-item"><span class="dot" style="background:${d.color};"></span>${d.label}: <b>${Math.round(d.value/total*100)}%</b> (${d.value})</div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
 function renderDashboard() {
   const el = document.getElementById('dashboardContent');
   const total = allCrystals.length;
-  const byElement = {}; allCrystals.forEach(c => { const e = dominantElement(c); if (e) byElement[e] = (byElement[e]||0)+1; });
-  const byChakra = {}; allCrystals.forEach(c => { if (c.chakra) byChakra[c.chakra] = (byChakra[c.chakra]||0)+1; });
   const intentionCount = {};
   allCrystals.forEach(c => (c.intentions||[]).forEach(i => { intentionCount[i] = (intentionCount[i]||0)+1; }));
   const topIntentions = Object.entries(intentionCount).sort((a,b) => b[1]-a[1]).slice(0,6);
@@ -1883,14 +2013,64 @@ function renderDashboard() {
     return;
   }
 
+  // ---- Agregações ----
+  const byElement = countBy(allCrystals, c => dominantElement(c));
+  const byChakra = countBy(allCrystals, c => c.chakra);
+  const bySign = {}; allCrystals.forEach(c => (c.signs||[]).forEach(s => { bySign[s] = (bySign[s]||0)+1; }));
+  const byPlanet = countBy(allCrystals, c => c.planet);
+  const byKabbalah = countBy(allCrystals, c => c.kabbalahSephirah);
+  const byTarot = countBy(allCrystals, c => c.tarotCard);
+  const byGeometry = countBy(allCrystals, c => c.geometry);
+  const byNumerology = {}; allCrystals.forEach(c => { const n = calculateNumerology(c.name); if (n) byNumerology[n] = (byNumerology[n]||0)+1; });
+  const bySigil = countBy(allCrystals, c => c.esotericSymbol);
+  const byPolarity = countBy(allCrystals, c => c.polarity);
+  const byYinYang = countBy(allCrystals, c => c.yinYang);
+
+  const polarityData = Object.entries(byPolarity).map(([k,v]) => ({ label:k, value:v, color: k==='Solar' ? PLANET_COLORS['Sol'] : PLANET_COLORS['Lua'] }));
+  const yinYangData = Object.entries(byYinYang).map(([k,v]) => ({ label:k, value:v, color: k==='Yin' ? '#312e81' : '#f59e0b' }));
+
   el.innerHTML = `
     <div class="stats-grid">
       <div class="stat-card"><div class="icon-badge">${icon('gem',20)}</div><div class="num">${total}</div><div class="label">Cristais na coleção</div></div>
       <div class="stat-card"><div class="icon-badge">${icon('sparkle',20)}</div><div class="num" style="font-size:1rem;">${lastAdded ? (lastAdded.nickname||lastAdded.name) : '—'}</div><div class="label">Último cadastrado</div></div>
       <div class="stat-card"><div class="icon-badge">${icon('moon',20)}</div><div class="num" style="font-size:1rem;">${getMoonPhase()}</div><div class="label">Fase lunar atual</div></div>
     </div>
-    <div class="section-block"><h4>${icon('earth',17)} Coleção por Elemento Predominante</h4><div>${Object.entries(byElement).length ? Object.entries(byElement).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<span class="tag">${elementIconSVG(k,12)} ${k}: ${v}</span>`).join('') : '<p style="color:var(--muted); font-size:0.85rem;">Sem dados ainda.</p>'}</div></div>
-    <div class="section-block"><h4>${icon('droplet2',17)} Coleção por Chakra</h4><div>${Object.entries(byChakra).length ? Object.entries(byChakra).sort((a,b)=>b[1]-a[1]).map(([k,v]) => `<span class="chakra-badge" style="background:${CHAKRA_COLORS[k]}22; color:${CHAKRA_COLORS[k]};">${chakraImg(k,16)} ${k}: ${v}</span>`).join('') : '<p style="color:var(--muted); font-size:0.85rem;">Sem dados ainda.</p>'}</div></div>
+
+    <div class="dash-charts-grid" style="margin-bottom:1.2rem;">
+      ${dashDonutChart('Solar / Lunar', polarityData)}
+      ${dashDonutChart('Yin / Yang', yinYangData)}
+    </div>
+
+    <div class="dash-charts-grid">
+      ${dashBarChart('7 Chakras', 'pedras correspondentes', byChakra,
+          (name) => CHAKRA_COLORS[name] || '#999',
+          () => `<span style="width:8px;height:8px;border-radius:50%;background:#fff;display:block;"></span>`)}
+      ${dashBarChart('Signos', 'pedras correspondentes', bySign,
+          (name) => zodiacColor(name),
+          (name) => `<span style="color:#fff; font-size:15px; line-height:1;">${ZODIAC_SYMBOLS[name]||''}</span>`)}
+      ${dashBarChart('Planetas', 'pedras correspondentes', byPlanet,
+          (name) => PLANET_COLORS[name] || '#999',
+          (name) => `<span style="color:#fff; font-size:15px; line-height:1;">${PLANET_SYMBOLS[name]||''}</span>`)}
+      ${dashBarChart('Elementos', 'pedras correspondentes', byElement,
+          (name) => ELEMENT_COLORS[name] || '#999',
+          (name) => { const fn = ELEMENT_ALCHEMY[name]; return `<svg width="16" height="16" viewBox="0 0 24 24">${fn?fn('#fff'):''}</svg>`; })}
+      ${dashBarChart('Cabala (Sephirot)', 'pedras correspondentes', byKabbalah,
+          (name) => SEPHIRAH_COLORS[name] || '#8b5cf6',
+          () => icon('kabbalah',15,'#fff'))}
+      ${dashBarChart('Tarot', 'pedras correspondentes', byTarot,
+          (name,i) => DASH_PALETTE[i % DASH_PALETTE.length],
+          () => icon('tarot',15,'#fff'))}
+      ${dashBarChart('Geometria', 'pedras correspondentes', byGeometry,
+          (name,i) => DASH_PALETTE[i % DASH_PALETTE.length],
+          () => icon('gem',15,'#fff'))}
+      ${dashBarChart('Numerologia', 'pedras correspondentes', byNumerology,
+          (name,i) => DASH_PALETTE[i % DASH_PALETTE.length],
+          () => icon('hash',15,'#fff'))}
+      ${dashBarChart('Sigilo Mágico', 'pedras correspondentes', bySigil,
+          (name,i) => DASH_PALETTE[i % DASH_PALETTE.length],
+          (name) => esotericSigilSVG(name, 15, '#fff'))}
+    </div>
+
     <div class="section-block"><h4>${icon('target',17)} Intenções mais utilizadas</h4><div>${topIntentions.length ? topIntentions.map(([k,v]) => `<span class="tag">${k}: ${v}</span>`).join('') : '<p style="color:var(--muted); font-size:0.85rem;">Sem dados ainda.</p>'}</div></div>
     <div class="section-block"><h4>${icon('layers',17)} Últimas Fotos</h4><div class="gallery-grid">${recentPhotos.length ? recentPhotos.map(p => `<div style="text-align:center;"><img src="${p.photo}" style="width:100%;height:90px;object-fit:cover;border-radius:10px;"/><div style="font-size:0.6rem;color:var(--muted);">${p.crystal}</div></div>`).join('') : '<p style="color:var(--muted); font-size:0.85rem;">Nenhuma foto ainda.</p>'}</div></div>
   `;
