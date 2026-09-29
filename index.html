@@ -1951,6 +1951,19 @@ window.askAI = async function() {
 // ==================== DASHBOARD: helpers de gráficos ====================
 const DASH_PALETTE = ['#ef4444','#f97316','#f59e0b','#84cc16','#10b981','#06b6d4','#3b82f6','#6366f1','#8b5cf6','#ec4899'];
 const SEPHIRAH_COLORS = { Keter:'#c4b5fd', Chokmah:'#60a5fa', Binah:'#6b7280', Chesed:'#3b82f6', Gevurah:'#ef4444', Tiferet:'#f59e0b', Netzach:'#10b981', Hod:'#f97316', Yesod:'#8b5cf6', Malkuth:'#92400e' };
+// Ícones brancos distintos por chakra (linha/forma simples reconhecível em tamanho pequeno)
+const CHAKRA_DASH_ICONS = {
+  'Raiz': '<path d="M4 6h16l-8 14z" fill="#fff" stroke="none"/>',
+  'Sacral': '<path d="M14 4a8 8 0 1 0 0 16 6.2 6.2 0 1 1 0-16z" fill="#fff" stroke="none"/>',
+  'Plexo Solar': '<circle cx="12" cy="12" r="3.6" fill="#fff" stroke="none"/><line x1="12" y1="2" x2="12" y2="5" stroke="#fff" stroke-width="2"/><line x1="12" y1="19" x2="12" y2="22" stroke="#fff" stroke-width="2"/><line x1="2" y1="12" x2="5" y2="12" stroke="#fff" stroke-width="2"/><line x1="19" y1="12" x2="22" y2="12" stroke="#fff" stroke-width="2"/><line x1="5.6" y1="5.6" x2="7.4" y2="7.4" stroke="#fff" stroke-width="2"/><line x1="16.6" y1="16.6" x2="18.4" y2="18.4" stroke="#fff" stroke-width="2"/><line x1="5.6" y1="18.4" x2="7.4" y2="16.6" stroke="#fff" stroke-width="2"/><line x1="16.6" y1="7.4" x2="18.4" y2="5.6" stroke="#fff" stroke-width="2"/>',
+  'Cardíaco': '<path d="M12 20s-7-4.4-7-9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 7 3.5c0 5.1-7 9.5-7 9.5z" fill="#fff" stroke="none"/>',
+  'Laríngeo': '<line x1="6" y1="9" x2="18" y2="9" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="12.5" x2="18" y2="12.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="16" x2="14" y2="16" stroke="#fff" stroke-width="2" stroke-linecap="round"/>',
+  'Terceiro Olho': '<path d="M2 12s4-6.5 10-6.5 10 6.5 10 6.5-4 6.5-10 6.5-10-6.5-10-6.5z" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="2.6" fill="#fff" stroke="none"/>',
+  'Coronário': '<path d="M4 18h16l-1.2-8-3.8 4-3-6.5-3 6.5-3.8-4z" fill="#fff" stroke="none"/>'
+};
+function dashChakraIcon(name) {
+  return `<svg width="16" height="16" viewBox="0 0 24 24">${CHAKRA_DASH_ICONS[name] || '<circle cx="12" cy="12" r="3" fill="#fff" stroke="none"/>'}</svg>`;
+}
 
 function countBy(list, fn) {
   const counts = {};
@@ -1958,7 +1971,7 @@ function countBy(list, fn) {
   return counts;
 }
 
-function dashBarChart(title, subtitle, countsObj, colorFn, iconFn) {
+function dashBarChart(title, subtitle, countsObj, colorFn, iconFn, transparentIcon=false) {
   const entries = Object.entries(countsObj).sort((a,b) => b[1]-a[1]);
   if (!entries.length) return `<div class="section-block"><h4 style="margin-bottom:0.4rem;">${title}</h4><p style="color:var(--muted); font-size:0.85rem;">Sem dados ainda.</p></div>`;
   const max = Math.max(...entries.map(e => e[1]));
@@ -1967,7 +1980,7 @@ function dashBarChart(title, subtitle, countsObj, colorFn, iconFn) {
     <div class="dash-chart-rows">
       ${entries.map(([label,value],i) => { const color = colorFn(label,i); return `
         <div class="dash-chart-row">
-          <span class="dash-chart-icon" style="background:${color};">${iconFn(label,i)}</span>
+          <span class="dash-chart-icon" style="background:${transparentIcon ? 'transparent' : color};">${iconFn(label,i)}</span>
           <div class="dash-chart-mid">
             <div class="dash-chart-label">${label}</div>
             <div class="dash-chart-track"><div class="dash-chart-fill" style="width:${(value/max*100)}%; background:${color};"></div></div>
@@ -2044,10 +2057,11 @@ function renderDashboard() {
     <div class="dash-charts-grid">
       ${dashBarChart('7 Chakras', 'pedras correspondentes', byChakra,
           (name) => CHAKRA_COLORS[name] || '#999',
-          () => `<span style="width:8px;height:8px;border-radius:50%;background:#fff;display:block;"></span>`)}
+          (name) => dashChakraIcon(name))}
       ${dashBarChart('Signos', 'pedras correspondentes', bySign,
           (name) => zodiacColor(name),
-          (name) => `<span style="color:#fff; font-size:15px; line-height:1;">${ZODIAC_SYMBOLS[name]||''}</span>`)}
+          (name) => zodiacIconSVG(name, 26),
+          true)}
       ${dashBarChart('Planetas', 'pedras correspondentes', byPlanet,
           (name) => PLANET_COLORS[name] || '#999',
           (name) => `<span style="color:#fff; font-size:15px; line-height:1;">${PLANET_SYMBOLS[name]||''}</span>`)}
