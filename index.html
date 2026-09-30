@@ -176,7 +176,7 @@
   .dash-chart-value { font-size:0.85rem; font-weight:800; min-width:18px; text-align:right; flex-shrink:0; color:var(--ink); }
   .dash-donut-wrap { display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap; }
   .dash-donut { width:110px; height:110px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
-  .dash-donut-hole { width:58px; height:58px; border-radius:50%; background:var(--white); }
+  .dash-donut-hole { width:58px; height:58px; border-radius:50%; background:var(--white); display:flex; align-items:center; justify-content:center; }
   .dash-donut-legend { display:flex; flex-direction:column; gap:0.5rem; font-size:0.8rem; flex:1; min-width:120px; }
   .dash-donut-legend-item { display:flex; align-items:center; gap:0.5rem; }
   .dash-donut-legend-item .dot { width:11px; height:11px; border-radius:50%; flex-shrink:0; }
@@ -1951,18 +1951,24 @@ window.askAI = async function() {
 // ==================== DASHBOARD: helpers de gráficos ====================
 const DASH_PALETTE = ['#ef4444','#f97316','#f59e0b','#84cc16','#10b981','#06b6d4','#3b82f6','#6366f1','#8b5cf6','#ec4899'];
 const SEPHIRAH_COLORS = { Keter:'#c4b5fd', Chokmah:'#60a5fa', Binah:'#6b7280', Chesed:'#3b82f6', Gevurah:'#ef4444', Tiferet:'#f59e0b', Netzach:'#10b981', Hod:'#f97316', Yesod:'#8b5cf6', Malkuth:'#92400e' };
-// Ícones brancos distintos por chakra (linha/forma simples reconhecível em tamanho pequeno)
-const CHAKRA_DASH_ICONS = {
-  'Raiz': '<path d="M4 6h16l-8 14z" fill="#fff" stroke="none"/>',
-  'Sacral': '<path d="M14 4a8 8 0 1 0 0 16 6.2 6.2 0 1 1 0-16z" fill="#fff" stroke="none"/>',
-  'Plexo Solar': '<circle cx="12" cy="12" r="3.6" fill="#fff" stroke="none"/><line x1="12" y1="2" x2="12" y2="5" stroke="#fff" stroke-width="2"/><line x1="12" y1="19" x2="12" y2="22" stroke="#fff" stroke-width="2"/><line x1="2" y1="12" x2="5" y2="12" stroke="#fff" stroke-width="2"/><line x1="19" y1="12" x2="22" y2="12" stroke="#fff" stroke-width="2"/><line x1="5.6" y1="5.6" x2="7.4" y2="7.4" stroke="#fff" stroke-width="2"/><line x1="16.6" y1="16.6" x2="18.4" y2="18.4" stroke="#fff" stroke-width="2"/><line x1="5.6" y1="18.4" x2="7.4" y2="16.6" stroke="#fff" stroke-width="2"/><line x1="16.6" y1="7.4" x2="18.4" y2="5.6" stroke="#fff" stroke-width="2"/>',
-  'Cardíaco': '<path d="M12 20s-7-4.4-7-9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 7 3.5c0 5.1-7 9.5-7 9.5z" fill="#fff" stroke="none"/>',
-  'Laríngeo': '<line x1="6" y1="9" x2="18" y2="9" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="12.5" x2="18" y2="12.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="16" x2="14" y2="16" stroke="#fff" stroke-width="2" stroke-linecap="round"/>',
-  'Terceiro Olho': '<path d="M2 12s4-6.5 10-6.5 10 6.5 10 6.5-4 6.5-10 6.5-10-6.5-10-6.5z" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="2.6" fill="#fff" stroke="none"/>',
-  'Coronário': '<path d="M4 18h16l-1.2-8-3.8 4-3-6.5-3 6.5-3.8-4z" fill="#fff" stroke="none"/>'
-};
-function dashChakraIcon(name) {
-  return `<svg width="16" height="16" viewBox="0 0 24 24">${CHAKRA_DASH_ICONS[name] || '<circle cx="12" cy="12" r="3" fill="#fff" stroke="none"/>'}</svg>`;
+// Ordem anatômica fixa, do Coronário (topo) até a Raiz (embaixo) — não ordenado por contagem
+const CHAKRA_ORDER = ['Coronário','Terceiro Olho','Laríngeo','Cardíaco','Plexo Solar','Sacral','Raiz'];
+function dashChakraChart(countsObj) {
+  const max = Math.max(...CHAKRA_ORDER.map(k => countsObj[k]||0), 1);
+  return `<div class="section-block dash-chart">
+    <div class="dash-chart-head"><h4>7 Chakras</h4><span class="dash-chart-sub">pedras correspondentes</span></div>
+    <div class="dash-chart-rows">
+      ${CHAKRA_ORDER.map(name => { const value = countsObj[name]||0; const color = CHAKRA_COLORS[name]||'#999'; return `
+        <div class="dash-chart-row">
+          <span class="dash-chart-icon" style="background:${color};">${chakraImg(name,18)}</span>
+          <div class="dash-chart-mid">
+            <div class="dash-chart-label">${name}</div>
+            <div class="dash-chart-track"><div class="dash-chart-fill" style="width:${(value/max*100)}%; background:${color};"></div></div>
+          </div>
+          <span class="dash-chart-value">${value}</span>
+        </div>`; }).join('')}
+    </div>
+  </div>`;
 }
 
 function countBy(list, fn) {
@@ -1991,7 +1997,7 @@ function dashBarChart(title, subtitle, countsObj, colorFn, iconFn, transparentIc
   </div>`;
 }
 
-function dashDonutChart(title, dataArr) {
+function dashDonutChart(title, dataArr, centerIconHtml='') {
   const total = dataArr.reduce((s,d) => s+d.value, 0);
   if (!total) return `<div class="section-block"><h4 style="margin-bottom:0.4rem;">${title}</h4><p style="color:var(--muted); font-size:0.85rem;">Sem dados ainda.</p></div>`;
   let acc = 0;
@@ -2002,7 +2008,7 @@ function dashDonutChart(title, dataArr) {
   return `<div class="section-block">
     <h4 style="margin-bottom:0.9rem;">${title}</h4>
     <div class="dash-donut-wrap">
-      <div class="dash-donut" style="background:conic-gradient(${stops});"><div class="dash-donut-hole"></div></div>
+      <div class="dash-donut" style="background:conic-gradient(${stops});"><div class="dash-donut-hole">${centerIconHtml}</div></div>
       <div class="dash-donut-legend">
         ${dataArr.map(d => `<div class="dash-donut-legend-item"><span class="dot" style="background:${d.color};"></span>${d.label}: <b>${Math.round(d.value/total*100)}%</b> (${d.value})</div>`).join('')}
       </div>
@@ -2050,14 +2056,12 @@ function renderDashboard() {
     </div>
 
     <div class="dash-charts-grid" style="margin-bottom:1.2rem;">
-      ${dashDonutChart('Solar / Lunar', polarityData)}
+      ${dashDonutChart('Solar / Lunar (Polaridade)', polarityData, yinYangIcon('Yang', 30))}
       ${dashDonutChart('Yin / Yang', yinYangData)}
     </div>
 
     <div class="dash-charts-grid">
-      ${dashBarChart('7 Chakras', 'pedras correspondentes', byChakra,
-          (name) => CHAKRA_COLORS[name] || '#999',
-          (name) => dashChakraIcon(name))}
+      ${dashChakraChart(byChakra)}
       ${dashBarChart('Signos', 'pedras correspondentes', bySign,
           (name) => zodiacColor(name),
           (name) => zodiacIconSVG(name, 26),
