@@ -168,7 +168,7 @@
   .dash-chart-sub { font-size:0.66rem; color:var(--muted); white-space:nowrap; }
   .dash-chart-rows { display:flex; flex-direction:column; gap:0.85rem; }
   .dash-chart-row { display:flex; align-items:center; gap:0.7rem; }
-  .dash-chart-icon { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .dash-chart-icon { width:34px; height:34px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .dash-chart-mid { flex:1; min-width:0; }
   .dash-chart-label { font-size:0.82rem; font-weight:700; margin-bottom:0.3rem; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .dash-chart-track { height:9px; border-radius:6px; background:var(--mist); overflow:hidden; }
@@ -513,7 +513,10 @@
 
       <div class="accordion-item">
         <button type="button" class="accordion-header" onclick="toggleAccordion(this)"><span class="icon" data-icon="zodiac" data-size="16"></span><span>3. Signos</span><span class="chevron icon" data-icon="chevron-down" data-size="16"></span></button>
-        <div class="accordion-body"><div class="icon-checkbox-grid" id="zodiacFormGrid"></div></div>
+        <div class="accordion-body">
+          <p class="ai-note" style="margin-bottom:0.6rem;"><span class="icon" data-icon="info" data-size="13"></span> Selecione até 3 signos — os mais fortemente associados a este cristal.</p>
+          <div class="icon-checkbox-grid" id="zodiacFormGrid"></div>
+        </div>
       </div>
 
       <div class="accordion-item">
@@ -585,16 +588,33 @@
           <div class="form-group"><label>Sigilo mágico / ícone esotérico</label>
             <select id="cEsotericSymbol" class="form-control">
               <option value="">Selecione um sigilo...</option>
-              <option value="Pentagrama">Pentagrama</option>
-              <option value="Hexagrama (Estrela de Salomão)">Hexagrama (Estrela de Salomão)</option>
-              <option value="Triquetra">Triquetra</option>
-              <option value="Ankh">Ankh</option>
-              <option value="Olho de Hórus">Olho de Hórus</option>
-              <option value="Flor da Vida">Flor da Vida</option>
-              <option value="Triskele">Triskele</option>
-              <option value="Cruz Solar">Cruz Solar</option>
-              <option value="Ouroboros">Ouroboros</option>
-              <option value="Espiral Lunar">Espiral Lunar</option>
+              <optgroup label="Proteção e Magia Cerimonial">
+                <option>Pentagrama</option><option>Pentagrama Invertido</option><option>Hexagrama</option>
+                <option>Sigilo de Salomão</option><option>Pentáculo</option>
+              </optgroup>
+              <optgroup label="Geometria Sagrada">
+                <option>Sri Yantra</option><option>Flor da Vida</option><option>Vesica Piscis</option>
+                <option>Semente da Vida</option><option>Fruto da Vida</option><option>Árvore da Vida</option><option>Merkabah</option>
+              </optgroup>
+              <optgroup label="Tradição Nórdica">
+                <option>Aegishjalmur</option><option>Vegvísir</option><option>Runas</option><option>Bindrunes</option>
+              </optgroup>
+              <optgroup label="Tradição Céltica">
+                <option>Cruz Celta</option><option>Nó Celta</option>
+              </optgroup>
+              <optgroup label="Tradição Egípcia">
+                <option>Cruz Ansata</option><option>Olho de Hórus</option><option>Olho de Rá</option><option>Escaravelho</option>
+              </optgroup>
+              <optgroup label="Tradição Hindu">
+                <option>Om</option><option>Yantras</option><option>Mudras</option>
+              </optgroup>
+              <optgroup label="Tradição Budista / Zen">
+                <option>Enso</option><option>Roda do Dharma</option><option>Nó Infinito</option>
+              </optgroup>
+              <optgroup label="Símbolos Universais">
+                <option>Cruz Solar</option><option>Espiral</option><option>Espiral Tríplice</option><option>Labirinto</option>
+                <option>Serpente</option><option>Tao (Yin-Yang)</option><option>Tridente</option><option>Lua Crescente</option><option>Sol</option>
+              </optgroup>
             </select>
           </div>
           <div class="form-group"><label>Anexar imagem do sigilo (opcional)</label><input type="file" id="cSigilImage" accept="image/*" class="form-control" onchange="previewSigilImage(event)" /><div id="sigilPreviewBox" style="margin-top:0.5rem;"></div></div>
@@ -881,19 +901,89 @@ function polarityIcon(polarity, size=20) {
 // ---- Sigilos Mágicos / Ícones Esotéricos (conjunto fixo e nomeado) ----
 const ESOTERIC_SIGILS = {
   'Pentagrama': '<path d="M12 2 L14.35 9.55 L22 9.55 L15.8 14.1 L18.15 21.65 L12 17.1 L5.85 21.65 L8.2 14.1 L2 9.55 L9.65 9.55 Z"/>',
-  'Hexagrama (Estrela de Salomão)': '<path d="M12 3 L20 17 H4 Z"/><path d="M12 21 L4 7 H20 Z"/>',
-  'Triquetra': '<path d="M12 4c-3 3-3 8 0 11c3-3 3-8 0-11z"/><path d="M4.5 16c4-1 7-4 7-8c-4 1-7 4-7 8z"/><path d="M19.5 16c-4-1-7-4-7-8c4 1 7 4 7 8z"/>',
-  'Ankh': '<circle cx="12" cy="7" r="4"/><line x1="12" y1="11" x2="12" y2="22"/><line x1="6" y1="15" x2="18" y2="15"/>',
-  'Olho de Hórus': '<path d="M2 12c4-5 8-6 10-6s6 1 10 6c-4 5-8 6-10 6s-6-1-10-6z"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><path d="M12 18v3l-2 2"/><path d="M8 6c1-2 3-3 5-3"/>',
+  'Pentagrama Invertido': '<g transform="rotate(180 12 12)"><path d="M12 2 L14.35 9.55 L22 9.55 L15.8 14.1 L18.15 21.65 L12 17.1 L5.85 21.65 L8.2 14.1 L2 9.55 L9.65 9.55 Z"/></g>',
+  'Hexagrama': '<path d="M12 3 L20 17 H4 Z"/><path d="M12 21 L4 7 H20 Z"/>',
+  'Sigilo de Salomão': '<circle cx="12" cy="12" r="10"/><path d="M12 5 L18.5 16.5 H5.5 Z"/><path d="M12 19 L5.5 7.5 H18.5 Z"/>',
+  'Pentáculo': '<circle cx="12" cy="12" r="10.3"/><path d="M12 4 L13.9 9.8 L20 9.8 L15.1 13.4 L17 19.2 L12 15.6 L7 19.2 L8.9 13.4 L4 9.8 L10.1 9.8 Z"/>',
+  'Sri Yantra': '<path d="M12 3 L20 18 H4 Z"/><path d="M12 21 L5 8 H19 Z"/><path d="M12 7 L17 16 H7 Z"/>',
   'Flor da Vida': '<circle cx="12" cy="12" r="3.6"/><circle cx="12" cy="5.4" r="3.6"/><circle cx="12" cy="18.6" r="3.6"/><circle cx="6" cy="8.7" r="3.6"/><circle cx="18" cy="8.7" r="3.6"/><circle cx="6" cy="15.3" r="3.6"/><circle cx="18" cy="15.3" r="3.6"/>',
-  'Triskele': '<path d="M12 12c0-4 3-6 5-4s1 6-3 6"/><path d="M12 12c-3-2-6-1-6 3s4 5 6 3"/><path d="M12 12c3 2 3 6-1 7s-6-3-4-6"/>',
+  'Vesica Piscis': '<circle cx="9" cy="12" r="7"/><circle cx="15" cy="12" r="7"/>',
+  'Semente da Vida': '<circle cx="12" cy="12" r="3"/><circle cx="12" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><circle cx="6.8" cy="9" r="3"/><circle cx="17.2" cy="9" r="3"/><circle cx="6.8" cy="15" r="3"/><circle cx="17.2" cy="15" r="3"/>',
+  'Fruto da Vida': '<polygon points="12,3 19.8,7.5 19.8,16.5 12,21 4.2,16.5 4.2,7.5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/>',
+  'Árvore da Vida': '<circle cx="12" cy="3" r="1.3" fill="currentColor" stroke="none"/><circle cx="7" cy="8" r="1.3" fill="currentColor" stroke="none"/><circle cx="17" cy="8" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="7" cy="16" r="1.3" fill="currentColor" stroke="none"/><circle cx="17" cy="16" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="21" r="1.3" fill="currentColor" stroke="none"/><line x1="12" y1="3" x2="7" y2="8"/><line x1="12" y1="3" x2="17" y2="8"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="8" x2="12" y2="12"/><line x1="17" y1="8" x2="12" y2="12"/><line x1="7" y1="8" x2="7" y2="16"/><line x1="17" y1="8" x2="17" y2="16"/><line x1="7" y1="16" x2="12" y2="12"/><line x1="17" y1="16" x2="12" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/><line x1="12" y1="12" x2="12" y2="21"/><line x1="7" y1="16" x2="12" y2="21"/><line x1="17" y1="16" x2="12" y2="21"/>',
+  'Merkabah': '<path d="M12 2 L21 18 H3 Z"/><path d="M12 22 L3 6 H21 Z"/><line x1="12" y1="2" x2="12" y2="22"/>',
+  'Aegishjalmur': '<circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="15.8" y1="15.8" x2="19.7" y2="19.7"/><line x1="12" y1="16" x2="12" y2="22"/><line x1="8.2" y1="15.8" x2="4.3" y2="19.7"/><line x1="8" y1="12" x2="2" y2="12"/><line x1="8.2" y1="8.2" x2="4.3" y2="4.3"/><line x1="12" y1="8" x2="12" y2="2"/><line x1="15.8" y1="8.2" x2="19.7" y2="4.3"/>',
+  'Vegvísir': '<circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><line x1="16" y1="12" x2="21" y2="12"/><line x1="19.5" y1="10.5" x2="19.5" y2="13.5"/><line x1="8" y1="12" x2="3" y2="12"/><line x1="4.5" y1="10.5" x2="4.5" y2="13.5"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="10.5" y1="4.5" x2="13.5" y2="4.5"/><line x1="12" y1="16" x2="12" y2="21"/><line x1="10.5" y1="19.5" x2="13.5" y2="19.5"/><line x1="15" y1="9" x2="18.5" y2="5.5"/><line x1="9" y1="9" x2="5.5" y2="5.5"/><line x1="15" y1="15" x2="18.5" y2="18.5"/><line x1="9" y1="15" x2="5.5" y2="18.5"/>',
+  'Runas': '<line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="12" x2="6" y2="3"/><line x1="12" y1="12" x2="18" y2="3"/>',
+  'Bindrunes': '<line x1="9" y1="21" x2="9" y2="3"/><line x1="9" y1="7" x2="14" y2="3"/><line x1="9" y1="13" x2="14" y2="9"/><line x1="15" y1="21" x2="15" y2="3"/><line x1="15" y1="11" x2="10" y2="15"/><line x1="15" y1="17" x2="10" y2="21"/>',
+  'Cruz Celta': '<line x1="12" y1="2" x2="12" y2="22"/><line x1="3" y1="11" x2="21" y2="11"/><circle cx="12" cy="11" r="5.5"/>',
+  'Cruz Ansata': '<circle cx="12" cy="7" r="4"/><line x1="12" y1="11" x2="12" y2="22"/><line x1="6" y1="15" x2="18" y2="15"/>',
   'Cruz Solar': '<circle cx="12" cy="12" r="9"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/>',
-  'Ouroboros': '<path d="M12 3a9 9 0 1 0 6.5 15.3"/><polygon points="16.2 20 19.3 19.6 17.7 16.9" fill="currentColor" stroke="none"/>',
-  'Espiral Lunar': '<path d="M12 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2c-2.2 0-4-1.8-4-4s1.8-4 4-4 5 2.2 5 5-2.5 5.5-6 5.5"/>'
+  'Espiral': '<path d="M12 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2c-2.2 0-4-1.8-4-4s1.8-4 4-4 5 2.2 5 5-2.5 5.5-6 5.5"/>',
+  'Espiral Tríplice': '<path d="M12 12c0-4 3-6 5-4s1 6-3 6"/><path d="M12 12c-3-2-6-1-6 3s4 5 6 3"/><path d="M12 12c3 2 3 6-1 7s-6-3-4-6"/>',
+  'Labirinto': '<path d="M4 4h13v13H8V9h6v5"/>',
+  'Serpente': '<path d="M12 3a9 9 0 1 0 6.5 15.3"/><polygon points="16.2 20 19.3 19.6 17.7 16.9" fill="currentColor" stroke="none"/>',
+  'Escaravelho': '<ellipse cx="12" cy="13" rx="6" ry="7"/><line x1="12" y1="6" x2="12" y2="20"/><line x1="6" y1="9" x2="2" y2="7"/><line x1="6" y1="13" x2="1" y2="13"/><line x1="6" y1="17" x2="2" y2="19"/><line x1="18" y1="9" x2="22" y2="7"/><line x1="18" y1="13" x2="23" y2="13"/><line x1="18" y1="17" x2="22" y2="19"/><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/>',
+  'Olho de Hórus': '<path d="M2 12c4-5 8-6 10-6s6 1 10 6c-4 5-8 6-10 6s-6-1-10-6z"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><path d="M12 18v3l-2 2"/><path d="M8 6c1-2 3-3 5-3"/>',
+  'Olho de Rá': '<path d="M2 14c4-5 8-6 10-6s6 1 10 6c-4 5-8 6-10 6s-6-1-10-6z"/><circle cx="12" cy="14" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="4" r="2.2"/>',
+  'Om': '<text x="12" y="18" font-size="19" text-anchor="middle" fill="currentColor" stroke="none" font-family="serif">ॐ</text>',
+  'Yantras': '<rect x="4" y="4" width="16" height="16"/><circle cx="12" cy="12" r="7"/><path d="M12 6 L17.2 15 H6.8 Z"/>',
+  'Mudras': '<path d="M8 21v-9a1 1 0 0 1 2 0v4m0-4V4a1 1 0 0 1 2 0v9m0-8a1 1 0 0 1 2 0v8m0-6a1 1 0 0 1 2 0v9a4 4 0 0 1-4 4h-3c-1.3 0-2-.5-2.8-1.6L4.6 15a1 1 0 0 1 1.6-1.2L8 16"/>',
+  'Enso': '<path d="M18.5 6.5A9 9 0 1 1 8 3.6"/>',
+  'Nó Infinito': '<path d="M7 9a3 3 0 1 0 0 6c2 0 3.5-1.5 5-3s3-3 5-3a3 3 0 1 1 0 6c-2 0-3.5-1.5-5-3s-3-3-5-3z"/>',
+  'Roda do Dharma': '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><line x1="14" y1="12" x2="21" y2="12"/><line x1="13.4" y1="13.4" x2="18.4" y2="18.4"/><line x1="12" y1="14" x2="12" y2="21"/><line x1="10.6" y1="13.4" x2="5.6" y2="18.4"/><line x1="10" y1="12" x2="3" y2="12"/><line x1="10.6" y1="10.6" x2="5.6" y2="5.6"/><line x1="12" y1="10" x2="12" y2="3"/><line x1="13.4" y1="10.6" x2="18.4" y2="5.6"/>',
+  'Nó Celta': '<path d="M12 4c-3 3-3 8 0 11c3-3 3-8 0-11z"/><path d="M4.5 16c4-1 7-4 7-8c-4 1-7 4-7 8z"/><path d="M19.5 16c-4-1-7-4-7-8c4 1 7 4 7 8z"/>',
+  'Tao (Yin-Yang)': '<circle cx="12" cy="12" r="9.2"/><path d="M12 2.8a9.2 9.2 0 0 1 0 18.4A4.6 4.6 0 0 1 12 12A4.6 4.6 0 0 0 12 2.8Z" fill="currentColor" stroke="none"/><circle cx="12" cy="7.4" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="16.6" r="1.4"/>',
+  'Tridente': '<line x1="12" y1="22" x2="12" y2="6"/><path d="M6 10V3a1 1 0 0 1 2 0v4"/><path d="M18 10V3a1 1 0 0 0-2 0v4"/><path d="M6 10a6 6 0 0 0 12 0"/>',
+  'Lua Crescente': '<path d="M15 3a9 9 0 1 0 0 18 7 7 0 0 1 0-18z" fill="currentColor" stroke="none"/>',
+  'Sol': '<circle cx="12" cy="12" r="4.2" fill="currentColor" stroke="none"/><line x1="12" y1="1" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="23"/><line x1="1" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="23" y2="12"/><line x1="4.2" y1="4.2" x2="6.6" y2="6.6"/><line x1="17.4" y1="17.4" x2="19.8" y2="19.8"/><line x1="4.2" y1="19.8" x2="6.6" y2="17.4"/><line x1="17.4" y1="6.6" x2="19.8" y2="4.2"/>'
 };
+// Função/tradição simbólica principal de cada sigilo (exibida na ficha do cristal)
+const ESOTERIC_SIGIL_INFO = {
+  'Pentagrama': 'Proteção, os quatro elementos mais o espírito, integração do microcosmo.',
+  'Pentagrama Invertido': 'Significado varia conforme a tradição — exige leitura contextual cuidadosa.',
+  'Hexagrama': 'Equilíbrio, união dos opostos, o macrocosmo.',
+  'Sigilo de Salomão': 'Proteção, autoridade, magia cerimonial.',
+  'Pentáculo': 'Proteção, manifestação, os elementos.',
+  'Sri Yantra': 'Manifestação, consciência, integração cósmica (tradição hindu).',
+  'Flor da Vida': 'Criação, unidade, geometria da existência.',
+  'Vesica Piscis': 'Nascimento, dualidade, intersecção, criação.',
+  'Semente da Vida': 'Origem, potencial, criação.',
+  'Fruto da Vida': 'Estrutura, manifestação, expansão.',
+  'Árvore da Vida': 'Emanação, consciência, conexão entre planos (Cabala).',
+  'Merkabah': 'Ascensão, veículo espiritual, integração.',
+  'Aegishjalmur': 'Proteção, poder, defesa (tradição nórdica — Elmo do Temor).',
+  'Vegvísir': 'Orientação, proteção durante jornadas (tradição islandesa).',
+  'Runas': 'Cada runa possui função simbólica própria (tradição nórdica).',
+  'Bindrunes': 'Combinação de forças rúnicas.',
+  'Cruz Celta': 'Ciclos, equilíbrio, integração espiritual.',
+  'Cruz Ansata': 'Vida e regeneração (Ankh egípcio).',
+  'Cruz Solar': 'Ciclos, ordem cósmica, movimento.',
+  'Espiral': 'Evolução, expansão, ciclos.',
+  'Espiral Tríplice': 'Evolução, ciclos, transformação (Triskele celta).',
+  'Labirinto': 'Iniciação, interiorização, caminho.',
+  'Serpente': 'Energia, transformação, sabedoria.',
+  'Escaravelho': 'Regeneração, renascimento (tradição egípcia).',
+  'Olho de Hórus': 'Proteção, percepção, restauração (tradição egípcia).',
+  'Olho de Rá': 'Poder solar, força, proteção (tradição egípcia).',
+  'Om': 'Consciência, vibração primordial (tradição hindu).',
+  'Yantras': 'Concentração e manifestação de determinadas forças.',
+  'Mudras': 'Direcionamento simbólico/energético através dos gestos.',
+  'Enso': 'Totalidade, vazio, iluminação (Zen).',
+  'Nó Infinito': 'Interdependência, continuidade, ciclos (tradição budista).',
+  'Roda do Dharma': 'Ordem, caminho, movimento (tradição budista).',
+  'Nó Celta': 'Eternidade, continuidade, interconexão.',
+  'Tao (Yin-Yang)': 'Polaridade, equilíbrio, complementaridade (taoísmo).',
+  'Tridente': 'Poder, triplicidade, transformação.',
+  'Lua Crescente': 'Receptividade, ciclos, intuição.',
+  'Sol': 'Vitalidade, consciência, manifestação.'
+};
+// Compatibilidade com sigilos salvos antes da reorganização (nomes antigos → novos)
+const ESOTERIC_SIGIL_OLD_ALIASES = { 'Hexagrama (Estrela de Salomão)':'Hexagrama', 'Ankh':'Cruz Ansata', 'Triquetra':'Nó Celta', 'Ouroboros':'Serpente', 'Espiral Lunar':'Espiral' };
+function resolveEsotericSigilName(name) { return ESOTERIC_SIGILS[name] ? name : (ESOTERIC_SIGIL_OLD_ALIASES[name] || name); }
 const ESOTERIC_SIGIL_NAMES = Object.keys(ESOTERIC_SIGILS);
 function esotericSigilSVG(name, size=32, color='var(--purple)') {
-  const path = ESOTERIC_SIGILS[name];
+  const path = ESOTERIC_SIGILS[resolveEsotericSigilName(name)];
   if (!path) return icon('sparkle', size, color);
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
 }
@@ -1284,10 +1374,18 @@ function buildZodiacFormGrid() {
   const grid = document.getElementById('zodiacFormGrid');
   grid.innerHTML = ZODIAC_SIGNS.map((name, i) => `
     <label class="icon-checkbox">
-      <input type="checkbox" value="${name}" id="zodiac_${i}" />
+      <input type="checkbox" value="${name}" id="zodiac_${i}" onchange="enforceSignLimit(this)" />
       <div class="box">${zodiacIconSVG(name, 28)}<span>${name}</span></div>
     </label>`).join('');
 }
+window.enforceSignLimit = function(checkbox) {
+  if (!checkbox.checked) return;
+  const checkedCount = ZODIAC_SIGNS.filter((name,i) => { const el = document.getElementById('zodiac_'+i); return el && el.checked; }).length;
+  if (checkedCount > 3) {
+    checkbox.checked = false;
+    showToast('Selecione no máximo 3 signos — os mais associados a este cristal.', 'error');
+  }
+};
 
 // ==================== FORM: ADD/EDIT CRISTAL ====================
 window.openAddCrystalModal = function() {
@@ -1392,7 +1490,7 @@ Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
     {"phase":"Lua Cheia","percent":0,"impact":"..."}, {"phase":"Gibosa Minguante","percent":0,"impact":"..."},
     {"phase":"Quarto Minguante","percent":0,"impact":"..."}, {"phase":"Lua Minguante","percent":0,"impact":"..."}
   ],
-  "signs": ["até 2 signos entre Áries, Touro, Gêmeos, Câncer, Leão, Virgem, Libra, Escorpião, Sagitário, Capricórnio, Aquário, Peixes"],
+  "signs": ["array com NO MÁXIMO 3 signos entre Áries, Touro, Gêmeos, Câncer, Leão, Virgem, Libra, Escorpião, Sagitário, Capricórnio, Aquário, Peixes — pense internamente no percentual de associação de cada signo com este cristal e retorne só os signos com maior percentual, em ordem decrescente de relevância (ex.: hipotético Labradorita = Aquário 45%, Peixes 25%, Escorpião 15%, Gêmeos 10%, Sagitário 5% → retornar apenas [\\"Aquário\\",\\"Peixes\\",\\"Escorpião\\"])"],
   "chakra": "um entre Raiz, Sacral, Plexo Solar, Cardíaco, Laríngeo, Terceiro Olho, Coronário",
   "planet": "um entre Sol, Lua, Mercúrio, Vênus, Marte, Júpiter, Saturno, Urano, Netuno, Plutão",
   "kabbalah_sephirah": "um entre Keter, Chokmah, Binah, Chesed, Gevurah, Tiferet, Netzach, Hod, Yesod, Malkuth",
@@ -1402,7 +1500,7 @@ Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
   "numerology_text": "O número deste cristal, pelo cálculo pitagórico do nome, é ${numerologyNumber}. Explique em 2-3 frases o que o número ${numerologyNumber} representa simbolicamente aplicado a este cristal especificamente (não repita a definição genérica do número isoladamente)",
   "cleaning_frequency_hz": "responda apenas com o valor esotérico/de intenção mais próximo, no formato \"XXX Hz\" (ex.: \"396 Hz\"), escolhendo entre frequências simbólicas conhecidas (como as Solfeggio: 174, 285, 396, 417, 432, 528, 639, 741, 852, 963 Hz) a que melhor combina com LIMPEZA/purificação deste cristal — nunca responda que não há correspondência nem que não é medição física, apenas dê o Hz",
   "energizing_frequency_hz": "mesmo formato \"XXX Hz\", escolhendo a frequência simbólica que melhor combina com ENERGIZAÇÃO/ativação deste cristal — sempre dê um valor",
-  "esoteric_symbol": "um nome exatamente igual a um destes, o que combinar melhor simbolicamente com limpeza/energização deste cristal: Pentagrama, Hexagrama (Estrela de Salomão), Triquetra, Ankh, Olho de Hórus, Flor da Vida, Triskele, Cruz Solar, Ouroboros, Espiral Lunar",
+  "esoteric_symbol": "um nome EXATAMENTE igual a um destes símbolos/sigilos de tradições ocultistas sérias e documentadas (não invente símbolo novo), escolhendo o que for simbolicamente mais coerente para trabalhar as energias deste cristal específico, com base na função tradicional de cada um: Pentagrama (proteção, elementos, microcosmo), Pentagrama Invertido (uso contextual, cautela), Hexagrama (equilíbrio, união dos opostos, macrocosmo), Sigilo de Salomão (proteção, autoridade, magia cerimonial), Pentáculo (proteção, manifestação, elementos), Sri Yantra (manifestação, consciência), Flor da Vida (criação, unidade), Vesica Piscis (nascimento, dualidade, criação), Semente da Vida (origem, potencial), Fruto da Vida (estrutura, expansão), Árvore da Vida (emanação, conexão entre planos), Merkabah (ascensão, veículo espiritual), Aegishjalmur (proteção, poder — nórdico), Vegvísir (orientação, proteção em jornadas — nórdico), Runas (função própria de cada runa — nórdico), Bindrunes (combinação de forças rúnicas), Cruz Celta (ciclos, equilíbrio), Cruz Ansata (vida, regeneração — egípcio), Cruz Solar (ciclos, ordem cósmica), Espiral (evolução, expansão), Espiral Tríplice (evolução, ciclos — celta), Labirinto (iniciação, caminho), Serpente (energia, transformação, sabedoria), Escaravelho (regeneração, renascimento — egípcio), Olho de Hórus (proteção, percepção — egípcio), Olho de Rá (poder solar, proteção — egípcio), Om (consciência, vibração primordial — hindu), Yantras (concentração de forças — hindu), Mudras (direcionamento energético — hindu), Enso (totalidade, vazio — zen), Nó Infinito (interdependência, ciclos — budista), Roda do Dharma (ordem, caminho — budista), Nó Celta (eternidade, interconexão), Tao (Yin-Yang) (polaridade, equilíbrio — taoísmo), Tridente (poder, triplicidade), Lua Crescente (receptividade, intuição), Sol (vitalidade, manifestação)",
   "cleaning_incense": "incenso(s) para limpeza", "energizing_incense": "incenso(s) para energização",
   "associated_plant": "planta mais associada",
   "sun_best_period": "um entre Amanhecer, Manhã, Meio-dia, Tarde, Pôr do Sol, Não exponha ao sol",
@@ -1441,7 +1539,8 @@ Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
       });
     }
     if (Array.isArray(d.signs)) {
-      ZODIAC_SIGNS.forEach((name, i) => { const el = document.getElementById('zodiac_' + i); if (el) el.checked = d.signs.includes(name); });
+      const topSigns = d.signs.slice(0, 3);
+      ZODIAC_SIGNS.forEach((name, i) => { const el = document.getElementById('zodiac_' + i); if (el) el.checked = topSigns.includes(name); });
     }
     document.getElementById('cChakra').value = d.chakra || '';
     document.getElementById('cPolarity').value = d.polarity || '';
@@ -1728,7 +1827,7 @@ function renderCrystalDetail(id) {
     cards.push(`<div class="info-card wide" style="text-align:center;">
       <div class="info-card-label" style="justify-content:center; margin-bottom:0.6rem;">Sigilo Mágico</div>
       ${c.esotericSymbol ? `<div style="width:95px;height:95px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.5rem;">${esotericSigilSVG(c.esotericSymbol,65)}</div>
-      <div class="info-card-value" style="font-weight:700;">${c.esotericSymbol}</div>` : ''}
+      <div class="info-card-value" style="font-weight:700;">${c.esotericSymbol}${ESOTERIC_SIGIL_INFO[resolveEsotericSigilName(c.esotericSymbol)] ? `<div class="muted-sub">${ESOTERIC_SIGIL_INFO[resolveEsotericSigilName(c.esotericSymbol)]}</div>` : ''}</div>` : ''}
       ${c.sigilImage ? `<img class="sigil-img" src="${c.sigilImage}" />` : ''}</div>`);
   }
 
@@ -1951,6 +2050,24 @@ window.askAI = async function() {
 // ==================== DASHBOARD: helpers de gráficos ====================
 const DASH_PALETTE = ['#ef4444','#f97316','#f59e0b','#84cc16','#10b981','#06b6d4','#3b82f6','#6366f1','#8b5cf6','#ec4899'];
 const SEPHIRAH_COLORS = { Keter:'#c4b5fd', Chokmah:'#60a5fa', Binah:'#6b7280', Chesed:'#3b82f6', Gevurah:'#ef4444', Tiferet:'#f59e0b', Netzach:'#10b981', Hod:'#f97316', Yesod:'#8b5cf6', Malkuth:'#92400e' };
+// Gráfico com ordem fixa (não ordenado por contagem) — usado para Signos e Sephirot
+function dashOrderedChart(title, subtitle, order, countsObj, colorFn, iconFn) {
+  const max = Math.max(...order.map(k => countsObj[k]||0), 1);
+  return `<div class="section-block dash-chart">
+    <div class="dash-chart-head"><h4>${title}</h4><span class="dash-chart-sub">${subtitle}</span></div>
+    <div class="dash-chart-rows">
+      ${order.map((label,i) => { const value = countsObj[label]||0; const color = colorFn(label,i); return `
+        <div class="dash-chart-row">
+          <span class="dash-chart-icon">${iconFn(label,i)}</span>
+          <div class="dash-chart-mid">
+            <div class="dash-chart-label">${label}</div>
+            <div class="dash-chart-track"><div class="dash-chart-fill" style="width:${(value/max*100)}%; background:${color};"></div></div>
+          </div>
+          <span class="dash-chart-value">${value}</span>
+        </div>`; }).join('')}
+    </div>
+  </div>`;
+}
 // Ordem anatômica fixa, do Coronário (topo) até a Raiz (embaixo) — não ordenado por contagem
 const CHAKRA_ORDER = ['Coronário','Terceiro Olho','Laríngeo','Cardíaco','Plexo Solar','Sacral','Raiz'];
 function dashChakraChart(countsObj) {
@@ -1960,7 +2077,7 @@ function dashChakraChart(countsObj) {
     <div class="dash-chart-rows">
       ${CHAKRA_ORDER.map(name => { const value = countsObj[name]||0; const color = CHAKRA_COLORS[name]||'#999'; return `
         <div class="dash-chart-row">
-          <span class="dash-chart-icon" style="background:${color};">${chakraImg(name,18)}</span>
+          <span class="dash-chart-icon">${chakraImg(name,DASH_ICON_SIZE)}</span>
           <div class="dash-chart-mid">
             <div class="dash-chart-label">${name}</div>
             <div class="dash-chart-track"><div class="dash-chart-fill" style="width:${(value/max*100)}%; background:${color};"></div></div>
@@ -1977,7 +2094,8 @@ function countBy(list, fn) {
   return counts;
 }
 
-function dashBarChart(title, subtitle, countsObj, colorFn, iconFn, transparentIcon=false) {
+const DASH_ICON_SIZE = 24;
+function dashBarChart(title, subtitle, countsObj, colorFn, iconFn) {
   const entries = Object.entries(countsObj).sort((a,b) => b[1]-a[1]);
   if (!entries.length) return `<div class="section-block"><h4 style="margin-bottom:0.4rem;">${title}</h4><p style="color:var(--muted); font-size:0.85rem;">Sem dados ainda.</p></div>`;
   const max = Math.max(...entries.map(e => e[1]));
@@ -1986,7 +2104,7 @@ function dashBarChart(title, subtitle, countsObj, colorFn, iconFn, transparentIc
     <div class="dash-chart-rows">
       ${entries.map(([label,value],i) => { const color = colorFn(label,i); return `
         <div class="dash-chart-row">
-          <span class="dash-chart-icon" style="background:${transparentIcon ? 'transparent' : color};">${iconFn(label,i)}</span>
+          <span class="dash-chart-icon">${iconFn(label,i)}</span>
           <div class="dash-chart-mid">
             <div class="dash-chart-label">${label}</div>
             <div class="dash-chart-track"><div class="dash-chart-fill" style="width:${(value/max*100)}%; background:${color};"></div></div>
@@ -2041,7 +2159,7 @@ function renderDashboard() {
   const byTarot = countBy(allCrystals, c => c.tarotCard);
   const byGeometry = countBy(allCrystals, c => c.geometry);
   const byNumerology = {}; allCrystals.forEach(c => { const n = calculateNumerology(c.name); if (n) byNumerology[n] = (byNumerology[n]||0)+1; });
-  const bySigil = countBy(allCrystals, c => c.esotericSymbol);
+  const bySigil = countBy(allCrystals, c => c.esotericSymbol ? resolveEsotericSigilName(c.esotericSymbol) : null);
   const byPolarity = countBy(allCrystals, c => c.polarity);
   const byYinYang = countBy(allCrystals, c => c.yinYang);
 
@@ -2056,37 +2174,36 @@ function renderDashboard() {
     </div>
 
     <div class="dash-charts-grid" style="margin-bottom:1.2rem;">
-      ${dashDonutChart('Solar / Lunar (Polaridade)', polarityData, yinYangIcon('Yang', 30))}
-      ${dashDonutChart('Yin / Yang', yinYangData)}
+      ${dashDonutChart('Solar / Lunar (Polaridade)', polarityData)}
+      ${dashDonutChart('Yin / Yang', yinYangData, yinYangIcon('Yang', 30))}
     </div>
 
     <div class="dash-charts-grid">
       ${dashChakraChart(byChakra)}
-      ${dashBarChart('Signos', 'pedras correspondentes', bySign,
+      ${dashOrderedChart('Signos', 'pedras correspondentes', ZODIAC_SIGNS, bySign,
           (name) => zodiacColor(name),
-          (name) => zodiacIconSVG(name, 26),
-          true)}
+          (name) => zodiacIconSVG(name, DASH_ICON_SIZE))}
       ${dashBarChart('Planetas', 'pedras correspondentes', byPlanet,
           (name) => PLANET_COLORS[name] || '#999',
-          (name) => `<span style="color:#fff; font-size:15px; line-height:1;">${PLANET_SYMBOLS[name]||''}</span>`)}
+          (name) => planetIcon(name, DASH_ICON_SIZE))}
       ${dashBarChart('Elementos', 'pedras correspondentes', byElement,
           (name) => ELEMENT_COLORS[name] || '#999',
-          (name) => { const fn = ELEMENT_ALCHEMY[name]; return `<svg width="16" height="16" viewBox="0 0 24 24">${fn?fn('#fff'):''}</svg>`; })}
-      ${dashBarChart('Cabala (Sephirot)', 'pedras correspondentes', byKabbalah,
+          (name) => elementIconSVG(name, DASH_ICON_SIZE))}
+      ${dashOrderedChart('Cabala (Sephirot)', 'árvore da vida — pedras correspondentes', SEPHIROT, byKabbalah,
           (name) => SEPHIRAH_COLORS[name] || '#8b5cf6',
-          () => icon('kabbalah',15,'#fff'))}
+          (name) => icon('kabbalah', DASH_ICON_SIZE, SEPHIRAH_COLORS[name] || '#8b5cf6'))}
       ${dashBarChart('Tarot', 'pedras correspondentes', byTarot,
           (name,i) => DASH_PALETTE[i % DASH_PALETTE.length],
-          () => icon('tarot',15,'#fff'))}
+          (name,i) => icon('tarot', DASH_ICON_SIZE, DASH_PALETTE[i % DASH_PALETTE.length]))}
       ${dashBarChart('Geometria', 'pedras correspondentes', byGeometry,
           (name,i) => DASH_PALETTE[i % DASH_PALETTE.length],
-          () => icon('gem',15,'#fff'))}
+          (name,i) => icon('gem', DASH_ICON_SIZE, DASH_PALETTE[i % DASH_PALETTE.length]))}
       ${dashBarChart('Numerologia', 'pedras correspondentes', byNumerology,
           (name,i) => DASH_PALETTE[i % DASH_PALETTE.length],
-          () => icon('hash',15,'#fff'))}
+          (name,i) => icon('hash', DASH_ICON_SIZE, DASH_PALETTE[i % DASH_PALETTE.length]))}
       ${dashBarChart('Sigilo Mágico', 'pedras correspondentes', bySigil,
           (name,i) => DASH_PALETTE[i % DASH_PALETTE.length],
-          (name) => esotericSigilSVG(name, 15, '#fff'))}
+          (name,i) => esotericSigilSVG(name, DASH_ICON_SIZE, DASH_PALETTE[i % DASH_PALETTE.length]))}
     </div>
 
     <div class="section-block"><h4>${icon('target',17)} Intenções mais utilizadas</h4><div>${topIntentions.length ? topIntentions.map(([k,v]) => `<span class="tag">${k}: ${v}</span>`).join('') : '<p style="color:var(--muted); font-size:0.85rem;">Sem dados ainda.</p>'}</div></div>
