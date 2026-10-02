@@ -32,8 +32,9 @@
   button:active { transform:scale(.96); }
   @keyframes fadeInUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
   .crystal-card, .section-block, .stat-card { animation:fadeInUp .45s cubic-bezier(.2,.8,.3,1) both; }
+  #sec-collection, #sec-combine, #sec-guide, #sec-ask, #sec-dashboard { animation:fadeInUp .3s ease both; }
   @media (prefers-reduced-motion: reduce) {
-    .crystal-card, .section-block, .stat-card { animation:none; }
+    .crystal-card, .section-block, .stat-card, #sec-collection, #sec-combine, #sec-guide, #sec-ask, #sec-dashboard { animation:none; }
     * { scroll-behavior:auto !important; }
   }
   body { font-family:'DM Sans', sans-serif; color:var(--ink); min-height:100vh;
@@ -61,7 +62,7 @@
   #bgFx { position:fixed; inset:0; z-index:0; pointer-events:none; display:block; }
   .header-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem; }
   .header-title { display:flex; align-items:center; gap:0.9rem; }
-  .header-title .icon-badge { color:var(--purple); background:var(--lilac); padding:0.65rem; border-radius:14px; }
+  .header-title .icon-badge { color:#fff; background:linear-gradient(135deg, var(--purple), var(--purple2)); padding:0.65rem; border-radius:14px; box-shadow:0 6px 16px rgba(109,40,217,.3); }
   .header-title h2 { font-family:'Cinzel', serif; font-size:1.55rem; color:var(--ink); line-height:1.2; letter-spacing:-0.01em; }
   .header-title p { font-size:0.82rem; color:var(--muted); margin-top:0.15rem; }
 
@@ -94,7 +95,8 @@
   .search-wrap { position:relative; flex:1; min-width:200px; }
   .search-wrap .icon { position:absolute; left:0.9rem; top:50%; transform:translateY(-50%); color:var(--purple); }
   .search-wrap input { width:100%; padding:0.75rem 0.9rem 0.75rem 2.5rem; border:1.5px solid var(--mist); border-radius:13px; font-family:inherit; font-size:0.86rem; background:var(--white); color:var(--ink); outline:none; }
-  .search-wrap input:focus { border-color:var(--purple2); }
+  .search-wrap input:focus { border-color:var(--purple2); box-shadow:0 0 0 4px rgba(139,92,246,.18); }
+  .search-wrap input { transition:border-color .2s, box-shadow .2s; }
   .filter-select { padding:0.75rem 0.9rem; border:1.5px solid var(--mist); border-radius:13px; font-family:inherit; font-size:0.86rem; background:var(--white); color:var(--ink); outline:none; }
 
   .card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:1.3rem; border:1px solid var(--mist); }
@@ -210,9 +212,14 @@
   .empty-state .icon { color:var(--purple2); margin-bottom:0.8rem; }
   .empty-state p { font-size:0.9rem; margin-bottom:1rem; }
 
-  .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--white); border-top:1px solid var(--mist); padding:0.4rem; z-index:100; justify-content:space-around; }
-  .bottom-nav .nav-btn { color: var(--muted); flex-direction:column; gap:0.2rem; font-size:0.6rem; padding:0.4rem; width:auto; border-radius:12px; }
-  .bottom-nav .nav-btn.active { color: var(--purple); background:var(--lilac); }
+  .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,.85); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-top:1px solid var(--mist); padding:0.4rem; z-index:100; justify-content:space-around; box-shadow:0 -8px 24px rgba(0,0,0,.06); }
+  [data-theme="dark"] .bottom-nav { background:rgba(21,16,31,.85); }
+  .bottom-nav .nav-btn { position:relative; color:var(--muted); flex-direction:column; gap:0.2rem; font-size:0.6rem; padding:0.5rem 0.3rem; width:auto; border-radius:12px; border-left:none; }
+  .bottom-nav .nav-btn .icon { transition:transform .3s cubic-bezier(.34,1.56,.64,1); }
+  .bottom-nav .nav-btn.active { color:var(--purple); background:transparent; }
+  .bottom-nav .nav-btn.active .icon { transform:translateY(-2px) scale(1.18); }
+  .bottom-nav .nav-btn.active::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--purple2); }
+  .bottom-nav .nav-btn:active { transform:scale(.92); }
 
   #toastContainer { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:500; display:flex; flex-direction:column; gap:0.5rem; align-items:center; pointer-events:none; }
   .toast { display:flex; align-items:center; gap:0.55rem; background:var(--ink); color:#fff; padding:0.7rem 1.1rem; border-radius:12px; box-shadow:var(--shadow); font-size:0.83rem; opacity:0; transform:translateY(10px); transition:.25s; max-width:360px; }
@@ -295,6 +302,13 @@
     .sidebar { display:none; }
     .bottom-nav { display:flex; padding-bottom:calc(0.4rem + env(safe-area-inset-bottom,0px)); }
     .main-content { margin-left:0; width:100%; padding:1rem; padding-bottom:calc(5.5rem + env(safe-area-inset-bottom,0px)); }
+    .header-add-btn { display:none; }
+    .fab-add { display:flex; }
+    .crystal-card:active { transform:scale(.97); }
+    .stat-card:active, .section-block:active { transform:scale(.99); }
+  }
+  .fab-add { display:none; position:fixed; right:1.1rem; bottom:calc(5.2rem + env(safe-area-inset-bottom,0px)); width:58px; height:58px; border-radius:50%; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--purple), var(--purple2)); color:#fff; border:none; box-shadow:0 10px 28px rgba(109,40,217,.45); z-index:90; transition:transform .2s, box-shadow .2s; }
+  .fab-add:active { transform:scale(.9); box-shadow:0 6px 16px rgba(109,40,217,.4); }
     .drawer { max-width:100%; height:92vh; border-radius:22px 22px 0 0; transform:translateY(100%); padding:1.1rem 1.1rem calc(1.1rem + env(safe-area-inset-bottom,0px)); }
     .drawer-handle { display:block; width:40px; height:5px; border-radius:3px; background:var(--mist); margin:0 auto 0.6rem; }
     .modal-overlay { align-items:flex-end; }
@@ -324,8 +338,10 @@
   <section id="sec-collection">
     <div class="header-bar">
       <div class="header-title"><span class="icon-badge icon" data-icon="gem" data-size="20"></span><div><h2>Minha Coleção</h2><p>Cada exemplar, sua ficha simbólica completa</p></div></div>
-      <button class="btn-primary" onclick="openAddCrystalModal()"><span class="icon" data-icon="plus" data-size="16"></span> Novo Cristal</button>
+      <button class="btn-primary header-add-btn" onclick="openAddCrystalModal()"><span class="icon" data-icon="plus" data-size="16"></span> Novo Cristal</button>
     </div>
+
+    <button class="fab-add" onclick="openAddCrystalModal()" aria-label="Novo Cristal"><span class="icon" data-icon="plus" data-size="24"></span></button>
 
     <div id="moonBanner"></div>
 
@@ -805,7 +821,7 @@ const crystalsCol = collection(db, "crystals");
   }
 
   function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    dpr = Math.min(window.devicePixelRatio || 1, window.innerWidth < 700 ? 1.5 : 2);
     w = window.innerWidth; h = window.innerHeight;
     canvas.width = w * dpr; canvas.height = h * dpr;
     canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
@@ -816,7 +832,8 @@ const crystalsCol = collection(db, "crystals");
 
   const purple = hexToRgb(themeHex('--purple2', '#8b5cf6'));
   const gold = hexToRgb(themeHex('--gold', '#c9a24b'));
-  const count = window.innerWidth < 700 ? 26 : 55;
+  const count = window.innerWidth < 480 ? 16 : (window.innerWidth < 700 ? 26 : 55);
+  const blobCount = window.innerWidth < 700 ? 2 : 3;
   const particles = Array.from({ length: count }, () => ({
     x: Math.random() * w, y: Math.random() * h,
     r: Math.random() * 1.7 + 0.8,
@@ -826,7 +843,7 @@ const crystalsCol = collection(db, "crystals");
   }));
   const blobs = [
     { x: 0.18, y: 0.22, r: 440 }, { x: 0.82, y: 0.68, r: 480 }, { x: 0.45, y: 0.92, r: 400 }
-  ];
+  ].slice(0, blobCount);
 
   let targetParX = 0, targetParY = 0, parX = 0, parY = 0;
   window.addEventListener('mousemove', (e) => {
@@ -870,9 +887,13 @@ const crystalsCol = collection(db, "crystals");
       ctx.fill();
     });
 
-    if (!reduceMotion) requestAnimationFrame(draw);
+    if (!reduceMotion && !document.hidden) rafId = requestAnimationFrame(draw);
   }
-  requestAnimationFrame(draw);
+  let rafId = requestAnimationFrame(draw);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { cancelAnimationFrame(rafId); }
+    else if (!reduceMotion) { rafId = requestAnimationFrame(draw); }
+  });
 })();
 
 const WORKERS = [
