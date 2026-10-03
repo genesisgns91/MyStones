@@ -17,7 +17,12 @@
     --radius:20px; --sidebar-w:260px;
     --agua:#159fe3; --ar:#5b8def; --terra:#55a65b; --fogo:#ef6b4d;
   }
-  [data-theme="dark"] { --cream:#15101f; --ink:#f1edfb; --white:#1e1730; --mist:#3c3158; --lilac:rgba(139,92,246,.16); --muted:#a99fc2; --shadow:0 14px 38px rgba(0,0,0,.5), 0 0 0 1px rgba(139,92,246,.08); }
+  [data-theme="dark"] {
+    --purple:#9061f9; --purple2:#c4b0fb; --lilac:rgba(144,97,249,.18);
+    --cream:#120d1d; --ink:#f3effc; --white:#241b38; --mist:#453a66; --muted:#b3a7cc;
+    --gold:#e0b568;
+    --shadow:0 16px 40px rgba(0,0,0,.55), 0 0 0 1px rgba(144,97,249,.1);
+  }
   * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
   html, body { height:100%; overflow-x:hidden; scroll-behavior:smooth; }
   ::selection { background:var(--purple2); color:#fff; }
@@ -40,6 +45,7 @@
   body { font-family:'DM Sans', sans-serif; color:var(--ink); min-height:100vh;
     background: radial-gradient(circle at 15% 10%, rgba(196,181,253,.20), transparent 30%), radial-gradient(circle at 90% 80%, rgba(221,214,254,.22), transparent 32%), var(--cream);
     transition: background .2s, color .2s; }
+  [data-theme="dark"] body { background: var(--cream); }
   .icon { display:inline-flex; flex-shrink:0; }
   .icon svg { display:block; }
   input[type=range] { height:26px; -webkit-appearance:none; background:transparent; }
@@ -118,7 +124,8 @@
   .crystal-card:hover { transform:translateY(-5px); box-shadow:0 18px 38px rgba(109,40,217,.22), var(--shadow); border-color:var(--purple2); }
   .crystal-card .crystal-img { transition:transform .4s ease; }
   .crystal-card:hover .crystal-img { transform:scale(1.05); }
-  .crystal-img { width:100%; aspect-ratio:1.6/1; object-fit:cover; background:var(--lilac); display:flex; align-items:center; justify-content:center; color:var(--purple2); flex-shrink:0; }
+  .crystal-img { width:100%; aspect-ratio:1/1; object-fit:cover; background:var(--lilac); display:flex; align-items:center; justify-content:center; color:var(--purple2); flex-shrink:0; }
+  #detailPhoto { width:100%; height:auto !important; aspect-ratio:1/1; max-height:min(46vh,360px); object-fit:contain !important; background:radial-gradient(circle, var(--lilac), transparent 72%), var(--white); border:1px solid var(--mist); }
   .card-icon-strip { display:grid; grid-template-columns:1fr 1fr; gap:0.55rem 0.7rem; }
   .card-icon-row { display:flex; align-items:center; gap:0.5rem; min-width:0; }
   .card-icon-chip { width:34px; height:34px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
@@ -260,9 +267,14 @@
   }
 
   /* Correspondências com ícones em destaque (Elementos, Signos, Planeta, Chakra, Cabala) */
-  .corr-card { background:var(--white); border:1px solid var(--mist); border-radius:16px; padding:1rem; text-align:center; }
+  .corr-card { background:var(--white); border:1px solid var(--mist); border-radius:16px; padding:1rem; text-align:center; transition:border-color .2s, transform .2s; }
+  .corr-card:hover { border-color:var(--purple2); }
   .corr-card.wide { grid-column:1 / -1; }
   .corr-card .corr-icon-circle { width:95px; height:95px; display:flex; align-items:center; justify-content:center; margin:0 auto 0.55rem; }
+  .corr-card.corr-card-row { display:flex; align-items:center; gap:0.9rem; text-align:left; }
+  .corr-card.corr-card-row .corr-icon-circle { width:54px; height:54px; margin:0; flex-shrink:0; }
+  .corr-card.corr-card-row .corr-card-text { min-width:0; }
+  .corr-card.corr-card-row .corr-card-label { margin-bottom:0.25rem; }
   .corr-card-label { font-size:0.66rem; font-weight:800; letter-spacing:0.03em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; }
   .corr-card-value { font-size:0.9rem; font-weight:700; color:var(--ink); }
 
@@ -322,8 +334,10 @@
     .toolbar { position:sticky; top:0; z-index:15; background:var(--cream); padding:0.6rem 0; margin:0 -1rem 0.8rem; padding-left:1rem; padding-right:1rem; }
   }
   @media (max-width:420px) {
-    .form-row, .element-form-grid, .info-grid { grid-template-columns:1fr; }
+    .form-row, .element-form-grid { grid-template-columns:1fr; }
     .icon-checkbox-grid { grid-template-columns:repeat(2,1fr); }
+    .info-grid { gap:0.6rem; }
+    .corr-card, .info-card { padding:0.75rem; }
   }
 </style>
 </head>
@@ -802,12 +816,13 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const crystalsCol = collection(db, "crystals");
 
-// ==================== FUNDO INTERATIVO (partículas + nebulosas) ====================
+// ==================== FUNDO INTERATIVO (textura geométrica — geometria sagrada) ====================
 (function initBgFx() {
   const canvas = document.getElementById('bgFx');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.innerWidth < 700;
   let w, h, dpr;
 
   function themeHex(varName, fallback) {
@@ -821,7 +836,7 @@ const crystalsCol = collection(db, "crystals");
   }
 
   function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, window.innerWidth < 700 ? 1.5 : 2);
+    dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
     w = window.innerWidth; h = window.innerHeight;
     canvas.width = w * dpr; canvas.height = h * dpr;
     canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
@@ -830,30 +845,46 @@ const crystalsCol = collection(db, "crystals");
   resize();
   window.addEventListener('resize', resize);
 
-  const purple = hexToRgb(themeHex('--purple2', '#8b5cf6'));
-  const gold = hexToRgb(themeHex('--gold', '#c9a24b'));
-  const count = window.innerWidth < 480 ? 16 : (window.innerWidth < 700 ? 26 : 55);
-  const blobCount = window.innerWidth < 700 ? 2 : 3;
-  const particles = Array.from({ length: count }, () => ({
-    x: Math.random() * w, y: Math.random() * h,
-    r: Math.random() * 1.7 + 0.8,
-    vx: (Math.random() - 0.5) * 0.1, vy: (Math.random() - 0.5) * 0.1,
-    phase: Math.random() * Math.PI * 2, speed: Math.random() * 0.014 + 0.006,
-    gold: Math.random() < 0.16
-  }));
+  let purple = hexToRgb(themeHex('--purple2', '#8b5cf6'));
+  let gold = hexToRgb(themeHex('--gold', '#c9a24b'));
+  window.addEventListener('themechange', () => {
+    purple = hexToRgb(themeHex('--purple2', '#8b5cf6'));
+    gold = hexToRgb(themeHex('--gold', '#c9a24b'));
+  });
+  const hexSize = isMobile ? 48 : 60;
+  const horizSpacing = hexSize * 1.5;
+  const vertSpacing = hexSize * Math.sqrt(3);
+
+  function drawHex(cx, cy, size, strokeStyle, lineWidth) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI / 180) * (60 * i);
+      const px = cx + size * Math.cos(angle);
+      const py = cy + size * Math.sin(angle);
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineWidth = lineWidth;
+    ctx.stroke();
+  }
+
+  // Nebulosas de cor sutil (dão profundidade e um leve "banho" de cor ao fundo)
   const blobs = [
-    { x: 0.18, y: 0.22, r: 440 }, { x: 0.82, y: 0.68, r: 480 }, { x: 0.45, y: 0.92, r: 400 }
-  ].slice(0, blobCount);
+    { x: 0.16, y: 0.2, r: isMobile ? 280 : 460, key: 'purple' },
+    { x: 0.86, y: 0.7, r: isMobile ? 260 : 440, key: 'gold' },
+    { x: 0.45, y: 0.95, r: isMobile ? 240 : 400, key: 'purple' }
+  ];
 
   let targetParX = 0, targetParY = 0, parX = 0, parY = 0;
   window.addEventListener('mousemove', (e) => {
-    targetParX = (e.clientX / w - 0.5) * 18;
-    targetParY = (e.clientY / h - 0.5) * 18;
+    targetParX = (e.clientX / w - 0.5) * 24;
+    targetParY = (e.clientY / h - 0.5) * 24;
   });
   window.addEventListener('touchmove', (e) => {
     if (!e.touches || !e.touches[0]) return;
-    targetParX = (e.touches[0].clientX / w - 0.5) * 10;
-    targetParY = (e.touches[0].clientY / h - 0.5) * 10;
+    targetParX = (e.touches[0].clientX / w - 0.5) * 12;
+    targetParY = (e.touches[0].clientY / h - 0.5) * 12;
   }, { passive: true });
 
   let t = 0;
@@ -862,30 +893,36 @@ const crystalsCol = collection(db, "crystals");
     ctx.clearRect(0, 0, w, h);
 
     blobs.forEach((b, i) => {
-      const cx = b.x * w + Math.sin(t * 0.0008 + i * 2) * 60 + parX * 1.5;
-      const cy = b.y * h + Math.cos(t * 0.0007 + i * 2) * 60 + parY * 1.5;
+      const bc = b.key === 'gold' ? gold : purple;
+      const cx = b.x * w + Math.sin(t * 0.0005 + i * 2.4) * 50 + parX * 1.3;
+      const cy = b.y * h + Math.cos(t * 0.00045 + i * 2.4) * 50 + parY * 1.3;
       const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, b.r);
-      g.addColorStop(0, `rgba(${purple.r},${purple.g},${purple.b},0.10)`);
+      g.addColorStop(0, `rgba(${bc.r},${bc.g},${bc.b},0.13)`);
       g.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, w, h);
     });
 
-    parX += (targetParX - parX) * 0.04;
-    parY += (targetParY - parY) * 0.04;
+    parX += (targetParX - parX) * 0.035;
+    parY += (targetParY - parY) * 0.035;
 
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < -10) p.x = w + 10; if (p.x > w + 10) p.x = -10;
-      if (p.y < -10) p.y = h + 10; if (p.y > h + 10) p.y = -10;
-      p.phase += p.speed;
-      const alpha = reduceMotion ? 0.4 : (Math.sin(p.phase) * 0.35 + 0.45);
-      const c = p.gold ? gold : purple;
-      ctx.beginPath();
-      ctx.arc(p.x + parX, p.y + parY, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${alpha})`;
-      ctx.fill();
-    });
+    // Grade hexagonal (geometria sagrada) com brilho que percorre a malha lentamente
+    const cols = Math.ceil(w / horizSpacing) + 2;
+    const rows = Math.ceil(h / vertSpacing) + 2;
+    for (let col = -1; col < cols; col++) {
+      const x = col * horizSpacing + parX * 0.4;
+      if (x < -hexSize * 2 || x > w + hexSize * 2) continue;
+      for (let row = -1; row < rows; row++) {
+        const y = row * vertSpacing + (Math.abs(col % 2) === 1 ? vertSpacing / 2 : 0) + parY * 0.4;
+        if (y < -hexSize * 2 || y > h + hexSize * 2) continue;
+        const idx = col * 31 + row * 17;
+        const wave = reduceMotion ? 0.5 : (Math.sin(t * 0.0009 + idx * 0.4) * 0.5 + 0.5);
+        const alpha = 0.035 + wave * 0.055;
+        const useGold = (((col % 9) + 9) % 9 === 0) && (((row % 5) + 5) % 5 === 0);
+        const c = useGold ? gold : purple;
+        drawHex(x, y, hexSize * 0.92, `rgba(${c.r},${c.g},${c.b},${alpha})`, 1);
+      }
+    }
 
     if (!reduceMotion && !document.hidden) rafId = requestAnimationFrame(draw);
   }
@@ -1242,6 +1279,7 @@ window.toggleTheme = function() {
   root.setAttribute('data-theme', isDark ? 'light' : 'dark');
   localStorage.setItem('cristal-theme', isDark ? 'light' : 'dark');
   document.getElementById('themeToggleBtn').innerHTML = icon(isDark ? 'moon' : 'sun', 16) + '<span>Alternar tema</span>';
+  window.dispatchEvent(new Event('themechange'));
 };
 (function initTheme() {
   if (localStorage.getItem('cristal-theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
@@ -1881,10 +1919,12 @@ function infoCardCustomIcon(iconHtml, label, valueHtml, wide=false, bgColor='var
   </div>`;
 }
 function bigIconCard(iconHtml, label, valueText, bgColor='var(--purple)') {
-  return `<div class="corr-card">
+  return `<div class="corr-card corr-card-row">
     <div class="corr-icon-circle">${iconHtml}</div>
-    <div class="corr-card-label">${label}</div>
-    <div class="corr-card-value">${valueText}</div>
+    <div class="corr-card-text">
+      <div class="corr-card-label">${label}</div>
+      <div class="corr-card-value">${valueText}</div>
+    </div>
   </div>`;
 }
 
@@ -1918,14 +1958,14 @@ function renderCrystalDetail(id) {
   const cards = [];
 
   if (c.polarity) {
-    cards.push(bigIconCard(polarityIcon(c.polarity, 60), 'Polaridade', c.polarity, c.polarity === 'Solar' ? PLANET_COLORS['Sol'] : PLANET_COLORS['Lua']));
+    cards.push(bigIconCard(polarityIcon(c.polarity, 30), 'Polaridade', c.polarity, c.polarity === 'Solar' ? PLANET_COLORS['Sol'] : PLANET_COLORS['Lua']));
   }
-  if (c.yinYang) cards.push(bigIconCard(yinYangIcon(c.yinYang, 60), 'Yin / Yang', c.yinYang, '#6d28d9'));
+  if (c.yinYang) cards.push(bigIconCard(yinYangIcon(c.yinYang, 30), 'Yin / Yang', c.yinYang, '#6d28d9'));
 
-  if (c.planet) cards.push(bigIconCard(planetIcon(c.planet,60), 'Planeta', c.planet, PLANET_COLORS[c.planet]));
+  if (c.planet) cards.push(bigIconCard(planetIcon(c.planet,30), 'Planeta', c.planet, PLANET_COLORS[c.planet]));
   if (c.chakra) {
     const cc = CHAKRA_COLORS[c.chakra];
-    cards.push(bigIconCard(chakraImg(c.chakra,65), 'Chakra', c.chakra, cc));
+    cards.push(bigIconCard(chakraImg(c.chakra,32), 'Chakra', c.chakra, cc));
   }
 
   if ((c.signs||[]).length) {
