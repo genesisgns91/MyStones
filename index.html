@@ -492,6 +492,9 @@
   .drawer-handle { display:none; }
   #detailPhoto { max-height:min(52vh,460px); }
 }
+/* Os blocos da ficha são filhos diretos de um flex em coluna com altura fixa: sem isto, o overflow:hidden deles permite encolher até 0 e o conteúdo some. */
+.drawer > * { flex-shrink:0; }
+.drawer > .section-block, .drawer > .form-row { min-height:min-content; }
 #detailPhoto { cursor:zoom-in; border-radius:22px !important; box-shadow:0 20px 50px rgba(109,40,217,.2); transition:transform .3s var(--ease-out),box-shadow .3s; }
 #detailPhoto:hover { transform:scale(1.015); box-shadow:0 26px 60px rgba(109,40,217,.32); }
 
