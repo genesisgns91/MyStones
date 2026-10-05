@@ -45,10 +45,10 @@
   button { transition:transform .15s, box-shadow .15s, background-color .15s, border-color .15s, opacity .15s; }
   button:active { transform:scale(.96); }
   @keyframes fadeInUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-  .crystal-card, .section-block, .stat-card { animation:fadeInUp .45s cubic-bezier(.2,.8,.3,1) both; }
+  .crystal-card { animation:fadeInUp .45s cubic-bezier(.2,.8,.3,1) both; }
   #sec-collection, #sec-combine, #sec-guide, #sec-ask, #sec-dashboard { animation:fadeInUp .3s ease both; }
   @media (prefers-reduced-motion: reduce) {
-    .crystal-card, .section-block, .stat-card, #sec-collection, #sec-combine, #sec-guide, #sec-ask, #sec-dashboard { animation:none; }
+    .crystal-card, #sec-collection, #sec-combine, #sec-guide, #sec-ask, #sec-dashboard { animation:none; }
     * { scroll-behavior:auto !important; }
   }
   body { font-family:'DM Sans', sans-serif; color:var(--ink); min-height:100vh;
@@ -573,7 +573,7 @@
   .crystal-card-body { padding:.7rem; gap:.55rem; }
   .card-icon-strip { gap:.4rem .5rem; }
   .card-icon-chip { width:26px; height:26px; }
-  .card-icon-chip svg, .card-icon-chip img { width:26px !important; height:26px !important; }
+  .card-icon-chip svg, .card-icon-chip img { width:24px !important; height:24px !important; }
   .card-icon-text { font-size:.68rem; }
   .section-block { padding:1rem; border-radius:18px; }
   .bottom-nav { padding:.35rem .25rem calc(.35rem + env(safe-area-inset-bottom,0px)); }
@@ -607,6 +607,60 @@
   .brand::before, .main-content::after, .empty-state .icon, .btn-primary:hover .icon, .gal-tile, #lbImg { animation:none !important; }
   .spark { display:none; }
 }
+
+/* =====================================================================
+   Card do cristal — layout horizontal (foto à esquerda, ficha rápida à direita)
+   ===================================================================== */
+.crystal-grid { grid-template-columns:repeat(auto-fill,minmax(296px,1fr)); gap:1.1rem; }
+.crystal-card { flex-direction:row; align-items:stretch; min-height:152px; }
+.crystal-card .card-media { width:38%; max-width:168px; min-width:104px; flex-shrink:0; }
+.crystal-card .card-media .crystal-img { width:100%; height:100%; aspect-ratio:auto; min-height:152px; }
+.crystal-card .crystal-card-body { padding:0.95rem 1rem; justify-content:center; gap:0.6rem; }
+.crystal-card-body h3 { font-size:0.92rem; letter-spacing:.045em; text-transform:uppercase; }
+.crystal-card-body p { text-transform:none; letter-spacing:0; }
+.card-moon-pct { background:color-mix(in srgb, var(--cc) 16%, var(--lilac)); color:var(--cc); }
+.crystal-card .card-icon-chip { width:24px; height:24px; }
+.crystal-card .card-icon-text { font-size:.68rem; }
+.crystal-card .card-icon-strip { gap:.45rem .55rem; }
+
+@media (max-width:768px) {
+  .crystal-grid { grid-template-columns:1fr; gap:.85rem; }
+  .crystal-card { min-height:132px; }
+  .crystal-card .card-media { width:34%; max-width:140px; min-width:92px; }
+  .crystal-card .card-media .crystal-img { min-height:132px; }
+  .crystal-card .crystal-card-body { padding:.75rem .85rem; }
+}
+@media (min-width:561px) and (max-width:768px) {
+  .crystal-grid { grid-template-columns:1fr; }
+}
+
+/* ---------- Tema escuro: painéis translúcidos sobre o céu estrelado ---------- */
+[data-theme="dark"] .section-block,
+[data-theme="dark"] .crystal-card,
+[data-theme="dark"] .stat-card {
+  background: rgba(36,27,56,.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: rgba(144,97,249,.28);
+}
+[data-theme="dark"] .sidebar {
+  background: rgba(18,13,29,.62) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-right-color: rgba(144,97,249,.22);
+}
+[data-theme="dark"] .card-media::before { opacity:.4; }
+
+/* ---------- Botão de ação de IA: pill gradiente roxo→dourado, com brilho sutil ---------- */
+.btn-ai { background:linear-gradient(120deg, var(--purple2), var(--gold)); color:#1a1030; border:none; padding:.62rem 1.1rem; border-radius:999px; font-weight:800; font-size:.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:.45rem; box-shadow:0 8px 22px rgba(139,92,246,.35); transition:transform .2s, box-shadow .2s; }
+.btn-ai:hover { transform:translateY(-2px) scale(1.02); box-shadow:0 12px 28px rgba(139,92,246,.45); }
+.btn-ai .icon { filter:drop-shadow(0 0 4px rgba(255,255,255,.6)); }
+[data-theme="dark"] .btn-ai { color:#1a1030; }
+
+/* ---------- Revelação suave ao rolar (scroll reveal) ---------- */
+.reveal-on-scroll { opacity:0; transform:translateY(22px); transition:opacity .6s cubic-bezier(.2,.8,.3,1), transform .6s cubic-bezier(.2,.8,.3,1); }
+.reveal-on-scroll.revealed { opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce) { .reveal-on-scroll { opacity:1 !important; transform:none !important; transition:none !important; } }
 
 </style>
 </head>
@@ -801,7 +855,7 @@
         <label>Nome Popular</label>
         <input type="text" id="cName" class="form-control" placeholder="Ex: Olho de Tigre" required />
         <div class="form-row" style="margin-top:0.4rem;">
-          <button type="button" class="btn-secondary" onclick="autoFillWithAI(event)"><span class="icon" data-icon="sparkle" data-size="15"></span> Preencher com IA</button>
+          <button type="button" class="btn-ai" onclick="autoFillWithAI(event)"><span class="icon" data-icon="sparkle" data-size="15"></span> Preencher com IA</button>
           <label class="btn-ghost" style="cursor:pointer;"><span class="icon" data-icon="camera" data-size="15"></span> Identificar por Foto<input type="file" accept="image/*" style="display:none;" onchange="identifyByPhoto(event)" /></label>
         </div>
         <div class="identify-result" id="identifyResultBox"></div>
@@ -1942,12 +1996,12 @@ window.renderCrystalGrid = function() {
     card.style.animationDelay = Math.min(idx, 14) * 35 + 'ms';
     card.onclick = () => openCrystalDetail(c.firestoreId);
 
-    const signChips = (c.signs||[]).map(s => ({ html: zodiacIconSVG(s, 32), color: zodiacColor(s), label: s }));
+    const signChips = (c.signs||[]).map(s => ({ html: zodiacIconSVG(s, 24), color: zodiacColor(s), label: s }));
     const iconChips = [
-      c.polarity ? { html: polarityIcon(c.polarity, 32), color: c.polarity==='Solar'?PLANET_COLORS['Sol']:PLANET_COLORS['Lua'], label: c.polarity } : null,
-      elem ? { html: elementIconSVG(elem, 32), color: ELEMENT_COLORS[elem], label: elem } : null,
-      c.chakra ? { html: chakraImg(c.chakra, 32), color: CHAKRA_COLORS[c.chakra], label: c.chakra } : null,
-      c.planet ? { html: planetIcon(c.planet, 32), color: PLANET_COLORS[c.planet], label: c.planet } : null,
+      c.polarity ? { html: polarityIcon(c.polarity, 24), color: c.polarity==='Solar'?PLANET_COLORS['Sol']:PLANET_COLORS['Lua'], label: c.polarity } : null,
+      elem ? { html: elementIconSVG(elem, 24), color: ELEMENT_COLORS[elem], label: elem } : null,
+      c.chakra ? { html: chakraImg(c.chakra, 24), color: CHAKRA_COLORS[c.chakra], label: c.chakra } : null,
+      c.planet ? { html: planetIcon(c.planet, 24), color: PLANET_COLORS[c.planet], label: c.planet } : null,
       ...signChips
     ].filter(Boolean);
 
@@ -2379,7 +2433,7 @@ function infoCardCustomIcon(iconHtml, label, valueHtml, wide=false, bgColor='var
 }
 function bigIconCard(iconHtml, label, valueText, bgColor='var(--purple)') {
   return `<div class="corr-card corr-card-row">
-    <div class="corr-icon-circle" style="background:radial-gradient(circle at 35% 30%, ${bgColor}35, ${bgColor}10 70%); filter:drop-shadow(0 2px 8px ${bgColor}55);">${iconHtml}</div>
+    <div class="corr-icon-circle" style="filter:drop-shadow(0 3px 10px ${bgColor}70);">${iconHtml}</div>
     <div class="corr-card-text">
       <div class="corr-card-label">${label}</div>
       <div class="corr-card-value">${valueText}</div>
@@ -2887,6 +2941,37 @@ document.addEventListener('keydown', (e) => {
       setTimeout(() => sp.remove(), 800);
     }
   }, true);
+})();
+
+// ==================== EFEITO: REVELAÇÃO SUAVE AO ROLAR A TELA ====================
+(function scrollReveal() {
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!('IntersectionObserver' in window) || reduceMotion) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+  function scan(root) {
+    if (!root || !root.querySelectorAll) return;
+    root.querySelectorAll('.section-block, .stat-card').forEach((el) => {
+      if (el.dataset.revealBound) return;
+      el.dataset.revealBound = '1';
+      el.classList.add('reveal-on-scroll');
+      io.observe(el);
+    });
+  }
+  scan(document);
+  const mo = new MutationObserver((muts) => {
+    muts.forEach((m) => {
+      m.addedNodes.forEach((n) => {
+        if (n.nodeType !== 1) return;
+        if (n.matches && n.matches('.section-block, .stat-card')) scan(n.parentNode || document);
+        scan(n);
+      });
+    });
+  });
+  mo.observe(document.body, { childList: true, subtree: true });
 })();
 
 // ==================== COMBINAR CRISTAIS ====================
