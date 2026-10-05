@@ -339,7 +339,8 @@
   .install-banner .icon-btn { background:none; border:none; color:var(--muted); padding:.3rem; cursor:pointer; flex-shrink:0; }
   @keyframes installBannerUp { from{ transform:translateY(16px); opacity:0; } to{ transform:translateY(0); opacity:1; } }
   @media (min-width:769px) { .install-banner { display:none !important; } }
-    .drawer { max-width:100%; height:92vh; border-radius:22px 22px 0 0; transform:translateY(100%); padding:1.1rem 1.1rem calc(1.1rem + env(safe-area-inset-bottom,0px)); }
+    @media (max-width:768px) {
+.drawer { max-width:100%; height:92vh; border-radius:22px 22px 0 0; transform:translateY(100%); padding:1.1rem 1.1rem calc(1.1rem + env(safe-area-inset-bottom,0px)); }
     .drawer-handle { display:block; width:40px; height:5px; border-radius:3px; background:var(--mist); margin:0 auto 0.6rem; }
     .modal-overlay { align-items:flex-end; }
     .modal-overlay.active .drawer { transform:translateY(0); }
@@ -357,6 +358,253 @@
     .info-grid { gap:0.6rem; }
     .corr-card, .info-card { padding:0.75rem; }
   }
+
+/* =====================================================================
+   MyStones — camada de refinamento: layout fluido, cristais, natureza e geometria
+   ===================================================================== */
+:root {
+  --sidebar-w:264px;
+  --gem-violet:#a855f7; --gem-pink:#ec4899; --gem-amber:#f59e0b; --gem-emerald:#10b981; --gem-cyan:#06b6d4; --gem-blue:#3b82f6;
+  --ease-out:cubic-bezier(.2,.8,.3,1);
+  --hex-clip:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+}
+@media (max-width:1100px) { :root { --sidebar-w:236px; } }
+@media (min-width:1800px) { :root { --sidebar-w:292px; } }
+@media (min-width:769px) and (max-width:960px) { :root { --sidebar-w:80px; } }
+
+@keyframes gemPulse { 0%,100% { opacity:.65; transform:scale(1); } 50% { opacity:1; transform:scale(1.18); } }
+@keyframes crystalFloat { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-14px) rotate(1.6deg); } }
+@keyframes sparkFly { from { transform:translate(-50%,-50%) scale(1) rotate(0); opacity:1; } to { transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.2) rotate(180deg); opacity:0; } }
+@keyframes iconFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
+@keyframes lbFromRight { from { opacity:0; transform:translateX(46px) scale(.97); } to { opacity:1; transform:none; } }
+@keyframes lbFromLeft { from { opacity:0; transform:translateX(-46px) scale(.97); } to { opacity:1; transform:none; } }
+@keyframes lbPop { from { opacity:0; transform:scale(.94); } to { opacity:1; transform:none; } }
+
+/* ---------- Layout: aproveita toda a largura, menu fixo à esquerda ---------- */
+@media (min-width:769px) {
+  .sidebar { width:var(--sidebar-w); padding:1.5rem 1rem; gap:1.1rem; background:linear-gradient(180deg,var(--white),color-mix(in srgb,var(--lilac) 70%,var(--white))); box-shadow:8px 0 40px rgba(75,45,120,.07); }
+  .sidebar::before { content:''; position:absolute; inset:0 0 auto 0; height:170px; background:radial-gradient(circle at 18% 0,rgba(168,85,247,.24),transparent 60%),radial-gradient(circle at 92% 8%,rgba(6,182,212,.18),transparent 55%); pointer-events:none; z-index:-1; }
+  .main-content { margin-left:var(--sidebar-w); width:calc(100% - var(--sidebar-w)); max-width:none; padding:2rem clamp(1.25rem,2.6vw,3.2rem) 4rem; }
+  .main-content::before { content:''; position:fixed; top:0; right:0; bottom:0; left:var(--sidebar-w); z-index:-1; pointer-events:none; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2734.64%27%20height%3D%2760%27%20viewBox%3D%270%200%2034.64%2060%27%3E%3Cpath%20d%3D%27M17.32%200L34.64%2010V30L17.32%2040L0%2030V10Z%20M17.32%2040V60%27%20fill%3D%27none%27%20stroke%3D%27%238b5cf6%27%20stroke-opacity%3D%27.16%27%20stroke-width%3D%271%27%2F%3E%3C%2Fsvg%3E") 0 0/34.64px 60px; opacity:.55; -webkit-mask-image:radial-gradient(ellipse at 100% 0%,#000 0,transparent 62%); mask-image:radial-gradient(ellipse at 100% 0%,#000 0,transparent 62%); }
+  .main-content::after { content:''; position:fixed; right:clamp(8px,2vw,40px); bottom:0; width:clamp(140px,14vw,250px); aspect-ratio:200/220; z-index:-1; pointer-events:none; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20200%20220%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27a%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%271%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23d8b4fe%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%237c3aed%27%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%27b%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%271%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23fbcfe8%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23db2777%27%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%27c%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%271%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23a5f3fc%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%230891b2%27%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cg%20transform%3D%27rotate%28-16%2060%20210%29%27%3E%3Cpolygon%20points%3D%2760%2C70%2082%2C98%2082%2C210%2038%2C210%2038%2C98%27%20fill%3D%27url%28%23b%29%27%2F%3E%3Cpolygon%20points%3D%2760%2C70%2082%2C98%2060%2C106%2038%2C98%27%20fill%3D%27%23fff%27%20fill-opacity%3D%27.4%27%2F%3E%3Cpolygon%20points%3D%2760%2C106%2082%2C98%2082%2C210%2060%2C210%27%20fill%3D%27%23000%27%20fill-opacity%3D%27.14%27%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%27rotate%2818%20150%20210%29%27%3E%3Cpolygon%20points%3D%27150%2C86%20170%2C110%20170%2C210%20130%2C210%20130%2C110%27%20fill%3D%27url%28%23c%29%27%2F%3E%3Cpolygon%20points%3D%27150%2C86%20170%2C110%20150%2C118%20130%2C110%27%20fill%3D%27%23fff%27%20fill-opacity%3D%27.4%27%2F%3E%3Cpolygon%20points%3D%27150%2C118%20170%2C110%20170%2C210%20150%2C210%27%20fill%3D%27%23000%27%20fill-opacity%3D%27.14%27%2F%3E%3C%2Fg%3E%3Cg%3E%3Cpolygon%20points%3D%27100%2C6%20128%2C44%20128%2C210%2072%2C210%2072%2C44%27%20fill%3D%27url%28%23a%29%27%2F%3E%3Cpolygon%20points%3D%27100%2C6%20128%2C44%20100%2C54%2072%2C44%27%20fill%3D%27%23fff%27%20fill-opacity%3D%27.45%27%2F%3E%3Cpolygon%20points%3D%27100%2C54%20128%2C44%20128%2C210%20100%2C210%27%20fill%3D%27%23000%27%20fill-opacity%3D%27.16%27%2F%3E%3Cline%20x1%3D%27100%27%20y1%3D%2754%27%20x2%3D%27100%27%20y2%3D%27210%27%20stroke%3D%27%23fff%27%20stroke-opacity%3D%27.3%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center/contain no-repeat; opacity:.42; animation:crystalFloat 9s ease-in-out infinite; }
+}
+[data-theme="dark"] .sidebar { background:linear-gradient(180deg,#1a1230,#140e24); }
+[data-theme="dark"] .main-content::after { opacity:.3; }
+[data-theme="dark"] .main-content::before { opacity:.4; }
+
+.crystal-grid { grid-template-columns:repeat(auto-fill,minmax(clamp(210px,16vw,290px),1fr)); gap:1.25rem; }
+.stats-grid { grid-template-columns:repeat(auto-fit,minmax(clamp(140px,11vw,200px),1fr)); }
+.dash-charts-grid { grid-template-columns:repeat(auto-fit,minmax(clamp(280px,24vw,420px),1fr)); }
+@media (min-width:1400px) { .info-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+
+/* ---------- Menu lateral ---------- */
+.brand { position:relative; }
+.brand::before { content:''; position:absolute; left:.25rem; top:-.15rem; width:50px; height:50px; border-radius:50%; background:radial-gradient(circle,rgba(168,85,247,.6),transparent 70%); filter:blur(12px); z-index:-1; animation:gemPulse 4s ease-in-out infinite; }
+.brand-mark { width:46px; height:46px; border-radius:0; box-shadow:none; clip-path:var(--hex-clip); background:linear-gradient(135deg,rgba(255,255,255,.38) 0 50%,transparent 50%),conic-gradient(from 210deg,#8b5cf6,#ec4899,#f59e0b,#10b981,#06b6d4,#8b5cf6); }
+.brand h1 { background:linear-gradient(90deg,var(--purple),var(--gem-pink),var(--gem-amber)); -webkit-background-clip:text; background-clip:text; color:transparent; letter-spacing:.02em; }
+.side-nav { display:flex; flex-direction:column; gap:.3rem; }
+.sidebar .nav-btn { border-width:0; padding:.45rem .65rem; gap:.75rem; border-radius:16px; overflow:hidden; color:var(--muted); }
+.sidebar .nav-btn::before { content:''; position:absolute; left:0; top:50%; width:4px; height:0; border-radius:0 4px 4px 0; background:var(--nc,var(--purple)); transform:translateY(-50%); transition:height .25s var(--ease-out); }
+.sidebar .nav-btn:hover { background:color-mix(in srgb,var(--nc,var(--purple)) 9%,transparent); color:var(--ink); transform:translateX(3px); }
+.sidebar .nav-btn.active { background:linear-gradient(90deg,color-mix(in srgb,var(--nc,var(--purple)) 20%,transparent),transparent); color:var(--ink); border-left-color:transparent; }
+.sidebar .nav-btn.active::before { height:62%; }
+.nav-ic { width:36px; height:36px; border-radius:12px; display:grid; place-items:center; flex-shrink:0; background:color-mix(in srgb,var(--nc,var(--purple)) 14%,transparent); transition:transform .3s var(--ease-out),background .2s,box-shadow .2s; }
+.nav-ic .icon svg { filter:drop-shadow(0 0 4px color-mix(in srgb,var(--nc,var(--purple)) 45%,transparent)); stroke-width:2.1; }
+.sidebar .nav-btn:hover .nav-ic { transform:rotate(-8deg) scale(1.1); }
+.sidebar .nav-btn.active .nav-ic { background:linear-gradient(135deg,color-mix(in srgb,var(--nc) 78%,#fff),var(--nc)); box-shadow:0 6px 16px color-mix(in srgb,var(--nc) 45%,transparent); }
+.sidebar .nav-btn.active .nav-ic .icon { color:#fff !important; }
+.theme-toggle { border-radius:16px; color:var(--ink); background:linear-gradient(135deg,color-mix(in srgb,var(--gem-amber) 16%,transparent),color-mix(in srgb,var(--gem-violet) 18%,transparent)); }
+.theme-toggle .icon { color:var(--gem-amber) !important; }
+.theme-toggle:hover { transform:translateY(-2px); box-shadow:0 8px 18px rgba(109,40,217,.16); }
+@media (min-width:769px) and (max-width:960px) {
+  .sidebar { padding:1.2rem .55rem; align-items:center; }
+  .sidebar .nav-label, .brand > div:last-child, .theme-toggle > span:not(.icon) { display:none; }
+  .sidebar .nav-btn { justify-content:center; padding:.35rem; width:auto; }
+  .brand { padding:0; justify-content:center; }
+  .theme-toggle { justify-content:center; padding:.7rem; }
+  .side-nav { align-items:center; }
+}
+
+/* ---------- Cabeçalhos ---------- */
+#sec-collection { --hc:#a855f7; } #sec-gallery { --hc:#ec4899; } #sec-combine { --hc:#f59e0b; }
+#sec-guide { --hc:#10b981; } #sec-ask { --hc:#06b6d4; } #sec-dashboard { --hc:#3b82f6; }
+.header-bar { position:relative; padding-bottom:1.15rem; margin-bottom:1.5rem; }
+.header-bar::after { content:''; position:absolute; left:0; right:0; bottom:0; height:10px; background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2764%27%20height%3D%2710%27%20viewBox%3D%270%200%2064%2010%27%3E%3Cpath%20d%3D%27M5%205L10%200L15%205L10%2010Z%27%20fill%3D%27%238b5cf6%27%2F%3E%3Cpath%20d%3D%27M20%205C26%200%2032%200%2038%205C32%2010%2026%2010%2020%205Z%27%20fill%3D%27%2310b981%27%20fill-opacity%3D%27.85%27%2F%3E%3Cpath%20d%3D%27M42%205C46%202%2050%202%2054%205C50%208%2046%208%2042%205Z%27%20fill%3D%27%2306b6d4%27%20fill-opacity%3D%27.85%27%2F%3E%3Ccircle%20cx%3D%2760%27%20cy%3D%275%27%20r%3D%272%27%20fill%3D%27%23ec4899%27%2F%3E%3C%2Fsvg%3E") 0 center/64px 10px no-repeat,linear-gradient(90deg,color-mix(in srgb,var(--hc,#8b5cf6) 45%,transparent),transparent 75%) 76px center/calc(100% - 76px) 1px no-repeat; }
+.header-title { position:relative; }
+.header-title::before { content:''; position:absolute; left:-6px; top:-6px; width:62px; height:62px; border-radius:50%; background:radial-gradient(circle,color-mix(in srgb,var(--hc,#8b5cf6) 55%,transparent),transparent 70%); filter:blur(10px); z-index:-1; }
+.header-title .icon-badge { width:50px !important; height:50px !important; padding:0 !important; display:inline-flex; align-items:center; justify-content:center; color:#fff !important; border-radius:0; box-shadow:none; clip-path:var(--hex-clip); background:linear-gradient(135deg,rgba(255,255,255,.4) 0 50%,transparent 50%),linear-gradient(135deg,var(--hc,#8b5cf6),color-mix(in srgb,var(--hc,#8b5cf6) 55%,#1e1b4b)); }
+.header-title h2 { background:linear-gradient(90deg,var(--ink) 35%,var(--hc,var(--purple))); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+/* ---------- Botões ---------- */
+.btn-primary { position:relative; overflow:hidden; }
+.btn-primary::after { content:''; position:absolute; top:0; left:-120%; width:55%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent); transform:skewX(-20deg); transition:left .65s ease; pointer-events:none; }
+.btn-primary:hover::after { left:150%; }
+.btn-primary:disabled { opacity:.55; cursor:not-allowed; transform:none; box-shadow:none; }
+.btn-primary:hover .icon { animation:iconFloat .8s ease-in-out infinite; }
+.btn-secondary:hover, .btn-ghost:hover { transform:translateY(-1px); box-shadow:0 6px 14px rgba(109,40,217,.16); }
+.icon-btn .icon { transition:transform .25s var(--ease-out); }
+.icon-btn:hover .icon { transform:rotate(90deg); }
+.spark { position:fixed; width:9px; height:9px; pointer-events:none; z-index:600; clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%); animation:sparkFly .75s ease-out forwards; }
+.toolbar select.filter-select, .gal-toolbar select.filter-select { min-width:190px; }
+
+/* ---------- Cards de cristal ---------- */
+.crystal-card { position:relative; --cc:#8b5cf6; border-radius:22px; isolation:isolate; }
+.crystal-card::before { content:''; position:absolute; inset:0; border-radius:inherit; padding:1.5px; background:linear-gradient(135deg,var(--cc),transparent 40%,transparent 60%,var(--cc)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; opacity:0; transition:opacity .3s; pointer-events:none; z-index:3; }
+.crystal-card:hover::before { opacity:1; }
+.crystal-card::after { content:''; position:absolute; left:0; right:0; bottom:0; height:3px; background:linear-gradient(90deg,transparent,var(--cc),transparent); opacity:.75; z-index:3; pointer-events:none; }
+.crystal-card:hover { border-color:color-mix(in srgb,var(--cc) 55%,var(--mist)); box-shadow:0 22px 44px color-mix(in srgb,var(--cc) 26%,transparent),var(--shadow); }
+.card-media { position:relative; overflow:hidden; flex-shrink:0; }
+.card-media::before { content:''; position:absolute; top:0; right:0; width:56px; height:56px; background:linear-gradient(225deg,rgba(255,255,255,.75),rgba(255,255,255,0) 70%); clip-path:polygon(0 0,100% 0,100% 100%); z-index:1; pointer-events:none; }
+.card-media::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.26) 0,transparent 32%),linear-gradient(315deg,rgba(0,0,0,.2),transparent 42%); pointer-events:none; }
+.card-media .crystal-img { display:flex; }
+.card-photo-badge { position:absolute; left:.6rem; bottom:.6rem; z-index:2; display:inline-flex; align-items:center; gap:.3rem; padding:.3rem .6rem; border:none; border-radius:999px; background:rgba(20,10,40,.62); color:#fff; font-size:.7rem; font-weight:800; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); cursor:pointer; }
+.card-photo-badge:hover { background:var(--cc); }
+.crystal-card .card-icon-chip svg, .crystal-card .card-icon-chip img { transition:transform .3s var(--ease-out); }
+.crystal-card:hover .card-icon-chip svg, .crystal-card:hover .card-icon-chip img { transform:scale(1.12) rotate(-4deg); }
+.empty-state .icon { animation:iconFloat 3.4s ease-in-out infinite; }
+
+/* ---------- Blocos, acordeões e estatísticas coloridos ---------- */
+.section-block { position:relative; overflow:hidden; border-radius:22px; --sb:#a855f7; }
+.section-block:nth-of-type(6n+2) { --sb:#ec4899; } .section-block:nth-of-type(6n+3) { --sb:#f59e0b; }
+.section-block:nth-of-type(6n+4) { --sb:#10b981; } .section-block:nth-of-type(6n+5) { --sb:#06b6d4; } .section-block:nth-of-type(6n+6) { --sb:#3b82f6; }
+.section-block::before { content:''; position:absolute; top:0; right:0; width:92px; height:92px; background:linear-gradient(225deg,color-mix(in srgb,var(--sb) 20%,transparent),transparent 62%); clip-path:polygon(0 0,100% 0,100% 100%); pointer-events:none; }
+.section-block:hover { border-color:color-mix(in srgb,var(--sb) 55%,var(--mist)); }
+.section-block h4 .icon { color:var(--sb) !important; filter:drop-shadow(0 0 6px color-mix(in srgb,var(--sb) 50%,transparent)); }
+.section-block h4::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,color-mix(in srgb,var(--sb) 40%,transparent),transparent); }
+.accordion-item { --ac:#a855f7; transition:border-color .2s; }
+.accordion-item:nth-child(7n+2) { --ac:#ec4899; } .accordion-item:nth-child(7n+3) { --ac:#f59e0b; } .accordion-item:nth-child(7n+4) { --ac:#10b981; }
+.accordion-item:nth-child(7n+5) { --ac:#06b6d4; } .accordion-item:nth-child(7n+6) { --ac:#3b82f6; } .accordion-item:nth-child(7n+7) { --ac:#f97316; }
+.accordion-item.open { border-color:color-mix(in srgb,var(--ac) 45%,var(--mist)); }
+.accordion-header .icon:not(.chevron) { color:var(--ac) !important; filter:drop-shadow(0 0 5px color-mix(in srgb,var(--ac) 45%,transparent)); }
+.stat-card { position:relative; overflow:hidden; --sc:#a855f7; }
+.stat-card:nth-child(6n+2) { --sc:#ec4899; } .stat-card:nth-child(6n+3) { --sc:#f59e0b; } .stat-card:nth-child(6n+4) { --sc:#10b981; }
+.stat-card:nth-child(6n+5) { --sc:#06b6d4; } .stat-card:nth-child(6n+6) { --sc:#3b82f6; }
+.stat-card::after { content:''; position:absolute; left:0; right:0; bottom:0; height:3px; background:linear-gradient(90deg,transparent,var(--sc),transparent); }
+.stat-card .icon-badge { width:50px; height:50px; border-radius:0; clip-path:var(--hex-clip); color:var(--sc); background:linear-gradient(135deg,color-mix(in srgb,var(--sc) 26%,transparent),color-mix(in srgb,var(--sc) 8%,transparent)); }
+.stat-card .icon-badge .icon svg { filter:drop-shadow(0 0 5px color-mix(in srgb,var(--sc) 55%,transparent)); }
+.stat-card:hover { border-color:color-mix(in srgb,var(--sc) 55%,var(--mist)); }
+
+/* ---------- Painéis laterais (ficha / formulário) ---------- */
+@media (min-width:769px) {
+  .modal-overlay { align-items:stretch; }
+  .drawer { width:clamp(560px,50vw,860px); max-width:100%; height:100%; border-radius:28px 0 0 28px; padding:1.6rem 1.8rem; transform:translateX(105%); box-shadow:-24px 0 80px rgba(20,10,40,.35); border-left:1px solid var(--mist); }
+  .modal-overlay.active .drawer { transform:translateX(0); }
+  .drawer-handle { display:none; }
+  #detailPhoto { max-height:min(52vh,460px); }
+}
+#detailPhoto { cursor:zoom-in; border-radius:22px !important; box-shadow:0 20px 50px rgba(109,40,217,.2); transition:transform .3s var(--ease-out),box-shadow .3s; }
+#detailPhoto:hover { transform:scale(1.015); box-shadow:0 26px 60px rgba(109,40,217,.32); }
+
+/* ---------- Histórico fotográfico (ficha) ---------- */
+.gallery-grid { grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:.75rem; }
+.gal-mini { border:none; background:none; padding:0; cursor:zoom-in; text-align:center; border-radius:14px; font:inherit; color:inherit; }
+.gal-mini .thumb { position:relative; display:block; aspect-ratio:1; border-radius:14px; overflow:hidden; border:1px solid var(--mist); box-shadow:0 4px 12px rgba(75,45,120,.1); transition:transform .25s var(--ease-out),border-color .2s,box-shadow .25s; }
+.gal-mini .thumb::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.28),transparent 42%); pointer-events:none; }
+.gal-mini img { width:100% !important; height:100% !important; object-fit:cover; display:block; border:none !important; border-radius:0 !important; transition:transform .45s ease; }
+.gal-mini:hover .thumb { transform:translateY(-3px); border-color:var(--purple2); box-shadow:0 12px 24px rgba(109,40,217,.25); }
+.gal-mini:hover img { transform:scale(1.12); }
+.gal-mini small { display:block; font-size:.62rem; color:var(--muted); margin-top:.3rem; }
+
+/* ---------- Tela: Galeria de Fotos ---------- */
+.gal-toolbar { display:flex; gap:.7rem; flex-wrap:wrap; margin-bottom:1.3rem; }
+.gallery-wall { display:grid; grid-template-columns:repeat(auto-fill,minmax(clamp(150px,13vw,230px),1fr)); gap:1rem; }
+.gal-tile { position:relative; aspect-ratio:1; border:none; padding:0; border-radius:20px; overflow:hidden; cursor:zoom-in; background:var(--lilac); box-shadow:var(--shadow); --cc:#8b5cf6; isolation:isolate; animation:fadeInUp .45s var(--ease-out) both; transition:transform .3s var(--ease-out),box-shadow .3s; }
+.gal-tile img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .55s ease; }
+.gal-tile::before { content:''; position:absolute; inset:0; border-radius:inherit; padding:2px; background:linear-gradient(135deg,var(--cc),transparent 45%,transparent 55%,var(--cc)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; opacity:0; transition:opacity .3s; z-index:3; pointer-events:none; }
+.gal-tile::after { content:''; position:absolute; top:0; right:0; width:48px; height:48px; background:linear-gradient(225deg,rgba(255,255,255,.7),rgba(255,255,255,0) 70%); clip-path:polygon(0 0,100% 0,100% 100%); z-index:1; pointer-events:none; }
+.gal-tile:hover { transform:translateY(-4px); box-shadow:0 20px 40px color-mix(in srgb,var(--cc) 30%,transparent); }
+.gal-tile:hover::before, .gal-tile:focus-visible::before { opacity:1; }
+.gal-tile:hover img { transform:scale(1.08); }
+.gal-cap { position:absolute; inset:auto 0 0 0; z-index:2; padding:2rem .8rem .7rem; text-align:left; color:#fff; background:linear-gradient(transparent,rgba(20,10,40,.82)); opacity:0; transform:translateY(8px); transition:opacity .25s,transform .25s; }
+.gal-cap b { display:block; font-family:'Cinzel',serif; font-size:.82rem; line-height:1.25; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.gal-cap small { display:block; font-size:.66rem; opacity:.85; margin-top:.1rem; }
+.gal-tile:hover .gal-cap, .gal-tile:focus-visible .gal-cap { opacity:1; transform:none; }
+.gal-zoom { position:absolute; top:.6rem; left:.6rem; z-index:2; width:30px; height:30px; border-radius:50%; display:grid; place-items:center; background:rgba(20,10,40,.55); color:#fff; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); opacity:0; transform:scale(.8); transition:opacity .25s,transform .25s; }
+.gal-tile:hover .gal-zoom { opacity:1; transform:none; }
+@media (hover:none) { .gal-cap { opacity:1; transform:none; } .gal-zoom { display:none; } }
+
+/* ---------- Carrossel (lightbox) ---------- */
+.lightbox { position:fixed; inset:0; z-index:300; display:grid; grid-template-rows:auto minmax(0,1fr) auto auto; opacity:0; visibility:hidden; transition:opacity .25s,visibility .25s; overscroll-behavior:contain; --lbc:#8b5cf6; padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px); }
+.lightbox.open { opacity:1; visibility:visible; }
+.lb-backdrop { position:absolute; inset:0; background:radial-gradient(circle at 50% 38%,rgba(70,36,126,.78),rgba(9,5,20,.97)); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+.lb-top { position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; gap:.6rem; padding:.85rem 1rem; }
+.lb-counter { padding:.35rem .8rem; border-radius:999px; background:rgba(255,255,255,.12); color:#fff; font-size:.8rem; font-weight:800; letter-spacing:.04em; border:1px solid rgba(255,255,255,.14); }
+.lb-actions { display:flex; gap:.5rem; }
+.lb-btn { display:inline-flex; align-items:center; justify-content:center; gap:.45rem; min-height:40px; padding:0 .95rem; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.12); color:#fff; font-weight:700; font-size:.82rem; cursor:pointer; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+.lb-btn:hover { background:var(--lbc); border-color:transparent; }
+.lb-btn-icon { width:40px; padding:0; }
+.lb-btn-icon:hover .icon { transform:rotate(90deg); }
+.lb-btn .icon { transition:transform .25s var(--ease-out); }
+.lb-stage { position:relative; z-index:1; display:flex; align-items:center; justify-content:center; min-height:0; overflow:hidden; touch-action:none; padding:0 4.2rem; }
+.lb-stage.is-zoomed { cursor:grab; }
+#lbImg { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; border-radius:18px; user-select:none; -webkit-user-drag:none; cursor:zoom-in; box-shadow:0 0 0 1px rgba(255,255,255,.14),0 30px 80px rgba(0,0,0,.6),0 0 70px color-mix(in srgb,var(--lbc) 38%,transparent); transition:transform .28s var(--ease-out),opacity .2s; will-change:transform; animation:lbPop .3s var(--ease-out); }
+#lbImg.zoomed { cursor:grab; }
+#lbImg.lb-from-right { animation:lbFromRight .34s var(--ease-out); }
+#lbImg.lb-from-left { animation:lbFromLeft .34s var(--ease-out); }
+.lb-nav { position:absolute; top:50%; z-index:3; width:50px; height:50px; margin-top:-25px; border-radius:50%; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.12); color:#fff; display:grid; place-items:center; cursor:pointer; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); transition:background .2s,transform .2s,opacity .2s; }
+.lb-nav:hover { background:var(--lbc); border-color:transparent; transform:scale(1.08); }
+.lb-nav:active { transform:scale(.94); }
+.lb-prev { left:.9rem; } .lb-next { right:.9rem; }
+.lightbox.single .lb-nav { display:none; }
+.lb-stage.is-zoomed .lb-nav { opacity:0; pointer-events:none; }
+.lb-info { position:relative; z-index:2; text-align:center; padding:.7rem 1rem .2rem; color:#fff; }
+.lb-info h3 { font-family:'Cinzel',serif; font-size:1.15rem; letter-spacing:.02em; }
+.lb-info p { font-size:.8rem; color:rgba(255,255,255,.7); margin-top:.15rem; min-height:1.1em; }
+.lb-thumbs { position:relative; z-index:2; display:flex; gap:.5rem; overflow-x:auto; padding:.7rem 1rem .9rem; justify-content:safe center; scrollbar-width:none; }
+.lb-thumbs::-webkit-scrollbar { display:none; }
+.lightbox.single .lb-thumbs { display:none; }
+.lb-thumb { flex:0 0 auto; width:58px; height:58px; padding:0; border-radius:14px; overflow:hidden; border:2px solid transparent; background:rgba(255,255,255,.08); opacity:.55; cursor:pointer; transition:opacity .2s,transform .25s var(--ease-out),border-color .2s; }
+.lb-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.lb-thumb:hover { opacity:.9; transform:translateY(-2px); }
+.lb-thumb.active { opacity:1; border-color:var(--lbc); transform:translateY(-3px) scale(1.06); box-shadow:0 8px 20px color-mix(in srgb,var(--lbc) 50%,transparent); }
+
+/* ---------- Celular e telas pequenas ---------- */
+@media (max-width:768px) {
+  .main-content { padding:1rem .9rem calc(5.8rem + env(safe-area-inset-bottom,0px)); }
+  .header-title h2 { font-size:1.25rem; }
+  .header-title .icon-badge { width:42px !important; height:42px !important; }
+  .header-title::before { width:52px; height:52px; }
+  .header-bar > .btn-primary { width:100%; justify-content:center; }
+  .crystal-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; }
+  .crystal-card { border-radius:18px; }
+  .crystal-card-body { padding:.7rem; gap:.55rem; }
+  .card-icon-strip { gap:.4rem .5rem; }
+  .card-icon-chip { width:26px; height:26px; }
+  .card-icon-chip svg, .card-icon-chip img { width:26px !important; height:26px !important; }
+  .card-icon-text { font-size:.68rem; }
+  .section-block { padding:1rem; border-radius:18px; }
+  .bottom-nav { padding:.35rem .25rem calc(.35rem + env(safe-area-inset-bottom,0px)); }
+  .bottom-nav .nav-btn { flex:1 1 0; min-width:0; padding:.45rem .1rem; font-size:.58rem; justify-content:center; }
+  .bottom-nav .nav-btn span:not(.icon) { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .bottom-nav .nav-btn.active { color:var(--nc,var(--purple)); }
+  .bottom-nav .nav-btn.active::after { background:var(--nc,var(--purple2)); }
+  .btn-primary, .btn-secondary, .btn-ghost, .icon-btn { min-height:44px; }
+  .gal-toolbar { position:sticky; top:0; z-index:15; background:var(--cream); padding:.5rem 0; margin:0 0 .6rem; }
+  .gal-toolbar select { flex:1 1 140px; min-width:0 !important; }
+  .gallery-wall { grid-template-columns:repeat(2,minmax(0,1fr)); gap:.6rem; }
+  .gal-tile { border-radius:16px; }
+  .gal-cap { padding:1.6rem .6rem .5rem; }
+  .lb-stage { padding:0 .5rem; }
+  .lb-nav { width:42px; height:42px; margin-top:-21px; background:rgba(0,0,0,.35); }
+  .lb-prev { left:.4rem; } .lb-next { right:.4rem; }
+  .lb-btn span:not(.icon) { display:none; }
+  .lb-btn { width:40px; padding:0; }
+  .lb-thumb { width:48px; height:48px; border-radius:12px; }
+  .lb-info h3 { font-size:1rem; }
+}
+@media (min-width:561px) and (max-width:768px) {
+  .crystal-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .gallery-wall { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+@media (max-height:520px) and (orientation:landscape) {
+  .lb-info, .lb-thumbs { display:none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand::before, .main-content::after, .empty-state .icon, .btn-primary:hover .icon, .gal-tile, #lbImg { animation:none !important; }
+  .spark { display:none; }
+}
+
 </style>
 </head>
 <body>
@@ -438,7 +686,21 @@
     <div class="crystal-grid" id="crystalGrid"></div>
   </section>
 
-  <section id="sec-combine" style="display:none;">
+  <section id="sec-gallery" style="display:none;">
+  <div class="header-bar">
+    <div class="header-title"><span class="icon-badge icon" data-icon="image" data-size="22"></span><div><h2>Galeria de Fotos</h2><p id="galleryCount">As fotos de todos os seus cristais, num só lugar</p></div></div>
+    <button class="btn-primary" id="galleryPlayBtn" onclick="openGalleryFromStart()"><span class="icon" data-icon="play" data-size="15"></span> Ver em carrossel</button>
+  </div>
+  <div class="gal-toolbar">
+    <select id="galleryCrystalFilter" class="filter-select" onchange="renderGallery()" aria-label="Filtrar por cristal"><option value="">Todos os cristais</option></select>
+    <select id="gallerySort" class="filter-select" onchange="renderGallery()" aria-label="Ordenar fotos">
+      <option value="recent">Mais recentes</option><option value="old">Mais antigas</option><option value="name">Por cristal (A–Z)</option>
+    </select>
+  </div>
+  <div class="gallery-wall" id="galleryWall"></div>
+</section>
+
+<section id="sec-combine" style="display:none;">
     <div class="header-bar"><div class="header-title"><span class="icon-badge icon" data-icon="shuffle" data-size="20"></span><div><h2>Combinar Cristais</h2><p>Escolha 2 ou mais exemplares para a IA analisar a relação simbólica entre eles</p></div></div></div>
     <div class="section-block">
       <div class="form-group"><label>Selecione os cristais</label><div class="checkbox-list" id="combineChecklist"></div></div>
@@ -505,6 +767,24 @@
 </main>
 
 <nav class="bottom-nav" id="bottomNav"></nav>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Carrossel de fotos" aria-hidden="true">
+  <div class="lb-backdrop" onclick="closeLightbox()"></div>
+  <div class="lb-top">
+    <span class="lb-counter" id="lbCounter"></span>
+    <div class="lb-actions">
+      <button type="button" class="lb-btn" id="lbOpenCard" onclick="lightboxOpenCard()" style="display:none;"><span class="icon" data-icon="external" data-size="16"></span><span>Abrir ficha</span></button>
+      <button type="button" class="lb-btn lb-btn-icon" onclick="closeLightbox()" aria-label="Fechar"><span class="icon" data-icon="x" data-size="20"></span></button>
+    </div>
+  </div>
+  <div class="lb-stage" id="lbStage">
+    <button type="button" class="lb-nav lb-prev" onclick="lightboxStep(-1)" aria-label="Foto anterior"><span class="icon" data-icon="chevron-left" data-size="26"></span></button>
+    <img id="lbImg" alt="" draggable="false" />
+    <button type="button" class="lb-nav lb-next" onclick="lightboxStep(1)" aria-label="Próxima foto"><span class="icon" data-icon="chevron-right" data-size="26"></span></button>
+  </div>
+  <div class="lb-info"><h3 id="lbTitle"></h3><p id="lbSub"></p></div>
+  <div class="lb-thumbs" id="lbThumbs"></div>
+</div>
+
 <div id="toastContainer"></div>
 
 <!-- DRAWER: ADICIONAR/EDITAR CRISTAL -->
@@ -1048,16 +1328,21 @@ const crystalsCol = collection(db, "crystals");
   });
 })();
 
+// Ordem de prioridade dos workers de IA: sempre tenta do 1º ao último; se um falhar, passa para o próximo.
+// Se algum proxy não aceitar imagem (visão), marque vision:false e ele será pulado nas consultas com foto.
 const WORKERS = [
-  "https://astro2.genesisgns.workers.dev/",
-  "https://mamoot-gpt-proxy.genesisgns.workers.dev/",
-  "https://astro-gns-proxy.genesisgns.workers.dev/",
-  "https://forzion-gpt-proxy.genesisgns.workers.dev/",
-  "https://shiny-sky-21dd.genesisgns.workers.dev/",
-  "https://interno.genesisgns.workers.dev/"
+  { name: 'certificados-groq-proxy', url: 'https://certificados-groq-proxy.genesisgns.workers.dev/' },
+  { name: 'gns91-groq-proxy',        url: 'https://gns91-groq-proxy.genesisgns.workers.dev/' },
+  { name: 'forzion-gpt-proxy',       url: 'https://forzion-gpt-proxy.genesisgns.workers.dev/' },
+  { name: 'mamoot-gpt-proxy',        url: 'https://mamoot-gpt-proxy.genesisgns.workers.dev/' },
+  { name: 'astro-gns-proxy',         url: 'https://astro-gns-proxy.genesisgns.workers.dev/' },
+  { name: 'shiny-sky-21dd',          url: 'https://shiny-sky-21dd.genesisgns.workers.dev/' },
+  { name: 'astro2',                  url: 'https://astro2.genesisgns.workers.dev/' },
+  { name: 'interno',                 url: 'https://interno.genesisgns.workers.dev/' }
 ];
-let currentWorkerIndex = Number(localStorage.getItem('cristal-worker-index')) || 0;
-if (!(currentWorkerIndex >= 0 && currentWorkerIndex < WORKERS.length)) currentWorkerIndex = 0;
+const WORKER_TIMEOUT_MS = 20000;
+let lastWorkerUsed = null;
+try { localStorage.removeItem('cristal-worker-index'); } catch (e) {}
 
 let allCrystals = [];
 let currentDetailId = null;
@@ -1104,6 +1389,13 @@ const ICONS = {
   waveform: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
   image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>'
 };
+Object.assign(ICONS, {
+  'chevron-left': '<polyline points="15 18 9 12 15 6"/>',
+  'chevron-right': '<polyline points="9 18 15 12 9 6"/>',
+  'zoom-in': '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>',
+  external: '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>',
+  play: '<polygon points="6 4 20 12 6 20 6 4"/>'
+});
 function icon(name, size=18, color='currentColor') {
   const inner = ICONS[name] || ICONS.gem;
   return `<span class="icon" style="width:${size}px;height:${size}px;color:${color};"><svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg></span>`;
@@ -1111,7 +1403,11 @@ function icon(name, size=18, color='currentColor') {
 function hydrateIcons(root=document) {
   root.querySelectorAll('[data-icon]').forEach(el => {
     const name = el.dataset.icon, size = Number(el.dataset.size) || 18;
-    el.outerHTML = icon(name, size);
+    const tmp = document.createElement('div');
+    tmp.innerHTML = icon(name, size);
+    const node = tmp.firstElementChild;
+    el.classList.forEach(cls => node.classList.add(cls));
+    el.replaceWith(node);
   });
 }
 
@@ -1368,18 +1664,19 @@ function sephirahTreeSVG(selectedName, size=44) {
 
 // ==================== NAVEGAÇÃO ====================
 const NAV_ITEMS = [
-  { tab:'collection', label:'Coleção', icon:'gem' },
-  { tab:'combine', label:'Combinar Cristais', icon:'shuffle' },
-  { tab:'guide', label:'Guia Esotérico', icon:'book' },
-  { tab:'ask', label:'Perguntar à IA', icon:'sparkle' },
-  { tab:'dashboard', label:'Dashboard', icon:'chart' }
+  { tab:'collection', label:'Coleção',           short:'Coleção',   icon:'gem',     color:'#a855f7' },
+  { tab:'gallery',    label:'Galeria de Fotos',  short:'Galeria',   icon:'image',   color:'#ec4899' },
+  { tab:'combine',    label:'Combinar Cristais', short:'Combinar',  icon:'shuffle', color:'#f59e0b' },
+  { tab:'guide',      label:'Guia Esotérico',    short:'Guia',      icon:'book',    color:'#10b981' },
+  { tab:'ask',        label:'Perguntar à IA',    short:'IA',        icon:'sparkle', color:'#06b6d4' },
+  { tab:'dashboard',  label:'Dashboard',         short:'Painel',    icon:'chart',   color:'#3b82f6' }
 ];
 document.getElementById('sidebarNav').innerHTML = `
   <div class="brand"><div class="brand-mark">${icon('gem',22)}</div><div><h1>Meu Cristal</h1><small>Elementos · Energia · Equilíbrio</small></div></div>
-  <nav>${NAV_ITEMS.map((n,i) => `<button class="nav-btn ${i===0?'active':''}" onclick="switchTab('${n.tab}')">${icon(n.icon,18)}<span>${n.label}</span></button>`).join('')}</nav>
-  <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn">${icon('moon',16)}<span>Alternar tema</span></button>
+  <nav class="side-nav" aria-label="Navegação principal">${NAV_ITEMS.map((n,i) => `<button class="nav-btn ${i===0?'active':''}" style="--nc:${n.color}" title="${n.label}" aria-label="${n.label}" onclick="switchTab('${n.tab}')"><span class="nav-ic">${icon(n.icon,19,n.color)}</span><span class="nav-label">${n.label}</span></button>`).join('')}</nav>
+  <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn" title="Alternar tema">${icon('moon',16)}<span>Alternar tema</span></button>
   <button class="theme-toggle" id="installAppBtn" style="display:none;" onclick="installApp()">${icon('download',16)}<span>Instalar App</span></button>`;
-document.getElementById('bottomNav').innerHTML = NAV_ITEMS.map((n,i) => `<button class="nav-btn ${i===0?'active':''}" onclick="switchTab('${n.tab}')">${icon(n.icon,20)}<span>${n.label.split(' ')[0]}</span></button>`).join('');
+document.getElementById('bottomNav').innerHTML = NAV_ITEMS.map((n,i) => `<button class="nav-btn ${i===0?'active':''}" style="--nc:${n.color}" aria-label="${n.label}" onclick="switchTab('${n.tab}')">${icon(n.icon,21,n.color)}<span>${n.short}</span></button>`).join('');
 
 // ==================== TOASTS ====================
 function showToast(message, type='info') {
@@ -1413,7 +1710,7 @@ window.toggleAccordion = function(target) {
 
 // ==================== NAVEGAÇÃO ENTRE ABAS ====================
 window.switchTab = function(tab) {
-  ['collection', 'combine', 'guide', 'ask', 'dashboard'].forEach(t => {
+  ['collection', 'gallery', 'combine', 'guide', 'ask', 'dashboard'].forEach(t => {
     document.getElementById('sec-' + t).style.display = (t === tab) ? 'block' : 'none';
   });
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1423,6 +1720,8 @@ window.switchTab = function(tab) {
   if (tab === 'dashboard') renderDashboard();
   if (tab === 'combine') renderCombineChecklist();
   if (tab === 'guide') renderGuide();
+  if (tab === 'gallery') renderGallery();
+  window.scrollTo({ top: 0 });
 };
 
 window.openDrawer = function(id) {
@@ -1461,6 +1760,21 @@ function fileToBase64(file) {
     reader.readAsDataURL(file);
   });
 }
+function extractWorkerText(data) {
+  if (data == null) return null;
+  if (typeof data === 'string') return data;
+  if (typeof data.resposta !== 'undefined') return data.resposta;
+  if (typeof data.response === 'string') return data.response;
+  if (typeof data.text === 'string') return data.text;
+  if (typeof data.answer === 'string') return data.answer;
+  if (typeof data.output === 'string') return data.output;
+  const choice = data.choices && data.choices[0];
+  if (choice && choice.message && typeof choice.message.content === 'string') return choice.message.content;
+  const parts = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
+  if (Array.isArray(parts)) return parts.map(p => p.text || '').join('');
+  return null;
+}
+
 async function callGeminiWorker(prompt, imageFile) {
   const body = { prompt };
   if (imageFile) {
@@ -1468,18 +1782,35 @@ async function callGeminiWorker(prompt, imageFile) {
     const match = dataUrl.match(/^data:(.+);base64,(.*)$/);
     if (match) { body.mimeType = match[1]; body.imageBase64 = match[2]; }
   }
-  for (let attempt = 0; attempt < WORKERS.length; attempt++) {
-    const workerUrl = WORKERS[currentWorkerIndex];
+  const failures = [];
+  // Sempre percorre a lista na ordem definida em WORKERS (do 1º ao último).
+  for (const worker of WORKERS) {
+    if (imageFile && worker.vision === false) continue;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), WORKER_TIMEOUT_MS);
     try {
-      const response = await fetch(workerUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const response = await fetch(worker.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: controller.signal
+      });
       const data = await response.json().catch(() => null);
-      if (!response.ok || !data || typeof data.resposta === 'undefined') throw new Error((data && data.error) || `Status ${response.status}`);
-      return data.resposta;
+      if (!response.ok) throw new Error((data && (data.error || data.message)) || `Status ${response.status}`);
+      const text = extractWorkerText(data);
+      if (text === null || String(text).trim() === '') throw new Error((data && data.error) || 'Resposta vazia');
+      lastWorkerUsed = worker.name;
+      console.info('[IA] respondeu:', worker.name);
+      return text;
     } catch (err) {
-      currentWorkerIndex = (currentWorkerIndex + 1) % WORKERS.length;
-      localStorage.setItem('cristal-worker-index', String(currentWorkerIndex));
+      const reason = err && err.name === 'AbortError' ? 'tempo esgotado' : (err && err.message) || 'erro';
+      failures.push(`${worker.name}: ${reason}`);
+      console.warn(`[IA] ${worker.name} falhou (${reason}) — tentando o próximo`);
+    } finally {
+      clearTimeout(timer);
     }
   }
+  console.error('[IA] todos os workers falharam:', failures);
   throw new Error('Todos os servidores de IA estão indisponíveis no momento. Tente novamente em instantes.');
 }
 
@@ -1489,6 +1820,8 @@ onSnapshot(crystalsCol, (snapshot) => {
   renderCrystalGrid();
   renderMoonBanner();
   if (currentDetailId) renderCrystalDetail(currentDetailId);
+  const galSec = document.getElementById('sec-gallery');
+  if (galSec && galSec.style.display === 'block') renderGallery();
 }, (err) => {
   console.error('Erro ao ler cristais do Firestore:', err);
   document.getElementById('crystalGrid').innerHTML = `<div class="empty-state">${icon('alert-triangle',40,'var(--red-alert)')}<p>Não foi possível conectar ao Firebase.<br/>${err.message}</p></div>`;
@@ -1596,11 +1929,14 @@ window.renderCrystalGrid = function() {
 
   container.innerHTML = '';
   const currentMoonPhase = getMoonPhase();
-  list.forEach(c => {
+  list.forEach((c, idx) => {
     const img = c.photo || c.referenceImageUrl;
+    const photoCount = (c.photoHistory || []).filter(g => g && g.photo).length;
     const elem = dominantElement(c);
     const card = document.createElement('div');
     card.className = 'crystal-card';
+    card.style.setProperty('--cc', (elem && ELEMENT_COLORS[elem]) || '#8b5cf6');
+    card.style.animationDelay = Math.min(idx, 14) * 35 + 'ms';
     card.onclick = () => openCrystalDetail(c.firestoreId);
 
     const signChips = (c.signs||[]).map(s => ({ html: zodiacIconSVG(s, 32), color: zodiacColor(s), label: s }));
@@ -1615,7 +1951,7 @@ window.renderCrystalGrid = function() {
     const moonPct = (c.moonPhases && c.moonPhases[currentMoonPhase]) ? c.moonPhases[currentMoonPhase].percent : null;
 
     card.innerHTML = `
-      ${img ? `<img src="${img}" class="crystal-img" />` : `<div class="crystal-img">${icon('gem',28)}</div>`}
+      <div class="card-media">${img ? `<img src="${img}" class="crystal-img" loading="lazy" decoding="async" alt="" />` : `<div class="crystal-img">${icon('gem',28)}</div>`}${photoCount > 1 ? `<button type="button" class="card-photo-badge" onclick="event.stopPropagation(); openCrystalLightbox('${c.firestoreId}')" title="Ver fotos em carrossel">${icon('image',13)} ${photoCount}</button>` : ''}</div>
       <div class="crystal-card-body">
         <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:0.4rem;">
           <div style="min-width:0;">
@@ -2158,11 +2494,7 @@ function renderCrystalDetail(id) {
     { key:'lastCleaning', label:'Limpeza', ic:'droplet' }, { key:'lastEnergization', label:'Energização', ic:'sun' }
   ].map(ct => `<div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.3rem;">${icon(ct.ic,14)} ${ct.label}: última em ${c[ct.key] ? new Date(c[ct.key]).toLocaleDateString('pt-BR') : 'Nunca registrado'}</div>`).join('');
 
-  const gallery = c.photoHistory || [];
-  document.getElementById('detailGallery').innerHTML = gallery.length === 0
-    ? `<div class="empty-state" style="grid-column:1/-1; padding:1.2rem;">${icon('layers',30,'var(--purple2)')}<p style="margin:0;">Nenhuma foto no histórico ainda.</p></div>`
-    : [...gallery].sort((a,b) => new Date(b.date)-new Date(a.date)).map(g => `
-      <div style="text-align:center;"><img src="${g.photo}" /><div style="font-size:0.62rem; color:var(--muted); margin-top:0.2rem;">${new Date(g.date).toLocaleDateString('pt-BR')}</div></div>`).join('');
+  renderDetailGallery(c);
 }
 
 window.recordCare = async function(careType) {
@@ -2200,6 +2532,359 @@ window.deleteCrystal = async function() {
   try { await deleteDoc(doc(db, "crystals", currentDetailId)); closeActiveDrawer(); showToast('Cristal excluído.', 'success'); }
   catch (err) { showToast('Erro ao excluir: ' + err.message, 'error'); }
 };
+
+// ==================== GALERIA DE FOTOS + CARROSSEL (LIGHTBOX) ====================
+function escHtml(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
+}
+function fmtLongDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  return isNaN(dt) ? '' : dt.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+}
+
+// Reúne as fotos de um cristal (ou de todos) em uma lista única, da mais recente para a mais antiga.
+function buildPhotoItems(onlyId = null, includeRef = true) {
+  const items = [];
+  allCrystals.forEach(c => {
+    if (onlyId && c.firestoreId !== onlyId) return;
+    const elem = dominantElement(c);
+    const base = {
+      id: c.firestoreId,
+      name: c.nickname || c.name || 'Cristal',
+      variety: c.variety || '',
+      color: (elem && ELEMENT_COLORS[elem]) || '#8b5cf6'
+    };
+    const seen = new Set();
+    (c.photoHistory || []).forEach(g => {
+      if (g && g.photo && !seen.has(g.photo)) { seen.add(g.photo); items.push({ ...base, src: g.photo, date: g.date || c.createdAt || null }); }
+    });
+    if (c.photo && !seen.has(c.photo)) { seen.add(c.photo); items.push({ ...base, src: c.photo, date: c.createdAt || null }); }
+    if (includeRef && !seen.size && c.referenceImageUrl) items.push({ ...base, src: c.referenceImageUrl, date: c.createdAt || null, ref: true });
+  });
+  items.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+  return items;
+}
+
+// ---- Tela: Galeria de Fotos ----
+let galleryItems = [];
+window.renderGallery = function() {
+  const wall = document.getElementById('galleryWall');
+  if (!wall) return;
+  const sel = document.getElementById('galleryCrystalFilter');
+  const sortMode = document.getElementById('gallerySort').value;
+  const all = buildPhotoItems(null, true);
+
+  const counts = new Map();
+  all.forEach(i => counts.set(i.id, (counts.get(i.id) || 0) + 1));
+  const prev = sel.value;
+  const options = [`<option value="">Todos os cristais (${all.length})</option>`];
+  allCrystals
+    .filter(c => counts.has(c.firestoreId))
+    .sort((a, b) => String(a.nickname || a.name).localeCompare(String(b.nickname || b.name), 'pt-BR'))
+    .forEach(c => options.push(`<option value="${escHtml(c.firestoreId)}">${escHtml(c.nickname || c.name)} (${counts.get(c.firestoreId)})</option>`));
+  sel.innerHTML = options.join('');
+  sel.value = counts.has(prev) ? prev : '';
+
+  let list = sel.value ? all.filter(i => i.id === sel.value) : all.slice();
+  if (sortMode === 'old') list.reverse();
+  if (sortMode === 'name') list.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR') || new Date(b.date || 0) - new Date(a.date || 0));
+  galleryItems = list;
+
+  const crystalCount = new Set(list.map(i => i.id)).size;
+  document.getElementById('galleryCount').textContent = list.length
+    ? `${list.length} ${list.length === 1 ? 'foto' : 'fotos'} em ${crystalCount} ${crystalCount === 1 ? 'cristal' : 'cristais'} — toque numa foto para abrir o carrossel`
+    : 'As fotos de todos os seus cristais, num só lugar';
+  document.getElementById('galleryPlayBtn').disabled = list.length === 0;
+
+  wall.innerHTML = '';
+  if (!list.length) {
+    wall.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">${icon('image',44,'var(--gem-pink,#ec4899)')}<p>Nenhuma foto registrada ainda.<br/>Adicione fotos na ficha de cada cristal e elas aparecerão aqui.</p>
+      <button class="btn-primary" onclick="switchTab('collection')">${icon('gem',16)} Ir para a coleção</button></div>`;
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  list.forEach((it, i) => {
+    const tile = document.createElement('button');
+    tile.type = 'button';
+    tile.className = 'gal-tile';
+    tile.style.setProperty('--cc', it.color);
+    tile.style.animationDelay = Math.min(i, 18) * 28 + 'ms';
+    tile.setAttribute('aria-label', `Abrir foto de ${it.name}`);
+    tile.innerHTML = `<img alt="" loading="lazy" decoding="async" /><span class="gal-zoom">${icon('zoom-in', 15)}</span><span class="gal-cap"><b></b><small></small></span>`;
+    tile.querySelector('img').src = it.src;
+    tile.querySelector('img').alt = it.name;
+    tile.querySelector('b').textContent = it.name;
+    tile.querySelector('small').textContent = it.ref ? 'Imagem de referência' : (it.date ? new Date(it.date).toLocaleDateString('pt-BR') : '');
+    tile.addEventListener('click', () => openLightbox(galleryItems, i));
+    frag.appendChild(tile);
+  });
+  wall.appendChild(frag);
+};
+window.openGalleryFromStart = function() {
+  if (galleryItems.length) openLightbox(galleryItems, 0);
+  else showToast('Nenhuma foto para exibir.', 'info');
+};
+
+// ---- Histórico fotográfico dentro da ficha ----
+function renderDetailGallery(c) {
+  const host = document.getElementById('detailGallery');
+  if (!host) return;
+  const items = buildPhotoItems(c.firestoreId, false);
+  host.innerHTML = '';
+  if (!items.length) {
+    host.innerHTML = `<div class="empty-state" style="grid-column:1/-1; padding:1.2rem;">${icon('layers',30,'var(--purple2)')}<p style="margin:0;">Nenhuma foto no histórico ainda.</p></div>`;
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  items.forEach((it, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'gal-mini';
+    b.title = 'Ampliar foto';
+    b.setAttribute('aria-label', `Ampliar foto ${i + 1} de ${items.length}`);
+    b.innerHTML = `<span class="thumb"><img alt="" loading="lazy" decoding="async" /></span><small></small>`;
+    b.querySelector('img').src = it.src;
+    b.querySelector('small').textContent = it.date ? new Date(it.date).toLocaleDateString('pt-BR') : '';
+    b.addEventListener('click', () => openLightbox(items, i));
+    frag.appendChild(b);
+  });
+  host.appendChild(frag);
+}
+
+window.openCrystalLightbox = function(id) {
+  const items = buildPhotoItems(id, true);
+  if (items.length) openLightbox(items, 0);
+};
+(function wireDetailPhoto() {
+  const dp = document.getElementById('detailPhoto');
+  if (!dp) return;
+  dp.title = 'Ampliar foto';
+  dp.addEventListener('click', () => {
+    if (!currentDetailId) return;
+    const items = buildPhotoItems(currentDetailId, true);
+    if (!items.length) return;
+    const cur = dp.getAttribute('src');
+    const i = items.findIndex(x => x.src === cur);
+    openLightbox(items, i < 0 ? 0 : i);
+  });
+})();
+
+// ---- Carrossel (lightbox) ----
+const LB = { items: [], idx: 0, open: false, zoom: false, tx: 0, ty: 0, pushed: false, lastFocus: null };
+const lbEl = {
+  root: document.getElementById('lightbox'),
+  stage: document.getElementById('lbStage'),
+  img: document.getElementById('lbImg'),
+  title: document.getElementById('lbTitle'),
+  sub: document.getElementById('lbSub'),
+  counter: document.getElementById('lbCounter'),
+  thumbs: document.getElementById('lbThumbs'),
+  card: document.getElementById('lbOpenCard')
+};
+const LB_ZOOM = 2.4;
+
+function lbApplyTransform() {
+  lbEl.img.style.transform = LB.zoom ? `translate(${LB.tx}px, ${LB.ty}px) scale(${LB_ZOOM})` : '';
+}
+function lbResetZoom() {
+  LB.zoom = false; LB.tx = 0; LB.ty = 0;
+  lbEl.img.classList.remove('zoomed');
+  lbEl.img.style.transformOrigin = '';
+  lbEl.img.style.transform = '';
+  lbEl.stage.classList.remove('is-zoomed');
+}
+function lbToggleZoom(e) {
+  if (LB.zoom) { lbResetZoom(); return; }
+  const r = lbEl.img.getBoundingClientRect();
+  const ox = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
+  const oy = Math.max(0, Math.min(100, ((e.clientY - r.top) / r.height) * 100));
+  lbEl.img.style.transformOrigin = `${ox}% ${oy}%`;
+  LB.zoom = true; LB.tx = 0; LB.ty = 0;
+  lbEl.img.classList.add('zoomed');
+  lbEl.stage.classList.add('is-zoomed');
+  lbApplyTransform();
+}
+function lbBuildThumbs() {
+  lbEl.thumbs.innerHTML = '';
+  if (LB.items.length < 2) return;
+  const frag = document.createDocumentFragment();
+  LB.items.forEach((it, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'lb-thumb';
+    b.setAttribute('aria-label', `Ir para a foto ${i + 1}`);
+    const im = document.createElement('img');
+    im.alt = ''; im.decoding = 'async'; im.src = it.src;
+    b.appendChild(im);
+    b.addEventListener('click', () => lbGoTo(i));
+    frag.appendChild(b);
+  });
+  lbEl.thumbs.appendChild(frag);
+}
+function lbShow(dir) {
+  const it = LB.items[LB.idx];
+  if (!it) return;
+  const img = lbEl.img;
+  lbResetZoom();
+  img.classList.remove('lb-from-right', 'lb-from-left');
+  img.src = it.src;
+  img.alt = it.name;
+  void img.offsetWidth;
+  if (dir) img.classList.add(dir > 0 ? 'lb-from-right' : 'lb-from-left');
+  lbEl.root.style.setProperty('--lbc', it.color || '#8b5cf6');
+  lbEl.title.textContent = it.name;
+  const bits = [];
+  if (it.ref) bits.push('Imagem de referência');
+  else if (it.variety) bits.push(it.variety);
+  const d = fmtLongDate(it.date);
+  if (d && !it.ref) bits.push(d);
+  lbEl.sub.textContent = bits.join(' · ');
+  lbEl.counter.textContent = `${LB.idx + 1} / ${LB.items.length}`;
+  const multi = LB.items.length > 1;
+  lbEl.root.classList.toggle('single', !multi);
+  const hideCard = !it.id || (activeDrawerId === 'drawerCrystalDetail' && currentDetailId === it.id);
+  lbEl.card.style.display = hideCard ? 'none' : 'inline-flex';
+  const thumbs = lbEl.thumbs.children;
+  for (let i = 0; i < thumbs.length; i++) thumbs[i].classList.toggle('active', i === LB.idx);
+  const active = thumbs[LB.idx];
+  if (active) {
+    const box = lbEl.thumbs;
+    box.scrollTo({ left: active.offsetLeft - (box.clientWidth - active.offsetWidth) / 2, behavior: dir === 0 ? 'auto' : 'smooth' });
+  }
+  [1, -1].forEach(o => {
+    const n = LB.items[(LB.idx + o + LB.items.length) % LB.items.length];
+    if (n && n !== it) { const pre = new Image(); pre.src = n.src; }
+  });
+}
+function lbGoTo(i) {
+  if (i === LB.idx) return;
+  const dir = i > LB.idx ? 1 : -1;
+  LB.idx = i;
+  lbShow(dir);
+}
+window.lightboxStep = function(dir) {
+  const n = LB.items.length;
+  if (n < 2) return;
+  LB.idx = (LB.idx + dir + n) % n;
+  lbShow(dir);
+};
+window.openLightbox = function(items, index = 0) {
+  if (!items || !items.length) return;
+  LB.items = items;
+  LB.idx = Math.max(0, Math.min(index, items.length - 1));
+  LB.lastFocus = document.activeElement;
+  lbBuildThumbs();
+  lbEl.root.classList.add('open');
+  lbEl.root.setAttribute('aria-hidden', 'false');
+  LB.open = true;
+  document.body.style.overflow = 'hidden';
+  lbShow(0);
+  try { history.pushState({ lb: 1 }, ''); LB.pushed = true; } catch (e) { LB.pushed = false; }
+  const closeBtn = lbEl.root.querySelector('.lb-btn-icon');
+  if (closeBtn) closeBtn.focus({ preventScroll: true });
+};
+window.closeLightbox = function(fromPop) {
+  if (!LB.open) return;
+  LB.open = false;
+  lbEl.root.classList.remove('open');
+  lbEl.root.setAttribute('aria-hidden', 'true');
+  lbResetZoom();
+  if (!activeDrawerId) document.body.style.overflow = '';
+  if (LB.pushed && fromPop !== true) { LB.pushed = false; try { history.back(); } catch (e) {} }
+  else LB.pushed = false;
+  if (LB.lastFocus && LB.lastFocus.focus) { try { LB.lastFocus.focus({ preventScroll: true }); } catch (e) {} }
+};
+window.lightboxOpenCard = function() {
+  const it = LB.items[LB.idx];
+  if (!it || !it.id) return;
+  const id = it.id;
+  closeLightbox();
+  setTimeout(() => {
+    if (activeDrawerId && activeDrawerId !== 'drawerCrystalDetail') closeActiveDrawer();
+    openCrystalDetail(id);
+  }, 60);
+};
+window.addEventListener('popstate', () => {
+  if (LB.open) { LB.pushed = false; closeLightbox(true); }
+});
+document.addEventListener('keydown', (e) => {
+  if (!LB.open) return;
+  if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); closeLightbox(); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); lightboxStep(1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); lightboxStep(-1); }
+  else if (e.key === 'Home') { e.preventDefault(); lbGoTo(0); }
+  else if (e.key === 'End') { e.preventDefault(); lbGoTo(LB.items.length - 1); }
+}, true);
+
+// Gestos: toque/clique para dar zoom, arrastar para navegar (ou mover a imagem ampliada), deslizar para baixo para fechar
+(function lbGestures() {
+  let g = null;
+  const stage = lbEl.stage, img = lbEl.img;
+  stage.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.lb-nav')) return;
+    g = { x: e.clientX, y: e.clientY, dx: 0, dy: 0, moved: false, tx: LB.tx, ty: LB.ty };
+    try { stage.setPointerCapture(e.pointerId); } catch (err) {}
+    img.style.transition = 'none';
+  });
+  stage.addEventListener('pointermove', (e) => {
+    if (!g) return;
+    const dx = e.clientX - g.x, dy = e.clientY - g.y;
+    if (Math.abs(dx) > 6 || Math.abs(dy) > 6) g.moved = true;
+    g.dx = dx; g.dy = dy;
+    if (LB.zoom) {
+      const mx = img.offsetWidth * 1.1, my = img.offsetHeight * 1.1;
+      LB.tx = Math.max(-mx, Math.min(mx, g.tx + dx));
+      LB.ty = Math.max(-my, Math.min(my, g.ty + dy));
+      lbApplyTransform();
+    } else if (g.moved) {
+      if (Math.abs(dx) >= Math.abs(dy)) {
+        img.style.transform = `translateX(${dx}px)`;
+        img.style.opacity = String(1 - Math.min(Math.abs(dx) / 420, 0.5));
+      } else if (dy > 0) {
+        img.style.transform = `translateY(${dy}px) scale(${1 - Math.min(dy / 900, 0.15)})`;
+        img.style.opacity = String(1 - Math.min(dy / 360, 0.6));
+      }
+    }
+  });
+  const finish = (e, cancelled) => {
+    if (!g) return;
+    img.style.transition = '';
+    img.style.opacity = '';
+    const { dx, dy, moved } = g;
+    g = null;
+    if (cancelled) { if (!LB.zoom) img.style.transform = ''; return; }
+    if (LB.zoom) { if (!moved) lbResetZoom(); return; }
+    if (moved && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.2) { img.style.transform = ''; lightboxStep(dx < 0 ? 1 : -1); }
+    else if (moved && dy > 110 && dy > Math.abs(dx) * 1.5) { img.style.transform = ''; closeLightbox(); }
+    else if (!moved) { img.style.transform = ''; if (e.target === img) lbToggleZoom(e); else closeLightbox(); }
+    else img.style.transform = '';
+  };
+  stage.addEventListener('pointerup', (e) => finish(e, false));
+  stage.addEventListener('pointercancel', (e) => finish(e, true));
+})();
+
+// ==================== EFEITO: FAÍSCAS DE CRISTAL NOS BOTÕES ====================
+(function sparkBurst() {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colors = ['#a855f7', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6'];
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest && e.target.closest('.btn-primary, .fab-add');
+    if (!b || b.disabled) return;
+    const r = b.getBoundingClientRect();
+    const x = e.clientX || (r.left + r.width / 2);
+    const y = e.clientY || (r.top + r.height / 2);
+    for (let i = 0; i < 9; i++) {
+      const sp = document.createElement('span');
+      sp.className = 'spark';
+      const a = (Math.PI * 2 * i / 9) + Math.random() * 0.5;
+      const d = 26 + Math.random() * 28;
+      sp.style.cssText = `left:${x}px;top:${y}px;background:${colors[i % colors.length]};--dx:${(Math.cos(a) * d).toFixed(1)}px;--dy:${(Math.sin(a) * d).toFixed(1)}px;`;
+      document.body.appendChild(sp);
+      setTimeout(() => sp.remove(), 800);
+    }
+  }, true);
+})();
 
 // ==================== COMBINAR CRISTAIS ====================
 function renderCombineChecklist() {
