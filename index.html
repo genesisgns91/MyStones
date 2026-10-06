@@ -27,10 +27,10 @@
   :root { --tree-line:#d8cdf7; --tree-node:#b9a4ed; }
   [data-theme="dark"] { --tree-line:#5c4d85; --tree-node:#7c6aad; }
   [data-theme="dark"] {
-    --purple:#9061f9; --purple2:#c4b0fb; --lilac:rgba(144,97,249,.18);
-    --cream:#120d1d; --ink:#f3effc; --white:#241b38; --mist:#453a66; --muted:#b3a7cc;
+    --purple:#5e72f5; --purple2:#a9b8fb; --lilac:rgba(94,114,245,.18);
+    --cream:#0d1120; --ink:#eef0fc; --white:#1e2240; --mist:#394066; --muted:#a4acd6;
     --gold:#e0b568;
-    --shadow:0 16px 40px rgba(0,0,0,.55), 0 0 0 1px rgba(144,97,249,.1);
+    --shadow:0 16px 40px rgba(0,0,0,.55), 0 0 0 1px rgba(94,114,245,.12);
   }
   * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
   html, body { height:100%; overflow-x:hidden; scroll-behavior:smooth; }
@@ -292,7 +292,7 @@
   .element-form-item input[type=range] { flex:1; }
   .element-form-item .pct-val { font-size:0.78rem; font-weight:700; min-width:36px; text-align:right; }
 
-  .moon-rings-row { display:flex; gap:0.4rem; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:0.4rem; }
+  .moon-rings-row { display:flex; gap:0.4rem; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:0.4rem; justify-content:center; }
   .moon-ring-wrap { cursor:pointer; text-align:center; flex:0 0 auto; width:58px; transition:.15s; }
   .moon-ring-wrap:hover { transform:translateY(-3px); }
   .moon-ring-wrap.selected .moon-phase-ring { box-shadow:0 0 0 2px var(--purple); }
@@ -611,7 +611,11 @@
 /* =====================================================================
    Card do cristal — layout horizontal (foto à esquerda, ficha rápida à direita)
    ===================================================================== */
-.crystal-grid { grid-template-columns:repeat(auto-fill,minmax(296px,1fr)); gap:1.1rem; }
+@media (min-width:769px) {
+  :root { --grid-cols:3; }
+  body.sidebar-collapsed { --grid-cols:4; }
+  .crystal-grid { grid-template-columns:repeat(var(--grid-cols), minmax(0,1fr)); gap:1.1rem; }
+}
 .crystal-card { flex-direction:row; align-items:stretch; min-height:152px; }
 .crystal-card .card-media { width:38%; max-width:168px; min-width:104px; flex-shrink:0; }
 .crystal-card .card-media .crystal-img { width:100%; height:100%; aspect-ratio:auto; min-height:152px; }
@@ -634,20 +638,57 @@
   .crystal-grid { grid-template-columns:1fr; }
 }
 
+/* ---------- Menu lateral recolhível (desktop) ---------- */
+.sidebar { transition:width .3s ease, padding .3s ease; }
+.main-content { transition:margin-left .3s ease, width .3s ease; }
+.sidebar-collapse-btn { position:absolute; top:1.4rem; right:-13px; width:26px; height:26px; border-radius:50%; background:var(--white); border:1px solid var(--mist); color:var(--purple); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 10px rgba(109,40,217,.18); z-index:60; transition:transform .3s ease, background .2s; }
+.sidebar-collapse-btn:hover { background:var(--lilac); }
+.sidebar-collapse-btn svg { transition:transform .3s ease; transform:rotate(90deg); }
+body.sidebar-collapsed .sidebar-collapse-btn svg { transform:rotate(-90deg); }
+@media (min-width:769px) {
+  body.sidebar-collapsed { --sidebar-w:84px; }
+  body.sidebar-collapsed .brand small,
+  body.sidebar-collapsed .brand h1,
+  body.sidebar-collapsed .nav-label,
+  body.sidebar-collapsed .theme-toggle span,
+  body.sidebar-collapsed #installAppBtn span { display:none; }
+  body.sidebar-collapsed .brand { justify-content:center; gap:0; }
+  body.sidebar-collapsed .nav-btn { justify-content:center; padding:.75rem; }
+  body.sidebar-collapsed .theme-toggle, body.sidebar-collapsed #installAppBtn { justify-content:center; padding:.7rem; }
+}
+@media (max-width:768px) { .sidebar-collapse-btn { display:none; } }
+
+/* ---------- Ficha do cristal: cabeçalho com foto reduzida à esquerda + info à direita ---------- */
+.detail-hero { display:flex; gap:1.1rem; align-items:flex-start; margin-bottom:1rem; }
+#detailPhoto.detail-hero-photo { width:42%; max-width:190px; flex-shrink:0; border-radius:16px !important; aspect-ratio:1/1 !important; height:auto !important; max-height:none !important; object-fit:cover !important; }
+.detail-hero-info { flex:1; min-width:0; display:flex; flex-direction:column; gap:.45rem; padding-top:.15rem; }
+.detail-hero-info h2 { font-family:'Cinzel', serif; font-size:1.25rem; color:var(--ink); line-height:1.15; margin:0; }
+.detail-hero-tags { display:flex; flex-wrap:wrap; gap:.3rem; }
+.detail-hero-meta { display:flex; flex-wrap:wrap; gap:.3rem 1rem; font-size:.78rem; color:var(--muted); font-weight:700; }
+.detail-hero-meta span { display:inline-flex; align-items:center; gap:.3rem; }
+.detail-hero-actions { display:flex; gap:.5rem; margin-top:.35rem; }
+@media (max-width:480px) {
+  .detail-hero-photo { width:38%; max-width:130px; }
+  .detail-hero-info h2 { font-size:1.08rem; }
+}
+
+/* ---------- Ícones de correspondência maiores e uniformes (Polaridade, Yin/Yang, Planeta, Chakra, Signos) ---------- */
+.corr-card.corr-card-row .corr-icon-circle { width:82px; height:82px; }
+
 /* ---------- Tema escuro: painéis translúcidos sobre o céu estrelado ---------- */
 [data-theme="dark"] .section-block,
 [data-theme="dark"] .crystal-card,
 [data-theme="dark"] .stat-card {
-  background: rgba(36,27,56,.5);
+  background: rgba(30,34,64,.5);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-color: rgba(144,97,249,.28);
+  border-color: rgba(94,114,245,.26);
 }
 [data-theme="dark"] .sidebar {
-  background: rgba(18,13,29,.62) !important;
+  background: rgba(13,17,32,.62) !important;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border-right-color: rgba(144,97,249,.22);
+  border-right-color: rgba(94,114,245,.2);
 }
 [data-theme="dark"] .card-media::before { opacity:.4; }
 
@@ -895,24 +936,27 @@
             <div class="form-group"><label>Cor</label><input type="text" id="cColor" class="form-control" /></div>
             <div class="form-group"><label>Transparência/Acabamento</label><input type="text" id="cTransparency" class="form-control" /></div>
           </div>
-          <div class="form-group"><label>Geometria (hábito cristalino)</label>
-            <select id="cGeometry" class="form-control">
-              <option value="">Selecione</option>
-              <option value="Prismático">Prismático — crescimento alongado como um prisma</option>
-              <option value="Acicular">Acicular — extremamente fino, parecido com uma agulha</option>
-              <option value="Fibroso">Fibroso — formado por fibras</option>
-              <option value="Tabular">Tabular — achatado, parecido com uma placa</option>
-              <option value="Laminar">Laminar — formado por lâminas</option>
-              <option value="Botrioidal">Botrioidal — superfícies arredondadas em "cachos", como uvas</option>
-              <option value="Reniforme">Reniforme — semelhante a um rim</option>
-              <option value="Maciço">Maciço — sem faces cristalinas bem definidas</option>
-              <option value="Dendrítico">Dendrítico — ramificado, semelhante a uma árvore</option>
-              <option value="Globular">Globular — aproximadamente esférico</option>
-              <option value="Piramidal">Piramidal — terminações em forma de pirâmide</option>
-              <option value="Cúbico">Cúbico — faces formando cubos</option>
-              <option value="Octaédrico">Octaédrico — oito faces triangulares</option>
-              <option value="Drusiforme">Drusiforme — superfície recoberta por muitos microcristais</option>
-            </select>
+          <div class="form-row">
+            <div class="form-group"><label>Geometria (hábito cristalino)</label>
+              <select id="cGeometry" class="form-control">
+                <option value="">Selecione</option>
+                <option value="Prismático">Prismático — crescimento alongado como um prisma</option>
+                <option value="Acicular">Acicular — extremamente fino, parecido com uma agulha</option>
+                <option value="Fibroso">Fibroso — formado por fibras</option>
+                <option value="Tabular">Tabular — achatado, parecido com uma placa</option>
+                <option value="Laminar">Laminar — formado por lâminas</option>
+                <option value="Botrioidal">Botrioidal — superfícies arredondadas em "cachos", como uvas</option>
+                <option value="Reniforme">Reniforme — semelhante a um rim</option>
+                <option value="Maciço">Maciço — sem faces cristalinas bem definidas</option>
+                <option value="Dendrítico">Dendrítico — ramificado, semelhante a uma árvore</option>
+                <option value="Globular">Globular — aproximadamente esférico</option>
+                <option value="Piramidal">Piramidal — terminações em forma de pirâmide</option>
+                <option value="Cúbico">Cúbico — faces formando cubos</option>
+                <option value="Octaédrico">Octaédrico — oito faces triangulares</option>
+                <option value="Drusiforme">Drusiforme — superfície recoberta por muitos microcristais</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Dureza (escala de Mohs)</label><input type="text" id="cHardness" class="form-control" placeholder="ex: 7" /></div>
           </div>
         </div>
       </div>
@@ -1114,12 +1158,21 @@
 <div class="modal-overlay" id="drawerCrystalDetail">
   <div class="drawer">
     <div class="drawer-handle"></div>
-    <div class="drawer-header"><h3 id="detailName">Ficha do Cristal</h3><button class="icon-btn" onclick="closeActiveDrawer()"><span class="icon" data-icon="x" data-size="20"></span></button></div>
+    <div class="drawer-header" style="border-bottom:none; padding-bottom:0;"><div></div><button class="icon-btn" onclick="closeActiveDrawer()"><span class="icon" data-icon="x" data-size="20"></span></button></div>
 
-    <img id="detailPhoto" class="crystal-img" style="height:200px; border-radius:16px;" />
+    <div class="detail-hero">
+      <img id="detailPhoto" class="crystal-img detail-hero-photo" style="border-radius:16px;" />
+      <div class="detail-hero-info">
+        <h2 id="detailName">Ficha do Cristal</h2>
+        <div id="detailIntentionTags" class="detail-hero-tags"></div>
+        <div id="detailHeroMeta" class="detail-hero-meta"></div>
+        <div class="detail-hero-actions">
+          <button class="btn-secondary" onclick="openEditCrystalModal()"><span class="icon" data-icon="edit" data-size="15"></span> Editar</button>
+          <button class="btn-danger-ghost" onclick="deleteCrystal()"><span class="icon" data-icon="trash" data-size="15"></span> Excluir</button>
+        </div>
+      </div>
+    </div>
     <div id="detailReferenceNote" style="display:none; font-size:0.72rem; color:var(--muted); align-items:center; gap:0.4rem;"></div>
-
-    <div id="detailIntentionTags"></div>
 
     <div class="section-block">
       <h4><span class="icon" data-icon="moon" data-size="17"></span> Fases da Lua — Recomendação para este cristal</h4>
@@ -1152,11 +1205,6 @@
         <label class="btn-secondary" style="cursor:pointer;"><span class="icon" data-icon="plus" data-size="14"></span> Foto<input type="file" accept="image/*" style="display:none;" onchange="addGalleryPhoto(event)" /></label>
       </div>
       <div class="gallery-grid" id="detailGallery"></div>
-    </div>
-
-    <div class="form-row">
-      <button class="btn-secondary" onclick="openEditCrystalModal()"><span class="icon" data-icon="edit" data-size="15"></span> Editar Ficha</button>
-      <button class="btn-danger-ghost" onclick="deleteCrystal()"><span class="icon" data-icon="trash" data-size="15"></span> Excluir</button>
     </div>
   </div>
 </div>
@@ -1326,7 +1374,7 @@ const crystalsCol = collection(db, "crystals");
 
     const moonX = w * 0.84 + parX, moonY = h * 0.15 + parY;
     const moonG = ctx.createRadialGradient(moonX, moonY, 0, moonX, moonY, isMobile ? 150 : 260);
-    moonG.addColorStop(0, 'rgba(228,223,255,.18)');
+    moonG.addColorStop(0, 'rgba(212,222,255,.18)');
     moonG.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = moonG;
     ctx.fillRect(0, 0, w, h);
@@ -1729,10 +1777,16 @@ const NAV_ITEMS = [
   { tab:'dashboard',  label:'Dashboard',         short:'Painel',    icon:'chart',   color:'#3b82f6' }
 ];
 document.getElementById('sidebarNav').innerHTML = `
+  <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" onclick="toggleSidebarCollapse()" title="Recolher/expandir menu" aria-label="Recolher/expandir menu">${icon('chevron-down',14)}</button>
   <div class="brand"><div class="brand-mark">${icon('gem',22)}</div><div><h1>Meu Cristal</h1><small>Elementos · Energia · Equilíbrio</small></div></div>
   <nav class="side-nav" aria-label="Navegação principal">${NAV_ITEMS.map((n,i) => `<button class="nav-btn ${i===0?'active':''}" style="--nc:${n.color}" title="${n.label}" aria-label="${n.label}" onclick="switchTab('${n.tab}')"><span class="nav-ic">${icon(n.icon,19,n.color)}</span><span class="nav-label">${n.label}</span></button>`).join('')}</nav>
   <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn" title="Alternar tema">${icon('moon',16)}<span>Alternar tema</span></button>
   <button class="theme-toggle" id="installAppBtn" style="display:none;" onclick="installApp()">${icon('download',16)}<span>Instalar App</span></button>`;
+if (localStorage.getItem('sidebarCollapsed') === '1') document.body.classList.add('sidebar-collapsed');
+window.toggleSidebarCollapse = function () {
+  const collapsed = document.body.classList.toggle('sidebar-collapsed');
+  localStorage.setItem('sidebarCollapsed', collapsed ? '1' : '0');
+};
 document.getElementById('bottomNav').innerHTML = NAV_ITEMS.map((n,i) => `<button class="nav-btn ${i===0?'active':''}" style="--nc:${n.color}" aria-label="${n.label}" onclick="switchTab('${n.tab}')">${icon(n.icon,21,n.color)}<span>${n.short}</span></button>`).join('');
 
 // ==================== TOASTS ====================
@@ -2105,7 +2159,7 @@ window.openEditCrystalModal = function() {
 };
 
 const FIELD_MAP = {
-  cName:'name', cVariety:'variety', cNickname:'nickname', cDescription:'description', cPolarity:'polarity', cYinYang:'yinYang', cGeometry:'geometry',
+  cName:'name', cVariety:'variety', cNickname:'nickname', cDescription:'description', cPolarity:'polarity', cYinYang:'yinYang', cGeometry:'geometry', cHardness:'hardness',
   cAcquiredDate:'acquiredDate', cFormat:'format', cColor:'color', cTransparency:'transparency',
   cChakra:'chakra', cPlanet:'planet',
   cKabbalahSephirah:'kabbalahSephirah', cKabbalahText:'kabbalahText',
@@ -2168,6 +2222,7 @@ Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
   "polarity": "Solar ou Lunar",
   "yin_yang": "Yin ou Yang",
   "geometry": "um entre Prismático, Acicular, Fibroso, Tabular, Laminar, Botrioidal, Reniforme, Maciço, Dendrítico, Globular, Piramidal, Cúbico, Octaédrico, Drusiforme — o hábito cristalino mais comum desta pedra",
+  "hardness": "dureza mineralógica real desta pedra na escala de Mohs (ex: '7' ou '6.5-7')",
   "element_percentages": { "terra": 0, "agua": 0, "ar": 0, "fogo": 0 },
   "moon_phases": [
     {"phase":"Lua Nova","percent":0,"impact":"..."}, {"phase":"Lua Crescente","percent":0,"impact":"..."},
@@ -2231,6 +2286,7 @@ Responda EXCLUSIVAMENTE em JSON válido, sem markdown:
     document.getElementById('cPolarity').value = d.polarity || '';
     document.getElementById('cYinYang').value = d.yin_yang || '';
     document.getElementById('cGeometry').value = d.geometry || '';
+    document.getElementById('cHardness').value = d.hardness || '';
     document.getElementById('cPlanet').value = d.planet || '';
     document.getElementById('cKabbalahSephirah').value = d.kabbalah_sephirah || '';
     document.getElementById('cKabbalahText').value = d.kabbalah_text || '';
@@ -2461,6 +2517,11 @@ function renderCrystalDetail(id) {
 
   document.getElementById('detailIntentionTags').innerHTML = (c.intentions||[]).map(t => `<span class="tag">${t}</span>`).join('');
 
+  const heroMetaBits = [];
+  if (c.geometry) heroMetaBits.push(`<span>${icon('gem',13)} ${c.geometry}</span>`);
+  if (c.hardness) heroMetaBits.push(`<span>${icon('target',13)} Dureza ${c.hardness}</span>`);
+  document.getElementById('detailHeroMeta').innerHTML = heroMetaBits.join('');
+
   document.getElementById('detailElementInfographic').innerHTML = renderElementInfographic(c.elementPct);
   document.getElementById('detailMoonInfographic').innerHTML = renderMoonInfographic(c);
   selectDetailMoonPhase(currentDetailSelectedPhaseIdx);
@@ -2470,15 +2531,16 @@ function renderCrystalDetail(id) {
   //      Água-Terra, Energia natural, Arquétipo, Influência psicológica, Propósito, Mantra pessoal) ----
   const cards = [];
 
+  const CORR_ICON_SIZE = 66; /* 25% maior que o tamanho anterior dos signos (53px) — mesmo tamanho para todos */
   if (c.polarity) {
-    cards.push(bigIconCard(polarityIcon(c.polarity, 30), 'Polaridade', c.polarity, c.polarity === 'Solar' ? PLANET_COLORS['Sol'] : PLANET_COLORS['Lua']));
+    cards.push(bigIconCard(polarityIcon(c.polarity, CORR_ICON_SIZE), 'Polaridade', c.polarity, c.polarity === 'Solar' ? PLANET_COLORS['Sol'] : PLANET_COLORS['Lua']));
   }
-  if (c.yinYang) cards.push(bigIconCard(yinYangIcon(c.yinYang, 30), 'Yin / Yang', c.yinYang, '#6d28d9'));
+  if (c.yinYang) cards.push(bigIconCard(yinYangIcon(c.yinYang, CORR_ICON_SIZE), 'Yin / Yang', c.yinYang, '#6d28d9'));
 
-  if (c.planet) cards.push(bigIconCard(planetIcon(c.planet,30), 'Planeta', c.planet, PLANET_COLORS[c.planet]));
+  if (c.planet) cards.push(bigIconCard(planetIcon(c.planet,CORR_ICON_SIZE), 'Planeta', c.planet, PLANET_COLORS[c.planet]));
   if (c.chakra) {
     const cc = CHAKRA_COLORS[c.chakra];
-    cards.push(bigIconCard(chakraImg(c.chakra,32), 'Chakra', c.chakra, cc));
+    cards.push(bigIconCard(chakraImg(c.chakra,CORR_ICON_SIZE), 'Chakra', c.chakra, cc));
   }
 
   if ((c.signs||[]).length) {
@@ -2486,7 +2548,7 @@ function renderCrystalDetail(id) {
       <div class="corr-card-label" style="margin-bottom:0.7rem;">Signos</div>
       <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
         ${c.signs.map(s => `<span style="display:inline-flex; flex-direction:column; align-items:center; gap:0.3rem;">
-          <span style="filter:drop-shadow(0 2px 7px ${zodiacColor(s)}70);">${zodiacIconSVG(s,53)}</span>
+          <span style="filter:drop-shadow(0 2px 7px ${zodiacColor(s)}70);">${zodiacIconSVG(s,CORR_ICON_SIZE)}</span>
           <span style="font-size:0.68rem; font-weight:700; color:${zodiacColor(s)};">${s}</span></span>`).join('')}
       </div></div>`);
   }
