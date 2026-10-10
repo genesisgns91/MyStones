@@ -1,5 +1,5 @@
-const CACHE_NAME = 'meu-cristal-v2';
-const CORE_ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
+const CACHE_NAME = 'meu-cristal-v3';
+const CORE_ASSETS = ['./', './index.html', './manifest.json', './cristal.svg', './cristal-192.png', './cristal-512.png', './cristal-180.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

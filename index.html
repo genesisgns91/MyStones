@@ -6,9 +6,10 @@
 <title>Meu Cristal GNS</title>
 <meta name="theme-color" content="#6d28d9" />
 <link rel="manifest" href="manifest.json" />
-<link rel="icon" type="image/svg+xml" href="icon.svg" />
-<link rel="icon" type="image/png" href="icon-192.png?v=2" />
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2" />
+<link rel="icon" type="image/svg+xml" href="cristal.svg" />
+<link rel="icon" type="image/png" sizes="192x192" href="cristal-192.png" />
+<link rel="shortcut icon" href="cristal-192.png" />
+<link rel="apple-touch-icon" href="cristal-180.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -332,7 +333,7 @@
   }
   .fab-add { display:none; position:fixed; right:1.1rem; bottom:calc(5.2rem + env(safe-area-inset-bottom,0px)); width:58px; height:58px; border-radius:50%; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--purple), var(--purple2)); color:#fff; border:none; box-shadow:0 10px 28px rgba(109,40,217,.45); z-index:90; transition:transform .2s, box-shadow .2s; }
   .fab-add:active { transform:scale(.9); box-shadow:0 6px 16px rgba(109,40,217,.4); }
-  .theme-toggle-mobile { display:none; position:fixed; left:1.1rem; top:calc(1.1rem + env(safe-area-inset-top,0px)); width:40px; height:40px; border-radius:50%; align-items:center; justify-content:center; background:var(--white); border:1px solid var(--mist); color:var(--purple2); box-shadow:0 6px 16px rgba(109,40,217,.18); z-index:90; cursor:pointer; transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, background .3s; }
+  .theme-toggle-mobile { display:none; position:fixed; right:.9rem; top:calc(1rem + env(safe-area-inset-top,0px)); width:40px; height:40px; border-radius:50%; align-items:center; justify-content:center; background:var(--white); border:1px solid var(--mist); color:var(--purple2); box-shadow:0 6px 16px rgba(109,40,217,.18); z-index:90; cursor:pointer; transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, background .3s; }
   .theme-toggle-mobile .icon { filter:drop-shadow(0 0 4px currentColor); transition:transform .5s cubic-bezier(.34,1.56,.64,1); }
   .theme-toggle-mobile:active { transform:scale(.85) rotate(-18deg); }
   .theme-toggle-mobile.spin .icon { transform:rotate(360deg); }
@@ -570,6 +571,7 @@
 @media (max-width:768px) {
   .main-content { padding:1rem .9rem calc(5.8rem + env(safe-area-inset-bottom,0px)); }
   .header-title h2 { font-size:1.25rem; }
+  .header-bar > .header-title { max-width:calc(100% - 54px); }
   .header-title .icon-badge { width:42px !important; height:42px !important; }
   .header-title::before { width:52px; height:52px; }
   .header-bar > .btn-primary { width:100%; justify-content:center; }
